@@ -14,13 +14,13 @@ class StateLogger extends ProviderObserver {
       Object? previousValue, Object? newValue,
       ProviderContainer container) {
 
-    logger.d('''
-      {
-        provider: ${provider.name ?? provider.runtimeType},
-        oldValue: $previousValue,
-        newValue: $newValue
-      }
-    ''');
+    // logger.d('''
+    //   {
+    //     provider: ${provider.name ?? provider.runtimeType},
+    //     oldValue: $previousValue,
+    //     newValue: $newValue
+    //   }
+    // ''');
 
     super.didUpdateProvider(provider, previousValue, newValue, container);
   }

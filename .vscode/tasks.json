@@ -2,6 +2,20 @@
     "version": "2.0.0",
     "tasks": [
       {
+        "label": "Launch App",
+        "type": "shell",
+        "command": "flutter",
+        "args": [
+          "run"
+        ],
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
         "label": "Generate Localization",
         "type": "shell",
         "command": "flutter gen-l10n",

@@ -4,7 +4,22 @@
       "description": "The conventional newborn programmer greeting"
     },
 
-    "nButtonCounter": "You have pushed the button {count, plural, =0{never} =1{once} other{{count} times}}",
+    "fileExplorer": "Explorer",
+    "@fileExplorer": {
+      "description": "The project file explorer"
+    },
+
+    "widgetTree": "Widget Tree",
+    "@widgetTree": {
+      "description": "The widget tree explorer, displaying the current widget tree"
+    },
+
+    "sourceControl": "Source Control",
+    "@sourceControl": {
+      "description": "The project source control explorer, displaying the current branch, changes and commit history"
+    },
+
+    "nButtonCounter": "Selected tool is {count, plural, =0{first} =1{second} other{{count}}}",
     "@nWombats": {
       "description": "A button counter indicator",
       "placeholders": {
