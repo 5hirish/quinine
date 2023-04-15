@@ -14,4 +14,9 @@
 
 ## Contribute
 
+We welcome contributions from the community! Please read our [contributing guidelines](https://github.com/5hirish/quinine/blob/release/CONTRIBUTION.md) before submitting a pull request.
+
+
 ## License
+
+Quinine is available under the [Apache License 2.0](https://github.com/5hirish/quinine/blob/release/LICENSE). Use it wisely.
