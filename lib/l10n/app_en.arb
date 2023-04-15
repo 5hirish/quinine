@@ -1,0 +1,17 @@
+{
+    "helloWorld": "Hello World!",
+    "@helloWorld": {
+      "description": "The conventional newborn programmer greeting"
+    },
+
+    "nButtonCounter": "You have pushed the button {count, plural, =0{never} =1{once} other{{count} times}}",
+    "@nWombats": {
+      "description": "A button counter indicator",
+      "placeholders": {
+        "count": {
+          "type": "num",
+          "format": "compact"
+        }
+      }
+    }
+}
