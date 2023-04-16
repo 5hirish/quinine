@@ -23,13 +23,20 @@ dependencies:
   logger: any
   intl: any
 
-  # For UI
+  # For user interface
   google_fonts: ^4.0.3
   flex_color_scheme: ^7.0.1
   font_awesome_flutter: ^10.4.0
 
   # For state management
   hooks_riverpod: ^2.3.1
+
+  # For routing
+  go_router: ^6.2.0
+
+  # For file management
+  cross_file: ^0.3.3+4
+  file_picker: ^5.2.9
 
   # For annotations
   json_annotation: ^4.8.0
@@ -47,9 +54,11 @@ dev_dependencies:
 
   # For generating code
   build_runner: any
+  build_verify: any
   json_serializable: any
-  riverpod_generator: ^2.1.3
   freezed: ^2.3.2
+  riverpod_generator: ^2.1.3
+  go_router_builder: ^1.1.7
 
   # For linting
   flutter_lints: ^2.0.0

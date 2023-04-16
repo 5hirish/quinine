@@ -4,6 +4,14 @@
       "description": "The conventional newborn programmer greeting"
     },
 
+    "close": "Close",
+    "cancel": "Cancel",
+    "error": "Error",
+    "back": "Back",
+    "done": "Done",
+    "save": "Save",
+    "delete": "Delete",
+
     "fileExplorer": "Explorer",
     "@fileExplorer": {
       "description": "The project file explorer"

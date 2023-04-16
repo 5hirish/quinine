@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.2.7"
+  build_verify:
+    dependency: "direct dev"
+    description:
+      name: build_verify
+      sha256: abbb9b9eda076854ac1678d284c053a5ec608e64da741d0801f56d4bbea27e23
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   built_collection:
     dependency: transitive
     description:
@@ -193,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.3"
+  cross_file:
+    dependency: "direct main"
+    description:
+      name: cross_file
+      sha256: "0b0036e8cccbfbe0555fd83c1d31a6f30b77a96b598b35a5d36dd41f718695e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+4"
   crypto:
     dependency: transitive
     description:
@@ -257,6 +273,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  file_picker:
+    dependency: "direct main"
+    description:
+      name: file_picker
+      sha256: dcde5ad1a0cebcf3715ea3f24d0db1888bf77027a26c77d7779e8ef63b8ade62
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.9"
   fixnum:
     dependency: transitive
     description:
@@ -312,6 +336,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      sha256: c224ac897bed083dabf11f238dd11a239809b446740be0c2044608c50029ffdf
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.9"
   flutter_riverpod:
     dependency: transitive
     description:
@@ -322,6 +354,11 @@ packages:
     version: "2.3.4"
   flutter_test:
     dependency: "direct dev"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+  flutter_web_plugins:
+    dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -370,6 +407,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  go_router:
+    dependency: "direct main"
+    description:
+      name: go_router
+      sha256: "50bc08b72ede07daaf897deb4c00ca8fd8976c8821a4c84d7aeef0e92d1c5620"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.6"
+  go_router_builder:
+    dependency: "direct dev"
+    description:
+      name: go_router_builder
+      sha256: ca55f7029bc5caca0e26f2530973dd4a34fea8da73d30ac79d080b286fae0042
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
   google_fonts:
     dependency: "direct main"
     description:
@@ -599,6 +652,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
+  path_to_regexp:
+    dependency: transitive
+    description:
+      name: path_to_regexp
+      sha256: "169d78fbd55e61ea8873bcca545979f559d22238f66facdd7ef30870c7f53327"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   platform:
     dependency: transitive
     description:

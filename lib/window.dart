@@ -7,9 +7,8 @@ import 'widgets/bar/app_bar.dart';
 import 'widgets/bar/tool_bar.dart';
 
 class WindowPage extends ConsumerWidget {
-  const WindowPage({super.key, required this.title});
+  const WindowPage({super.key});
 
-  final String title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,7 +16,7 @@ class WindowPage extends ConsumerWidget {
     final toolIndex = ref.watch(coreToolBarStateProvider);
     
     return Scaffold(
-      appBar: CoreAppBar(title: title),
+      appBar: const CoreAppBar(title: "Quinine IDE"),
       body: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,

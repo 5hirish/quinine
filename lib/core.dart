@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'provider/theme.dart';
+import 'router/router.dart';
 import 'window.dart';
 
 
@@ -14,16 +15,18 @@ class QuinineCore extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     
-  final coreTheme = ref.watch(coreThemeStateProvider);
+    final coreTheme = ref.watch(coreThemeStateProvider);
+    final router = ref.watch(routerProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
+      // debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: FlexThemeData.light(scheme: FlexScheme.brandBlue, useMaterial3: true, useMaterial3ErrorColors: true),
       darkTheme: FlexThemeData.dark(scheme: FlexScheme.brandBlue, useMaterial3: true, useMaterial3ErrorColors: true), 
       themeMode: coreTheme.mode,
-      home: const WindowPage(title: 'Flutter Demo Home Page'),
+      routerConfig: router,
     );
   }
 }
