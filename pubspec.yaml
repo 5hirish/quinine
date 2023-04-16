@@ -28,6 +28,9 @@ dependencies:
   flex_color_scheme: ^7.0.1
   font_awesome_flutter: ^10.4.0
 
+  # For window management
+  window_manager: ^0.3.2
+
   # For state management
   hooks_riverpod: ^2.3.1
 
