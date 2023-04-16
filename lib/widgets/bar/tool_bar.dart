@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quinine/provider/tools.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class CoreToolBar extends ConsumerWidget {
   const CoreToolBar({super.key});
@@ -32,7 +33,7 @@ class CoreToolBar extends ConsumerWidget {
           child: const Icon(Icons.add),
         ),
       ),
-      trailing: Expanded(
+      trailing: ResponsiveWrapper.of(context).screenHeight > 400? Expanded(
         child: Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
@@ -47,8 +48,8 @@ class CoreToolBar extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-      destinations: <NavigationRailDestination>[
+      ): null,
+      destinations: ResponsiveWrapper.of(context).screenHeight > 400? <NavigationRailDestination>[
         
         NavigationRailDestination(
           padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
@@ -78,6 +79,26 @@ class CoreToolBar extends ConsumerWidget {
           selectedIcon:
               FaIcon(FontAwesomeIcons.codeBranch, size: coreToolBarIconSize),
           label: Text(AppLocalizations.of(context)!.sourceControl),
+        ),
+      ]: [
+        NavigationRailDestination(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+          icon: FaIcon(FontAwesomeIcons.fileCode,
+              size: coreToolBarIconSize,
+              color: Theme.of(context).iconTheme.color!.withOpacity(0.5)),
+          selectedIcon:
+              FaIcon(FontAwesomeIcons.fileCode, size: coreToolBarIconSize),
+          label: Text(AppLocalizations.of(context)!.fileExplorer),
+        ),
+        
+        NavigationRailDestination(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+          icon: FaIcon(FontAwesomeIcons.ellipsis,
+              size: coreToolBarIconSize,
+              color: Theme.of(context).iconTheme.color!.withOpacity(0.5)),
+          selectedIcon:
+              FaIcon(FontAwesomeIcons.ellipsis, size: coreToolBarIconSize),
+          label: Text(AppLocalizations.of(context)!.widgetTree),
         ),
       ],
     );

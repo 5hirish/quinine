@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import 'provider/tools.dart';
 import 'widgets/bar/app_bar.dart';
@@ -16,16 +17,24 @@ class WindowPage extends ConsumerWidget {
     final toolIndex = ref.watch(coreToolBarStateProvider);
     
     return Scaffold(
-      appBar: const CoreAppBar(title: "Quinine IDE"),
+      appBar: const CoreAppBar(title: "Quinine"),
       body: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const CoreToolBar(),
 
-            Expanded(
-              child: Text(
-                AppLocalizations.of(context)!.nButtonCounter(toolIndex ?? 0),
+            ResponsiveVisibility(
+              hiddenWhen: const [
+                Condition.smallerThan(name: TABLET)
+              ],
+              child: Visibility(
+                visible: toolIndex != null,
+                child: Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.nButtonCounter(toolIndex ?? 0),
+                  ),
+                ),
               ),
             ),
 

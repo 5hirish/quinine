@@ -15,7 +15,7 @@ void main() async {
   await windowManager.ensureInitialized();
 
   // Set the minimum window size
-  windowManager.setMinimumSize(const Size(500, 500));
+  windowManager.setMinimumSize(const Size(300, 300));
 
   // Turn off the # in the URLs on the web
   usePathUrlStrategy();
