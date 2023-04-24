@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:quinine/views/tools/tools.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import 'provider/tools.dart';
 import 'widgets/bar/app_bar.dart';
 import 'widgets/bar/tool_bar.dart';
 
@@ -13,8 +13,6 @@ class WindowPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final toolIndex = ref.watch(coreToolBarStateProvider);
     
     return Scaffold(
       appBar: const CoreAppBar(title: "Quinine"),
@@ -24,21 +22,15 @@ class WindowPage extends ConsumerWidget {
           children: <Widget>[
             const CoreToolBar(),
 
-            ResponsiveVisibility(
-              hiddenWhen: const [
+            const ResponsiveVisibility(
+              hiddenWhen: [
                 Condition.smallerThan(name: TABLET)
               ],
-              child: Visibility(
-                visible: toolIndex != null,
-                child: Expanded(
-                  child: Text(
-                    AppLocalizations.of(context)!.nButtonCounter(toolIndex ?? 0),
-                  ),
-                ),
-              ),
+              child: ToolsView(),
             ),
 
             Expanded(
+              flex: 3,
               child: Text(
                 AppLocalizations.of(context)!.helloWorld,
               ),

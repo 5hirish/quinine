@@ -23,16 +23,21 @@ dependencies:
   logger: any
   intl: any
 
+  # For utilities
+  nanoid: ^1.0.0
+
   # For user interface
   responsive_framework: ^0.2.0
   google_fonts: ^4.0.3
   flex_color_scheme: ^7.0.2
   font_awesome_flutter: ^10.4.0
+  flutter_fancy_tree_view: ^1.1.1
 
   # For window management
   window_manager: ^0.3.2
 
   # For state management
+  flutter_hooks: ^0.18.6
   hooks_riverpod: ^2.3.4
 
   # For routing

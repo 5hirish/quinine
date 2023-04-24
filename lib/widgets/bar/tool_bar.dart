@@ -1,7 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quinine/provider/project.dart';
 import 'package:quinine/provider/tools.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -27,8 +29,13 @@ class CoreToolBar extends ConsumerWidget {
         padding: const EdgeInsets.only(bottom: 24.0, top: 8.0),
         child: FloatingActionButton.small(
           elevation: 0,
-          onPressed: () {
-            // Add your onPressed code here!
+          onPressed: () async {
+
+            String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+            if (selectedDirectory != null) {
+              ref.read(projectLocalStateProvider().notifier).setWorkingDirectory(selectedDirectory);
+            }
+            
           },
           child: const Icon(Icons.add),
         ),
