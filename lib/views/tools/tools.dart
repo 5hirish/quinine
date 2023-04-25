@@ -14,10 +14,7 @@ class ToolsView extends ConsumerWidget {
 
     return Visibility(
       visible: toolIndex != null,
-      child: toolIndex != null? Expanded(
-        flex: 1,
-        child: getToolView(toolIndex),
-      ): const SizedBox(),
+      child: toolIndex != null? getToolView(toolIndex): const SizedBox(),
     );
   }
 
