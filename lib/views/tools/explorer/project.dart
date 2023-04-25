@@ -27,6 +27,7 @@ class ProjectExplorer extends HookConsumerWidget {
         projectLocal.projectFiles != null &&
         projectLocal.projectFiles!.containsKey(projectLocal.directoryPath)) {
       projectFiles = projectLocal.projectFiles![projectLocal.directoryPath]!;
+      projectFilesProvider = projectLocal.projectFiles!;
     } else {
       return const Text("Select Project");
     }
