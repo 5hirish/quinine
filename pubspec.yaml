@@ -25,6 +25,7 @@ dependencies:
 
   # For utilities
   nanoid: ^1.0.0
+  path: any
 
   # For user interface
   responsive_framework: ^0.2.0

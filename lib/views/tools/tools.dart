@@ -24,7 +24,7 @@ class ToolsView extends ConsumerWidget {
   Widget getToolView(int toolIndex) {
     switch (toolIndex) {
       case 0:
-        return const ProjectExplorer();
+        return ProjectExplorer();
       default:
         return const SizedBox();
     }

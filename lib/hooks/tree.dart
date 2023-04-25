@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -16,18 +17,12 @@ TreeController<Object> useTreeController({
 }
 
 TreeController<FileSystemEntity> useTreeControllerForFileSystemEntities({
-  required List<FileSystemEntity> roots,
+  required Iterable<FileSystemEntity> roots,
+  required Iterable<FileSystemEntity> Function(FileSystemEntity parent) childrenProvider,
 }) {
   final treeController = useState(TreeController<FileSystemEntity>(
     roots: roots,
-    childrenProvider: (FileSystemEntity parent) {
-      if (parent is Directory) {
-        return parent
-            .listSync()
-            .where((entity) => entity is Directory || entity is File);
-      }
-      return [];
-    },
+    childrenProvider: childrenProvider,
   ));
 
   return treeController.value;
