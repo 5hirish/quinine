@@ -40,7 +40,7 @@ class CoreToolBar extends ConsumerWidget {
           child: const Icon(Icons.add),
         ),
       ),
-      trailing: ResponsiveWrapper.of(context).screenHeight > 400? Expanded(
+      trailing: ResponsiveBreakpoints.of(context).screenHeight > 400? Expanded(
         child: Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
@@ -56,7 +56,7 @@ class CoreToolBar extends ConsumerWidget {
           ),
         ),
       ): null,
-      destinations: ResponsiveWrapper.of(context).screenHeight > 400? <NavigationRailDestination>[
+      destinations: ResponsiveBreakpoints.of(context).screenHeight > 400? <NavigationRailDestination>[
         
         NavigationRailDestination(
           padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),

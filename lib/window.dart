@@ -23,7 +23,7 @@ class WindowPage extends ConsumerWidget {
             const CoreToolBar(),
 
             const ResponsiveVisibility(
-              hiddenWhen: [
+              hiddenConditions: [
                 Condition.smallerThan(name: TABLET)
               ],
               child: ToolsView(),

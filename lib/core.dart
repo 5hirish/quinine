@@ -20,15 +20,14 @@ class QuinineCore extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      builder: (context, child) => ResponsiveWrapper.builder(
-          child,
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+          child: child!,
           debugLog: true,
-          defaultScale: true,
           breakpoints: const [
-            ResponsiveBreakpoint.resize(480, name: MOBILE),
-            ResponsiveBreakpoint.resize(800, name: TABLET),
-            ResponsiveBreakpoint.resize(1000, name: DESKTOP),
-            ResponsiveBreakpoint.autoScale(2460, name: '4K'),
+            Breakpoint(start: 0, end: 450, name: MOBILE),
+            Breakpoint(start: 451, end: 800, name: TABLET),
+            Breakpoint(start: 801, end: 1920, name: DESKTOP),
+            Breakpoint(start: 1921, end: double.infinity, name: '4K'),
           ],
       ),
       debugShowCheckedModeBanner: false,
