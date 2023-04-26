@@ -62,7 +62,10 @@ class CodeEditor extends HookConsumerWidget {
         ),
       ),
     ): Center(
-      child: Text("Error reading file: ${errorMsg.value}"),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text("Error reading file: ${errorMsg.value}")
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../models/ignored.dart';
 import '../models/project.dart';
 
 part 'project.g.dart';
@@ -37,6 +38,13 @@ class ProjectLocalState extends _$ProjectLocalState {
     return projectFiles;
   }
 
+  List<FileSystemEntity> ignoreFiles(List<FileSystemEntity> projectFiles) {
+    return projectFiles.where((file) {
+      String fileName = basename(file.path);
+      return !ignoredFilesAndDirectories.contains(fileName);
+    }).toList();
+  }
+
   @override
   ProjectLocal? build({String directoryPath = ''}) {
     if (directoryPath.isEmpty) {
@@ -50,6 +58,7 @@ class ProjectLocalState extends _$ProjectLocalState {
     Directory projectDirectory = fetchDirectory(directoryPath);
     List<FileSystemEntity> projectFileList = await fetchFiles(projectDirectory);
     projectFileList = sortFiles(projectFileList);
+    projectFileList = ignoreFiles(projectFileList);
 
     if (state != null) {
       state = state!.copyWith(
@@ -68,6 +77,7 @@ class ProjectLocalState extends _$ProjectLocalState {
     Directory parentDirectory = fetchDirectory(parentDirectoryPath);
     List<FileSystemEntity> childrenFileList = await fetchFiles(parentDirectory);
     childrenFileList = sortFiles(childrenFileList);
+    childrenFileList = ignoreFiles(childrenFileList);
 
     if (state != null) {
       Map<String, List<FileSystemEntity>> projectTree =
