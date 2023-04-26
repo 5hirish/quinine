@@ -4,6 +4,7 @@ import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/theme.dart';
+import '../theme/bluem3.dart';
 
 part 'theme.g.dart';
 
@@ -12,11 +13,23 @@ class CoreThemeState extends _$CoreThemeState {
   
   @override
   CoreTheme build() {
-    return const CoreTheme(mode: ThemeMode.system);
+    return CoreTheme(
+      mode: ThemeMode.system,
+      lightTheme: blueM3LightTheme,
+      darkTheme: blueM3DarkTheme,
+    );
   }
   
   void changeMode(ThemeMode mode) {
     state = state.copyWith(mode: mode);
+  }
+
+  void changeLightTheme(ThemeData theme) {
+    state = state.copyWith(lightTheme: theme);
+  }
+
+  void changeDarkTheme(ThemeData theme) {
+    state = state.copyWith(darkTheme: theme);
   }
 }
 

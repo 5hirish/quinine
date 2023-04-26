@@ -34,8 +34,8 @@ class QuinineCore extends ConsumerWidget {
       title: 'Quinine',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: FlexThemeData.light(scheme: FlexScheme.brandBlue, useMaterial3: true, useMaterial3ErrorColors: true),
-      darkTheme: FlexThemeData.dark(scheme: FlexScheme.brandBlue, useMaterial3: true, useMaterial3ErrorColors: true), 
+      theme: coreTheme.lightTheme,
+      darkTheme: coreTheme.darkTheme,
       themeMode: coreTheme.mode,
       routerConfig: router,
     );

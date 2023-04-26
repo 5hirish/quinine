@@ -9,6 +9,8 @@ class CoreTheme with _$CoreTheme {
 
   const factory CoreTheme({
     required ThemeMode mode,
+    required ThemeData? lightTheme,
+    required ThemeData? darkTheme,
   }) = _CoreTheme;
 }
 

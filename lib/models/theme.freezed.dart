@@ -17,6 +17,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$CoreTheme {
   ThemeMode get mode => throw _privateConstructorUsedError;
+  ThemeData? get lightTheme => throw _privateConstructorUsedError;
+  ThemeData? get darkTheme => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CoreThemeCopyWith<CoreTheme> get copyWith =>
@@ -28,7 +30,7 @@ abstract class $CoreThemeCopyWith<$Res> {
   factory $CoreThemeCopyWith(CoreTheme value, $Res Function(CoreTheme) then) =
       _$CoreThemeCopyWithImpl<$Res, CoreTheme>;
   @useResult
-  $Res call({ThemeMode mode});
+  $Res call({ThemeMode mode, ThemeData? lightTheme, ThemeData? darkTheme});
 }
 
 /// @nodoc
@@ -45,12 +47,22 @@ class _$CoreThemeCopyWithImpl<$Res, $Val extends CoreTheme>
   @override
   $Res call({
     Object? mode = null,
+    Object? lightTheme = freezed,
+    Object? darkTheme = freezed,
   }) {
     return _then(_value.copyWith(
       mode: null == mode
           ? _value.mode
           : mode // ignore: cast_nullable_to_non_nullable
               as ThemeMode,
+      lightTheme: freezed == lightTheme
+          ? _value.lightTheme
+          : lightTheme // ignore: cast_nullable_to_non_nullable
+              as ThemeData?,
+      darkTheme: freezed == darkTheme
+          ? _value.darkTheme
+          : darkTheme // ignore: cast_nullable_to_non_nullable
+              as ThemeData?,
     ) as $Val);
   }
 }
@@ -62,7 +74,7 @@ abstract class _$$_CoreThemeCopyWith<$Res> implements $CoreThemeCopyWith<$Res> {
       __$$_CoreThemeCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ThemeMode mode});
+  $Res call({ThemeMode mode, ThemeData? lightTheme, ThemeData? darkTheme});
 }
 
 /// @nodoc
@@ -77,12 +89,22 @@ class __$$_CoreThemeCopyWithImpl<$Res>
   @override
   $Res call({
     Object? mode = null,
+    Object? lightTheme = freezed,
+    Object? darkTheme = freezed,
   }) {
     return _then(_$_CoreTheme(
       mode: null == mode
           ? _value.mode
           : mode // ignore: cast_nullable_to_non_nullable
               as ThemeMode,
+      lightTheme: freezed == lightTheme
+          ? _value.lightTheme
+          : lightTheme // ignore: cast_nullable_to_non_nullable
+              as ThemeData?,
+      darkTheme: freezed == darkTheme
+          ? _value.darkTheme
+          : darkTheme // ignore: cast_nullable_to_non_nullable
+              as ThemeData?,
     ));
   }
 }
@@ -90,14 +112,19 @@ class __$$_CoreThemeCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_CoreTheme implements _CoreTheme {
-  const _$_CoreTheme({required this.mode});
+  const _$_CoreTheme(
+      {required this.mode, required this.lightTheme, required this.darkTheme});
 
   @override
   final ThemeMode mode;
+  @override
+  final ThemeData? lightTheme;
+  @override
+  final ThemeData? darkTheme;
 
   @override
   String toString() {
-    return 'CoreTheme(mode: $mode)';
+    return 'CoreTheme(mode: $mode, lightTheme: $lightTheme, darkTheme: $darkTheme)';
   }
 
   @override
@@ -105,11 +132,15 @@ class _$_CoreTheme implements _CoreTheme {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_CoreTheme &&
-            (identical(other.mode, mode) || other.mode == mode));
+            (identical(other.mode, mode) || other.mode == mode) &&
+            (identical(other.lightTheme, lightTheme) ||
+                other.lightTheme == lightTheme) &&
+            (identical(other.darkTheme, darkTheme) ||
+                other.darkTheme == darkTheme));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, mode);
+  int get hashCode => Object.hash(runtimeType, mode, lightTheme, darkTheme);
 
   @JsonKey(ignore: true)
   @override
@@ -119,10 +150,17 @@ class _$_CoreTheme implements _CoreTheme {
 }
 
 abstract class _CoreTheme implements CoreTheme {
-  const factory _CoreTheme({required final ThemeMode mode}) = _$_CoreTheme;
+  const factory _CoreTheme(
+      {required final ThemeMode mode,
+      required final ThemeData? lightTheme,
+      required final ThemeData? darkTheme}) = _$_CoreTheme;
 
   @override
   ThemeMode get mode;
+  @override
+  ThemeData? get lightTheme;
+  @override
+  ThemeData? get darkTheme;
   @override
   @JsonKey(ignore: true)
   _$$_CoreThemeCopyWith<_$_CoreTheme> get copyWith =>
