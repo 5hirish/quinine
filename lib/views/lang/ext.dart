@@ -49,6 +49,7 @@ Mode languageFromExtension(String extension) {
     case 'cpp':
     case 'h':
     case 'c':
+    case 'cc':
       return cpp;
 
     case 'ruby':

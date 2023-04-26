@@ -23,7 +23,7 @@ final coreThemeStateProvider =
 
 typedef _$CoreThemeState = Notifier<CoreTheme>;
 String _$coreCodeThemeStateHash() =>
-    r'c027620f3f8c3c67c1953c1fe9b435f4b33cbacf';
+    r'0a9574f6390358db0787964cd9c46f034c7779c8';
 
 /// See also [CoreCodeThemeState].
 @ProviderFor(CoreCodeThemeState)

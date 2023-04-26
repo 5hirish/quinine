@@ -1,12 +1,4 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-part 'file.g.dart';
 
-@Riverpod(keepAlive: true)
-class FileState extends _$FileState {
-
-  @override
-  String build() {
-    return "";
-  }
-}
+final openFilesPathProvider = StateProvider<List<String>>((ref) => []);

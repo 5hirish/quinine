@@ -7,19 +7,17 @@ import 'package:quinine/provider/theme.dart';
 
 import '../../hooks/code.dart';
 import '../../logger.dart';
-import '../../provider/file.dart';
 import '../../utils.dart';
 import '../lang/ext.dart';
 
 class CodeEditor extends HookConsumerWidget {
+  const CodeEditor({super.key, required this.filePath});
 
-
-  const CodeEditor({super.key});
+  final String filePath;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final filePath = ref.watch(fileStateProvider);
     final codeStyle = ref.watch(coreCodeThemeStateProvider);
     final isLoading = useState<bool>(true);
     final errorMsg = useState<String>("");

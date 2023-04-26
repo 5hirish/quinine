@@ -4,6 +4,8 @@
       "description": "The conventional newborn programmer greeting"
     },
 
+    "welcome": "Welcome!",
+
     "close": "Close",
     "cancel": "Cancel",
     "error": "Error",

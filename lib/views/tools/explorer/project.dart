@@ -5,6 +5,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quinine/provider/file.dart';
+import 'package:quinine/provider/tab.dart';
 
 import '../../../hooks/tree.dart';
 import '../../../logger.dart';
@@ -108,7 +109,12 @@ class ProjectExplorer extends HookConsumerWidget {
     treeController.expand(file);
   }
 
-  void openFile(WidgetRef ref, FileSystemEntity file) {
-    ref.read(fileStateProvider.notifier).state = file.path;
+  void openFile(WidgetRef ref, FileSystemEntity file, {bool focusTab = true}) {
+    List<String> openFiles = ref.read(openFilesPathProvider);
+    ref.read(openFilesPathProvider.notifier).state = [...openFiles, file.path];
+
+    if (focusTab) {
+      ref.read(selectedTabIndexProvider.notifier).state = openFiles.length;
+    }
   }
 }

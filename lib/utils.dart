@@ -12,6 +12,10 @@ String getFilePathExtension(String filePath) {
   return filePath.split('.').last;
 }
 
+String getFilePathName(String filePath) {
+  return filePath.split('/').last;
+}
+
 Future<String> readFileContent(String filePath) async {
   final file = File(filePath);
 
