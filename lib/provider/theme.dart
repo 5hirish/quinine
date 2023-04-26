@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_highlight/themes/vs2015.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../models/theme.dart';
 
@@ -15,5 +17,30 @@ class CoreThemeState extends _$CoreThemeState {
   
   void changeMode(ThemeMode mode) {
     state = state.copyWith(mode: mode);
+  }
+}
+
+@Riverpod(keepAlive: true)
+class CoreCodeThemeState extends _$CoreCodeThemeState {
+
+  @override
+  CoreCodeTheme build() {
+    return CoreCodeTheme(
+      style: vs2015Theme,
+      fontFamily: GoogleFonts.robotoMono().fontFamily,
+      fontSize: 14,
+    );
+  }
+
+  void changeStyle(Map<String, TextStyle> style) {
+    state = state.copyWith(style: style);
+  }
+
+  void changeFontSize(double fontSize) {
+    state = state.copyWith(fontSize: fontSize);
+  }
+
+  void changeFontFam(String fontFam) {
+    state = state.copyWith(fontFamily: fontFam);
   }
 }

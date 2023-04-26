@@ -34,6 +34,9 @@ dependencies:
   font_awesome_flutter: ^10.4.0
   flutter_fancy_tree_view: ^1.1.1
   multi_split_view: ^2.4.0
+  code_text_field: ^1.1.0
+  highlight: ^0.7.0
+  flutter_highlight: ^0.7.0
 
   # For window management
   window_manager: ^0.3.2

@@ -11,3 +11,13 @@ class CoreTheme with _$CoreTheme {
     required ThemeMode mode,
   }) = _CoreTheme;
 }
+
+@freezed
+class CoreCodeTheme with _$CoreCodeTheme {
+
+  const factory CoreCodeTheme({
+    required Map<String, TextStyle> style,
+    required String? fontFamily,
+    required double? fontSize,
+  }) = _CoreCodeTheme;
+}

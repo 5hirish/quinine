@@ -5,6 +5,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:quinine/views/tools/tools.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import 'views/editor/code.dart';
 import 'widgets/bar/app_bar.dart';
 import 'widgets/bar/tool_bar.dart';
 
@@ -28,17 +29,15 @@ class WindowPage extends ConsumerWidget {
                 initialAreas: [
                   Area(minimalSize: 64, weight: 0.1), // 10% of the screen for tools, 90% for the editor
                 ],
-                children: [
-                  const ResponsiveVisibility(
+                children: const [
+                  ResponsiveVisibility(
                     hiddenConditions: [
                       Condition.smallerThan(name: TABLET)
                     ],
                     child: ToolsView(),
                   ),
 
-                  Text(
-                    AppLocalizations.of(context)!.helloWorld,
-                  ),
+                  CodeEditor()
                 ],
               ),
             ),

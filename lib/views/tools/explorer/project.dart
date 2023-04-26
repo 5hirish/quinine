@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:quinine/provider/file.dart';
 
 import '../../../hooks/tree.dart';
 import '../../../logger.dart';
@@ -71,7 +72,7 @@ class ProjectExplorer extends HookConsumerWidget {
           }
         } else {
           isOpen = false;
-          onPressed = null;
+          onPressed = () => openFile(ref, file);
         }
 
         bool isFileLoading = loadingFiles.value.contains(file.path);
@@ -105,7 +106,9 @@ class ProjectExplorer extends HookConsumerWidget {
     loadingFiles.value.remove(file.path);
 
     treeController.expand(file);
+  }
 
-    logger.d("OnPressed: Expand");
+  void openFile(WidgetRef ref, FileSystemEntity file) {
+    ref.read(fileStateProvider.notifier).state = file.path;
   }
 }
