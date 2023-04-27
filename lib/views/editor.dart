@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:quinine/logger.dart';
-import 'package:quinine/provider/file.dart';
-import 'package:quinine/views/landing.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../provider/file.dart';
 import '../provider/tab.dart';
 import '../utils.dart';
 import 'editor/code.dart';
+import 'landing.dart';
 
 class EditorView extends HookConsumerWidget {
   const EditorView({super.key});
@@ -64,36 +63,37 @@ class EditorView extends HookConsumerWidget {
     return TabbedViewTheme(
       data: TabbedViewThemeData.dark(),
       child: TabbedView(
-          controller: tabbedViewController,
-          onTabSelection: (int? index) => ref.read(selectedTabIndexProvider.notifier).state = index,
-          onTabClose: (int index, TabData tabData) => removeFile(index, tabData.value),
-          contentBuilder: (BuildContext context, int tabIndex) {
+        selectToEnableButtons: false,
+        controller: tabbedViewController,
+        onTabSelection: (int? index) => ref.read(selectedTabIndexProvider.notifier).state = index,
+        onTabClose: (int index, TabData tabData) => removeFile(index, tabData.value),
+        contentBuilder: (BuildContext context, int tabIndex) {
 
-            final filePath = openFiles[tabIndex];
-            final fileExtension = getFilePathExtension(filePath);
+          final filePath = openFiles[tabIndex];
+          final fileExtension = getFilePathExtension(filePath);
 
-            // If media open media viewer else open code editor
+          // If media open media viewer else open code editor
 
-            return CodeEditor(filePath: filePath);
-          },
+          return CodeEditor(filePath: filePath);
+        },
 
-        // draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
-        //   return Draggable<String>(
-        //       feedback: Material(
-        //           child: Container(
-        //               padding: const EdgeInsets.all(4),
-        //               decoration: BoxDecoration(border: Border.all()),
-        //               child: Text(tab.text))),
-        //       data: tab.text,
-        //       onDragEnd: (details) {
-        //         logger.d("Accepted ${details.wasAccepted}");
-        //       },
-        //       // dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context, Offset position) {
-        //       //   return Offset.zero;
-        //       // },
-        //       child: tabWidget
-        //   );
-        // },
+      // draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
+      //   return Draggable<String>(
+      //       feedback: Material(
+      //           child: Container(
+      //               padding: const EdgeInsets.all(4),
+      //               decoration: BoxDecoration(border: Border.all()),
+      //               child: Text(tab.text))),
+      //       data: tab.text,
+      //       onDragEnd: (details) {
+      //         logger.d("Accepted ${details.wasAccepted}");
+      //       },
+      //       // dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context, Offset position) {
+      //       //   return Offset.zero;
+      //       // },
+      //       child: tabWidget
+      //   );
+      // },
       ),
     );
   }

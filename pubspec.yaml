@@ -51,7 +51,7 @@ dependencies:
   go_router: ^6.5.8
 
   # For file management
-  file_picker: ^5.2.9
+  file_picker: ^5.2.11
 
   # For annotations
   json_annotation: ^4.8.0

@@ -39,7 +39,7 @@ class CodeEditor extends HookConsumerWidget {
       analyzer: language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
     );
 
-    logger.d("File Ext: $fileExtension");
+    // logger.d("File Ext: $fileExtension");
 
     useEffect(() {
       errorMsg.value = "";

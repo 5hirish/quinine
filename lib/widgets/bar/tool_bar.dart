@@ -33,7 +33,7 @@ class CoreToolBar extends ConsumerWidget {
 
             String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
             if (selectedDirectory != null) {
-              ref.read(projectLocalStateProvider().notifier).setWorkingDirectory(selectedDirectory);
+              ref.read(projectDirectoryPathProvider.notifier).changeDirectoryPath(selectedDirectory);
             }
             
           },

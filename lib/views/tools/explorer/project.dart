@@ -4,41 +4,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:quinine/provider/file.dart';
-import 'package:quinine/provider/tab.dart';
 
 import '../../../hooks/tree.dart';
 import '../../../logger.dart';
+import '../../../provider/file.dart';
 import '../../../provider/project.dart';
+import '../../../provider/tab.dart';
 import '../../../widgets/item/file.dart';
 
 class ProjectExplorer extends HookConsumerWidget {
-  ProjectExplorer({super.key});
-
-  Map<String, List<FileSystemEntity>> projectFilesProvider = {};
+  const ProjectExplorer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final projectLocal = ref.watch(projectLocalStateProvider());
 
-    List<FileSystemEntity> projectFiles = [];
-
+    final projectFilesAsync = ref.watch(projectFilesProvider);
     final loadingFiles = useState<Set<String>>({});
-
-    if (projectLocal != null &&
-        projectLocal.projectFiles != null &&
-        projectLocal.projectFiles!.containsKey(projectLocal.directoryPath)) {
-      projectFiles = projectLocal.projectFiles![projectLocal.directoryPath]!;
-      projectFilesProvider = projectLocal.projectFiles!;
-    } else {
-      return const Text("Select Project");
-    }
+    final childrenFiles = useState<List<FileSystemEntity>?>(null);
 
     TreeController<FileSystemEntity> treeController =
         useTreeControllerForFileSystemEntities(
-          roots: projectFiles,   /// The [roots] parameter should contain all nodes that occupy the level `0`
-          childrenProvider: fileSystemEntityChildrenProvider,
+          roots: [],   /// The [roots] parameter should contain all nodes that occupy the level `0`
+          childrenProvider: childrenFiles
         );
+
+    return projectFilesAsync.when(
+        data: (projectFiles) => getProjectFilesTree(context, ref, treeController, loadingFiles, childrenFiles, projectFiles),
+        error: (err, stack) => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("Something went wrong :("),
+            )
+        ),
+        loading: () => const Center(
+            child: SizedBox(width: 32, child: LinearProgressIndicator())
+        )
+    );
+  }
+
+  Widget getProjectFilesTree(BuildContext context, WidgetRef ref,
+      TreeController<FileSystemEntity> treeController,
+      ValueNotifier<Set<String>> loadingFiles,
+      ValueNotifier<List<FileSystemEntity>?> childrenFiles,
+      Map<String, List<FileSystemEntity>>? projectFiles) {
+
+    if (projectFiles == null) {
+      return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("Select a project"),
+          )
+      );
+    }
+
+    treeController.roots = ref.read(projectFilesProvider.notifier).getProjectRootFiles() ?? [];
 
     return AnimatedTreeView<FileSystemEntity>(
       treeController: treeController,
@@ -46,21 +65,16 @@ class ProjectExplorer extends HookConsumerWidget {
 
         FileSystemEntity file = entry.node;
 
-        List<FileSystemEntity>? childFiles;
-
-        if (projectLocal.projectFiles != null &&
-            projectLocal.projectFiles!.containsKey(file.path)) {
-          childFiles = projectLocal.projectFiles![file.path]!;
-        }
-
         bool isOpen = false;
         VoidCallback? onPressed;
 
         if (file is Directory) {
-          
+
+          List<FileSystemEntity>? childFiles = ref.read(projectFilesProvider.notifier).getProjectParentFiles(file.path);
+
           if (childFiles == null) {
             isOpen = false;
-            onPressed = () => getFileDescendants(ref, file, loadingFiles, treeController);
+            onPressed = () => getFileDescendants(ref, file, loadingFiles, childrenFiles, treeController);
             // logger.d("Pressed:Get: ${file.path}");
           } else if (childFiles.isEmpty) {
             isOpen = false;
@@ -69,6 +83,7 @@ class ProjectExplorer extends HookConsumerWidget {
           } else {
             isOpen = treeController.getExpansionState(file);
             onPressed = () => treeController.toggleExpansion(file);
+            logger.d("Pressed:Toggle: ${file.path}: $isOpen");
             // logger.d("Pressed:Expand: ${file.path}");
           }
         } else {
@@ -89,20 +104,17 @@ class ProjectExplorer extends HookConsumerWidget {
     );
   }
 
-  Iterable<FileSystemEntity> fileSystemEntityChildrenProvider(FileSystemEntity parent) {
-    return projectFilesProvider[parent.path] ?? const Iterable.empty();
-  }
-
   Future<void> getFileDescendants(
       WidgetRef ref,
       FileSystemEntity file,
       ValueNotifier<Set<String>> loadingFiles,
+      ValueNotifier<List<FileSystemEntity>?> childrenFiles,
       TreeController<FileSystemEntity> treeController) async {
 
     loadingFiles.value.add(file.path);
 
-    projectFilesProvider = await ref.read(
-        projectLocalStateProvider().notifier).getChildren(file.path);
+    await ref.read(projectFilesProvider.notifier).loadChildren(file.path);
+    childrenFiles.value = ref.read(projectFilesProvider.notifier).getProjectParentFiles(file.path);
 
     loadingFiles.value.remove(file.path);
 
