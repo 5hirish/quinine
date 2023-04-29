@@ -37,7 +37,6 @@ class WindowPage extends ConsumerWidget {
                   ),
 
                   EditorView()
-
                 ],
               ),
             ),

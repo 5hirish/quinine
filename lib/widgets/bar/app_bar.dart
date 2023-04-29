@@ -7,12 +7,12 @@ class CoreAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const CoreAppBar({super.key, required this.title});
 
   final String title;
-  final double coreAppBarHight = 56.0;
+  final double coreAppBarHeight = 56.0;
   final double coreAppBarIconSize = 12.0;
   final double coreAppBarFontSize = 12.0;
 
   @override
-  Size get preferredSize => Size.fromHeight(coreAppBarHight);
+  Size get preferredSize => Size.fromHeight(coreAppBarHeight);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

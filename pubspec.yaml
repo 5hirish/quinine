@@ -29,15 +29,15 @@ dependencies:
 
   # For user interface
   responsive_framework: ^1.0.0
-  google_fonts: ^4.0.3
-  flex_color_scheme: ^7.0.4
+  google_fonts: ^4.0.4
+  flex_color_scheme: ^7.0.5
   font_awesome_flutter: ^10.4.0
   flutter_fancy_tree_view: ^1.1.1
   multi_split_view: ^2.4.0
   highlight: ^0.7.0
   flutter_highlight: ^0.7.0
   code_text_field: ^1.1.0
-  flutter_code_editor: ^0.2.18
+  flutter_code_editor: ^0.2.20
   tabbed_view: ^1.16.0+1
 
   # For window management
@@ -48,10 +48,10 @@ dependencies:
   hooks_riverpod: ^2.3.6
 
   # For routing
-  go_router: ^6.5.8
+  go_router: ^7.0.0
 
   # For file management
-  file_picker: ^5.2.9
+  file_picker: ^5.2.11
 
   # For annotations
   json_annotation: ^4.8.0
