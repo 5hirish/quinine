@@ -36,8 +36,7 @@ class ProjectFiles extends _$ProjectFiles {
   List<FileSystemEntity> _sortFiles(List<FileSystemEntity> projectFiles) {
     projectFiles.sort((fileA, fileB) {
       // Compare the entity types to prioritize directories
-      int compareType =
-      fileA.runtimeType.toString().compareTo(fileB.runtimeType.toString());
+      int compareType = fileA.runtimeType.toString().compareTo(fileB.runtimeType.toString());
 
       // If both entities are of the same type, compare their names alphabetically
       if (compareType == 0) {
@@ -74,6 +73,10 @@ class ProjectFiles extends _$ProjectFiles {
       return _loadFiles(projectDirectoryPath!);
     }
     return null;
+  }
+
+  bool isProjectSelected() {
+    return projectDirectoryPath != null;
   }
 
   Future<Map<String, List<FileSystemEntity>>?> loadChildren(String parentDirectoryPath) async {
