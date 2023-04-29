@@ -59,4 +59,33 @@ class _TreeControllerHookState extends HookState<TreeController, _TreeController
   }
 }
 
+class CustomTreeController<T extends Object> extends TreeController<T> {
+  CustomTreeController({
+    required Iterable<T> roots,
+    required Iterable<T> Function(T parent) childrenProvider,
+    this.expandedNodes,
+  }) : super(
+    roots: roots,
+    childrenProvider: childrenProvider,
+  );
+
+  final Set<String>? expandedNodes;
+
+  @override
+  bool getExpansionState(T node) {
+    return expandedNodes != null && expandedNodes!.contains(node.toString());
+  }
+
+  @override
+  void setExpansionState(T node, bool expanded) {
+    if (expanded) {
+      expandedNodes!.add(node.toString());
+    } else {
+      expandedNodes!.remove(node.toString());
+    }
+  }
+}
+
+
+
 

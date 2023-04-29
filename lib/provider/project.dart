@@ -112,11 +112,27 @@ class ProjectExpandedNodes extends _$ProjectExpandedNodes {
     return {};
   }
 
+  bool getIsExpanded(String nodePath) {
+    return state.contains(nodePath);
+  }
+
+  void toggleExpandedNode(String nodePath) {
+    if (state.contains(nodePath)) {
+      removeExpandedNode(nodePath);
+    } else {
+      addExpandedNode(nodePath);
+    }
+  }
+
   void addExpandedNode(String nodePath) {
     state = {...state, nodePath};
   }
 
   void removeExpandedNode(String nodePath) {
     state = {...state}..remove(nodePath);
+  }
+
+  void clearExpandedNodes() {
+    state = {};
   }
 }
