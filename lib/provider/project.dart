@@ -1,30 +1,43 @@
 import 'dart:io';
-
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/ignored.dart';
-import '../models/project.dart';
 
 part 'project.g.dart';
 
 @Riverpod(keepAlive: true)
-class ProjectLocalState extends _$ProjectLocalState {
-  
+class ProjectDirectoryPath extends _$ProjectDirectoryPath {
+
+  @override
+  String? build() {
+    return null;
+  }
+
+  void changeDirectoryPath(String? directoryPath) {
+    state = directoryPath;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class ProjectFiles extends _$ProjectFiles {
+
+  late String? projectDirectoryPath;
+
   Directory fetchDirectory(String workingDirectory) {
     return Directory(workingDirectory);
   }
 
-  Future<List<FileSystemEntity>> fetchFiles(Directory projectDirectory,
+  Future<List<FileSystemEntity>> _fetchFiles(Directory projectDirectory,
       {bool recursive = false}) async {
     return await projectDirectory.list(recursive: recursive).toList();
   }
 
-  List<FileSystemEntity> sortFiles(List<FileSystemEntity> projectFiles) {
+  List<FileSystemEntity> _sortFiles(List<FileSystemEntity> projectFiles) {
     projectFiles.sort((fileA, fileB) {
       // Compare the entity types to prioritize directories
       int compareType =
-          fileA.runtimeType.toString().compareTo(fileB.runtimeType.toString());
+      fileA.runtimeType.toString().compareTo(fileB.runtimeType.toString());
 
       // If both entities are of the same type, compare their names alphabetically
       if (compareType == 0) {
@@ -38,62 +51,72 @@ class ProjectLocalState extends _$ProjectLocalState {
     return projectFiles;
   }
 
-  List<FileSystemEntity> ignoreFiles(List<FileSystemEntity> projectFiles) {
+  List<FileSystemEntity> _ignoreFiles(List<FileSystemEntity> projectFiles) {
     return projectFiles.where((file) {
       String fileName = basename(file.path);
       return !ignoredFilesAndDirectories.contains(fileName);
     }).toList();
   }
 
-  @override
-  ProjectLocal? build({String directoryPath = ''}) {
-    if (directoryPath.isEmpty) {
-      return null;
-    }
-
-    return ProjectLocal(directoryPath: directoryPath);
-  }
-
-  void setWorkingDirectory(String directoryPath) async {
+  Future<Map<String, List<FileSystemEntity>>> _loadFiles(String directoryPath) async {
     Directory projectDirectory = fetchDirectory(directoryPath);
-    List<FileSystemEntity> projectFileList = await fetchFiles(projectDirectory);
-    projectFileList = sortFiles(projectFileList);
-    projectFileList = ignoreFiles(projectFileList);
+    List<FileSystemEntity> projectFileList = await _fetchFiles(projectDirectory);
+    projectFileList = _sortFiles(projectFileList);
+    projectFileList = _ignoreFiles(projectFileList);
 
-    if (state != null) {
-      state = state!.copyWith(
-          directoryPath: directoryPath,
-          directory: projectDirectory,
-          projectFiles: {directoryPath: projectFileList});
-    } else {
-      state = ProjectLocal(
-          directoryPath: directoryPath,
-          directory: projectDirectory,
-          projectFiles: {directoryPath: projectFileList});
-    }
+    return {directoryPath: projectFileList};
   }
 
-  Future<Map<String, List<FileSystemEntity>>> getChildren(String parentDirectoryPath) async {
-    Directory parentDirectory = fetchDirectory(parentDirectoryPath);
-    List<FileSystemEntity> childrenFileList = await fetchFiles(parentDirectory);
-    childrenFileList = sortFiles(childrenFileList);
-    childrenFileList = ignoreFiles(childrenFileList);
-
-    if (state != null) {
-      Map<String, List<FileSystemEntity>> projectTree =
-          Map.of(state!.projectFiles!);
-      projectTree[parentDirectoryPath] = childrenFileList;
-
-      state = state!.copyWith(projectFiles: projectTree);
-      return projectTree;
+  @override
+  FutureOr<Map<String, List<FileSystemEntity>>?> build() async {
+    projectDirectoryPath = ref.watch(projectDirectoryPathProvider);
+    if (projectDirectoryPath != null) {
+      return _loadFiles(projectDirectoryPath!);
     }
-    return {};
+    return null;
+  }
+
+  Future<Map<String, List<FileSystemEntity>>?> loadChildren(String parentDirectoryPath) async {
+
+    // state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      Map<String, List<FileSystemEntity>> childrenFileMap = await _loadFiles(parentDirectoryPath);
+      return {...?state.value, ...childrenFileMap};
+    });
+
+    return state.value;
   }
 
   List<FileSystemEntity>? getProjectRootFiles() {
-    if (state != null && state!.projectFiles != null) {
-      return state!.projectFiles![state!.directoryPath];
+    if (state.value != null && projectDirectoryPath != null && state.value!.containsKey(projectDirectoryPath)) {
+      return state.value![projectDirectoryPath!];
     }
     return null;
+  }
+
+  List<FileSystemEntity>? getProjectParentFiles(parentDirectoryPath) {
+    if (state.value != null && state.value!.containsKey(parentDirectoryPath)) {
+      return state.value![parentDirectoryPath];
+    }
+    return null;
+  }
+}
+
+
+@Riverpod(keepAlive: true)
+class ProjectExpandedNodes extends _$ProjectExpandedNodes {
+
+  @override
+  Set<String> build() {
+    return {};
+  }
+
+  void addExpandedNode(String nodePath) {
+    state = {...state, nodePath};
+  }
+
+  void removeExpandedNode(String nodePath) {
+    state = {...state}..remove(nodePath);
   }
 }
