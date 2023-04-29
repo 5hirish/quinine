@@ -21,12 +21,12 @@ TreeController<Object> useTreeController({
 
 TreeController<FileSystemEntity> useTreeControllerForFileSystemEntities({
   required Iterable<FileSystemEntity> roots,
-  required ValueNotifier<List<FileSystemEntity>?> childrenProvider,
+  required WidgetRef ref,
 }) {
 
   final treeController = useState(TreeController<FileSystemEntity>(
     roots: roots,
-    childrenProvider: (FileSystemEntity parent) => childrenProvider.value ?? const Iterable.empty(),
+    childrenProvider: (FileSystemEntity parent) => ref.read(projectFilesProvider.notifier).getProjectRootFiles() ?? const Iterable.empty(),
   ));
 
   return treeController.value;

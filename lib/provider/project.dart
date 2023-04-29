@@ -102,3 +102,21 @@ class ProjectFiles extends _$ProjectFiles {
     return null;
   }
 }
+
+
+@Riverpod(keepAlive: true)
+class ProjectExpandedNodes extends _$ProjectExpandedNodes {
+
+  @override
+  Set<String> build() {
+    return {};
+  }
+
+  void addExpandedNode(String nodePath) {
+    state = {...state, nodePath};
+  }
+
+  void removeExpandedNode(String nodePath) {
+    state = {...state}..remove(nodePath);
+  }
+}
