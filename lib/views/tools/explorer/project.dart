@@ -30,7 +30,8 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
     _treeController = TreeController<FileSystemEntity>(
       roots: [],   // initialize with your roots
       childrenProvider: (FileSystemEntity parent) {
-        return projectFiles.getProjectParentFiles(parent.path) ?? const Iterable.empty();      },
+        return projectFiles.getProjectParentFiles(parent.path) ?? const Iterable.empty();
+      },
     );
   }
 
@@ -66,7 +67,7 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
       _treeController.roots = roots;
     }
 
-    return TreeView<FileSystemEntity>(
+    return AnimatedTreeView<FileSystemEntity>(
       treeController: _treeController,
       nodeBuilder: (BuildContext context, TreeEntry<FileSystemEntity> entry) {
 
