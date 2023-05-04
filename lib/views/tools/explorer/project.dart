@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../controller/tree.dart';
 import '../../../logger.dart';
 import '../../../provider/file.dart';
 import '../../../provider/project.dart';

@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../logger.dart';
 import '../../utils.dart';
+import '../menu/explorer/file.dart';
 
 class FileExplorerItem extends HookConsumerWidget {
   const FileExplorerItem({
@@ -35,12 +36,18 @@ class FileExplorerItem extends HookConsumerWidget {
       entry: entry,
       guide: const IndentGuide(indent: 12),
       
-      child: InkWell(
-        onTap: () => onPressed != null? onPressed!(): null,
-        child: getFileExplorerRow(
-            fileName, isFileLoading, isInstanceOfFile,
-            fileExt: fileExt, isOpen: isOpen
-        )
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onSecondaryTapDown: (details) {
+          showContextFileMenu(context, details.globalPosition, file);
+        },
+        child: InkWell(
+          onTap: () => onPressed != null? onPressed!(): null,
+          child: getFileExplorerRow(
+              fileName, isFileLoading, isInstanceOfFile,
+              fileExt: fileExt, isOpen: isOpen
+          )
+        ),
       ),
     );
   }
