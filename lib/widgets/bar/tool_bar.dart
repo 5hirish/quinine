@@ -22,7 +22,7 @@ class CoreToolBar extends ConsumerWidget {
       selectedIndex: toolBarIndex,
       groupAlignment: groupAligment,
       onDestinationSelected: (int index) {
-        ref.read(coreToolBarStateProvider.notifier).toogleTool(index);
+        ref.read(coreToolBarStateProvider.notifier).toggleTool(index);
       },
       labelType: labelType,
       leading: Padding(

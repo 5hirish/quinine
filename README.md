@@ -20,10 +20,10 @@ We intend to build an open-source tool which is the best of both worlds: a low-c
 
 > Drag-n-Drop the easy stuff, take control of the hard stuff. It combines the best aspects of IDEs and no-code tools, focusing on improving the developer experience and productivity without sacrificing power and control.
 
-- 👋🏼 **Drag-n-Drop UI Designer** - A drag-and-drop UI designer with a suite of community-driven component library to empower you to focus on building beautiful interfaces, so you can focus on the performance and user experience.
-- 🔌 **Plug-n-Play modules** - A community-driven plugin marketplace of utilities, SDKs like payment gateways, authentication, search, server-less services etc will free you from building such workflows from scratch and instead focus on fine-tuning for scale and performance.
-- 🧠 **Smart Code Assists** - A suite of code assists to help you write code faster and more efficiently. Wrap any widgets from the component library, generate boilerplate code, and more.
-- 🏎️ **Light-weight and Fast** - A light-weight and fast IDE that is built for speed and performance. No more waiting for your IDE to load. We aim to stay below 500MB of RAM usage.
+- 👋🏼  **Drag-n-Drop UI Designer** - A drag-and-drop UI designer with a suite of community-driven component library to empower you to focus on building beautiful interfaces, so you can focus on the performance and user experience.
+- 🔌  **Plug-n-Play modules** - A community-driven plugin marketplace of utilities, SDKs like payment gateways, authentication, search, server-less services etc will free you from building such workflows from scratch and instead focus on fine-tuning for scale and performance.
+- 🧠  **Smart Code Assists** - A suite of code assists to help you write code faster and more efficiently. Wrap any widgets from the component library, generate boilerplate code, and more.
+- 🏎️  **Light-weight and Fast** - A light-weight and fast IDE that is built for speed and performance. No more waiting for your IDE to load. We aim to stay below 500MB of RAM usage.
 
 ## Key Tenets
 

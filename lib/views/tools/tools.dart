@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../provider/tools.dart';
 import 'explorer/project.dart';
 
 
 class ToolsView extends ConsumerWidget {
-  const ToolsView({super.key});
+  const ToolsView(this.toolIndex, {super.key});
+
+  final int? toolIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final toolIndex = ref.watch(coreToolBarStateProvider);
-
-    return Visibility(
-      visible: toolIndex != null,
-      child: toolIndex != null? getToolView(toolIndex): const SizedBox(),
-    );
+    return toolIndex != null? getToolView(toolIndex!): const SizedBox.shrink();
   }
 
   Widget getToolView(int toolIndex) {
@@ -23,7 +19,7 @@ class ToolsView extends ConsumerWidget {
       case 0:
         return const ProjectExplorer();
       default:
-        return const SizedBox();
+        return const SizedBox.shrink();
     }
   }
 }

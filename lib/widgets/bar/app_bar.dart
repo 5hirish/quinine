@@ -17,28 +17,25 @@ class CoreAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
    
-   return Padding(
-     padding: const EdgeInsets.all(8.0),
-     child: AppBar(
-          title: Text(title, style: TextStyle(fontSize: coreAppBarFontSize)),
-          actions: [
-            IconButton(
-              icon: FaIcon(FontAwesomeIcons.play, size: coreAppBarIconSize),
-              onPressed: () {},
-            ),
-   
-            IconButton(
-              icon: FaIcon(FontAwesomeIcons.bug, size: coreAppBarIconSize),
-              onPressed: () {},
-            ),
-   
-            IconButton(
-              icon: FaIcon(FontAwesomeIcons.gauge, size: coreAppBarIconSize),
-              onPressed: () {},
-            ),
-          ],
-        ),
-   );
+   return AppBar(
+        title: Text(title, style: TextStyle(fontSize: coreAppBarFontSize)),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.play, size: coreAppBarIconSize),
+            onPressed: () {},
+          ),
+
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.bug, size: coreAppBarIconSize),
+            onPressed: () {},
+          ),
+
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.gauge, size: coreAppBarIconSize),
+            onPressed: () {},
+          ),
+        ],
+      );
   }
   
   

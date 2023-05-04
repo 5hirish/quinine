@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../controller/tree.dart';
 import '../../../logger.dart';
 import '../../../provider/file.dart';
 import '../../../provider/project.dart';
@@ -22,17 +23,28 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
   late final TreeController<FileSystemEntity> _treeController;
   late final ProjectFiles projectFiles;
   final Set<String> _loadingFiles = {};
+  late Set<FileSystemEntity> _expandedNodes = {};
 
   @override
   void initState() {
     super.initState();
+
     projectFiles = ref.read(projectFilesProvider.notifier);
+    _expandedNodes = ref.read(projectExpandedNodesProvider.notifier).getExpandedNodes();
+
     _treeController = TreeController<FileSystemEntity>(
       roots: [],   // initialize with your roots
       childrenProvider: (FileSystemEntity parent) {
         return projectFiles.getProjectParentFiles(parent.path) ?? const Iterable.empty();
       },
     );
+
+    for (FileSystemEntity file in _expandedNodes) {
+      if (file is Directory) {
+        _treeController.expand(file);
+      }
+    }
+
   }
 
   @override
@@ -89,9 +101,8 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
             onPressed = null;
             // logger.d("Pressed:Null: ${file.path}");
           } else {
-            // isOpen = isFileExpanded(ref, file, treeController);
             isOpen = _treeController.getExpansionState(file);
-            onPressed = () => _treeController.toggleExpansion(file);
+            onPressed = () => toggleTreeNode(file);
             logger.d("Pressed:Toggle: ${file.path}: $isOpen");
             // logger.d("Pressed:Expand: ${file.path}");
           }
@@ -124,6 +135,12 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
     _loadingFiles.remove(file.path);
 
     _treeController.expand(file);
+    ref.read(projectExpandedNodesProvider.notifier).addExpandedNode(file);
+  }
+
+  void toggleTreeNode(FileSystemEntity file) {
+    _treeController.toggleExpansion(file);
+    ref.read(projectExpandedNodesProvider.notifier).toggleExpandedNode(file);
   }
 
   void openFile(WidgetRef ref, FileSystemEntity file, {bool focusTab = true}) {

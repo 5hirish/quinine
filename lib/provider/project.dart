@@ -111,28 +111,32 @@ class ProjectFiles extends _$ProjectFiles {
 class ProjectExpandedNodes extends _$ProjectExpandedNodes {
 
   @override
-  Set<String> build() {
+  Set<FileSystemEntity> build() {
     return {};
   }
 
-  bool getIsExpanded(String nodePath) {
-    return state.contains(nodePath);
+  Set<FileSystemEntity> getExpandedNodes() {
+    return state;
   }
 
-  void toggleExpandedNode(String nodePath) {
-    if (state.contains(nodePath)) {
-      removeExpandedNode(nodePath);
+  bool getIsExpanded(FileSystemEntity node) {
+    return state.contains(node);
+  }
+
+  void toggleExpandedNode(FileSystemEntity node) {
+    if (state.contains(node)) {
+      removeExpandedNode(node);
     } else {
-      addExpandedNode(nodePath);
+      addExpandedNode(node);
     }
   }
 
-  void addExpandedNode(String nodePath) {
-    state = {...state, nodePath};
+  void addExpandedNode(FileSystemEntity node) {
+    state = {...state, node};
   }
 
-  void removeExpandedNode(String nodePath) {
-    state = {...state}..remove(nodePath);
+  void removeExpandedNode(FileSystemEntity node) {
+    state = {...state}..remove(node);
   }
 
   void clearExpandedNodes() {

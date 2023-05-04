@@ -9,11 +9,27 @@ class CoreToolBarState extends _$CoreToolBarState {
     return 0;
   }
 
-  void toogleTool(int index) {
+  void toggleTool(int index) {
     if (state != index) {
       state = index;
     } else {
       state = null;
     }
+  }
+}
+
+@riverpod
+class ToolWindowWeight extends _$ToolWindowWeight {
+  @override
+  double? build() {
+    return 0.1;
+  }
+
+  void setWeight(double? weight) {
+    state = weight;
+  }
+
+  double? getWeight() {
+    return state;
   }
 }

@@ -6,7 +6,7 @@ part of 'tools.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$coreToolBarStateHash() => r'73d1d5c5e3deb587b9f3c1ba7e5a47c472b8bbaf';
+String _$coreToolBarStateHash() => r'55605695f25f8a52154bcf90a320da79f737d299';
 
 /// See also [CoreToolBarState].
 @ProviderFor(CoreToolBarState)
@@ -22,4 +22,20 @@ final coreToolBarStateProvider =
 );
 
 typedef _$CoreToolBarState = AutoDisposeNotifier<int?>;
+String _$toolWindowWeightHash() => r'21f9f1cc2711c3e6baa727a52931eef6bc195f64';
+
+/// See also [ToolWindowWeight].
+@ProviderFor(ToolWindowWeight)
+final toolWindowWeightProvider =
+    AutoDisposeNotifierProvider<ToolWindowWeight, double?>.internal(
+  ToolWindowWeight.new,
+  name: r'toolWindowWeightProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$toolWindowWeightHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$ToolWindowWeight = AutoDisposeNotifier<double?>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
