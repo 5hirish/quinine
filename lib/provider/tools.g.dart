@@ -22,7 +22,7 @@ final coreToolBarStateProvider =
 );
 
 typedef _$CoreToolBarState = AutoDisposeNotifier<int?>;
-String _$toolWindowWeightHash() => r'21f9f1cc2711c3e6baa727a52931eef6bc195f64';
+String _$toolWindowWeightHash() => r'7e07706748a2250efef2c2d7f1b613a213ba4b1d';
 
 /// See also [ToolWindowWeight].
 @ProviderFor(ToolWindowWeight)

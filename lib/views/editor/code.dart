@@ -39,7 +39,7 @@ class CodeEditor extends HookConsumerWidget {
       analyzer: language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
     );
 
-    logger.d("File Ext: $fileExtension");
+    // logger.d("File Ext: $fileExtension");
 
     useEffect(() {
       errorMsg.value = "";
@@ -74,6 +74,10 @@ class CodeEditor extends HookConsumerWidget {
             fontSize: codeStyle.fontSize,
             fontFamily: codeStyle.fontFamily
         ),
+        onChanged: (String value) {
+          String modifiedCode = codeController.fullText;
+          logger.d("Code Changed: $value");
+        },
       ),
     );
   }

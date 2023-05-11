@@ -37,7 +37,7 @@ dependencies:
   highlight: ^0.7.0
   flutter_highlight: ^0.7.0
   code_text_field: ^1.1.0
-  flutter_code_editor: ^0.2.20
+  flutter_code_editor: ^0.2.23
   tabbed_view: ^1.16.0+1
 
   # For window management
@@ -51,10 +51,15 @@ dependencies:
   go_router: ^7.0.0
 
   # For file management
-  file_picker: ^5.2.11
+  watcher: ^1.0.2
+  file_picker: ^5.3.0
+  path_provider: ^2.0.15
+
+  # For storage management
+  isar: ^3.1.0+1
 
   # For annotations
-  json_annotation: ^4.8.0
+  json_annotation: ^4.8.1
   freezed_annotation: ^2.2.0
   riverpod_annotation: ^2.1.1
 
@@ -67,13 +72,14 @@ dev_dependencies:
     sdk: flutter
   test: any
 
-  # For generating code
+  # For generating code.dart
   build_runner: any
   build_verify: any
   json_serializable: any
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   riverpod_generator: ^2.2.1
-  go_router_builder: ^1.2.2
+  isar_generator: ^3.1.0+1
+  go_router_builder: ^2.0.1
 
   # For linting
   flutter_lints: ^2.0.1

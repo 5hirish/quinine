@@ -72,7 +72,7 @@ class EditorView extends HookConsumerWidget {
           final filePath = openFiles[tabIndex];
           final fileExtension = getFilePathExtension(filePath);
 
-          // If media open media viewer else open code editor
+          // If media open media viewer else open code.dart editor
 
           return CodeEditor(filePath: filePath);
         },

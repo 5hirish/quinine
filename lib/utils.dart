@@ -25,3 +25,13 @@ Future<String> readFileContent(String filePath) async {
     throw Exception('File not found');
   }
 }
+
+void writeToFile(String filePath, String fileContent) async {
+  final file = File(filePath);
+
+  if (await file.exists()) {
+    await file.writeAsString(fileContent);
+  } else {
+    throw Exception('File not found');
+  }
+}

@@ -102,8 +102,7 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
           } else {
             isOpen = _treeController.getExpansionState(file);
             onPressed = () => toggleTreeNode(file);
-            logger.d("Pressed:Toggle: ${file.path}: $isOpen");
-            // logger.d("Pressed:Expand: ${file.path}");
+            // logger.d("Pressed:Toggle: ${file.path}: $isOpen");
           }
         } else {
           isOpen = false;
