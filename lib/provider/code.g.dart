@@ -6,7 +6,7 @@ part of 'code.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fileCodeHash() => r'460f2c6cbf91122ffc6bf69460386889493021ae';
+String _$fileCodeHash() => r'6ab5a41d6a475b3bcedf263b52a7f32aff718f85';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,13 +31,9 @@ class _SystemHash {
 
 abstract class _$FileCode extends BuildlessAsyncNotifier<CodeText> {
   late final String filePath;
-  late final String language;
-  late final String codeContent;
 
   Future<CodeText> build({
     required String filePath,
-    required String language,
-    String codeContent = '',
   });
 }
 
@@ -53,13 +49,9 @@ class FileCodeFamily extends Family<AsyncValue<CodeText>> {
   /// See also [FileCode].
   FileCodeProvider call({
     required String filePath,
-    required String language,
-    String codeContent = '',
   }) {
     return FileCodeProvider(
       filePath: filePath,
-      language: language,
-      codeContent: codeContent,
     );
   }
 
@@ -69,8 +61,6 @@ class FileCodeFamily extends Family<AsyncValue<CodeText>> {
   ) {
     return call(
       filePath: provider.filePath,
-      language: provider.language,
-      codeContent: provider.codeContent,
     );
   }
 
@@ -94,13 +84,8 @@ class FileCodeProvider extends AsyncNotifierProviderImpl<FileCode, CodeText> {
   /// See also [FileCode].
   FileCodeProvider({
     required this.filePath,
-    required this.language,
-    this.codeContent = '',
   }) : super.internal(
-          () => FileCode()
-            ..filePath = filePath
-            ..language = language
-            ..codeContent = codeContent,
+          () => FileCode()..filePath = filePath,
           from: fileCodeProvider,
           name: r'fileCodeProvider',
           debugGetCreateSourceHash:
@@ -112,23 +97,16 @@ class FileCodeProvider extends AsyncNotifierProviderImpl<FileCode, CodeText> {
         );
 
   final String filePath;
-  final String language;
-  final String codeContent;
 
   @override
   bool operator ==(Object other) {
-    return other is FileCodeProvider &&
-        other.filePath == filePath &&
-        other.language == language &&
-        other.codeContent == codeContent;
+    return other is FileCodeProvider && other.filePath == filePath;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, filePath.hashCode);
-    hash = _SystemHash.combine(hash, language.hashCode);
-    hash = _SystemHash.combine(hash, codeContent.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -139,8 +117,6 @@ class FileCodeProvider extends AsyncNotifierProviderImpl<FileCode, CodeText> {
   ) {
     return notifier.build(
       filePath: filePath,
-      language: language,
-      codeContent: codeContent,
     );
   }
 }

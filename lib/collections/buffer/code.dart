@@ -6,13 +6,15 @@ part 'code.g.dart';
 class CodeText {
   Id id = Isar.autoIncrement;
 
-  String? fullText;
+  late String fullText;
 
-  String? language;
+  late String language;
 
-  String? filePath;
+  @Index(unique: true, replace: true, caseSensitive: false)
+  late String filePath;
 
   DateTime createdAt = DateTime.now();
 
+  @Index()
   DateTime? synchronizedAt;
 }

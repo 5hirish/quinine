@@ -48,7 +48,34 @@ const CodeTextSchema = CollectionSchema(
   deserialize: _codeTextDeserialize,
   deserializeProp: _codeTextDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'filePath': IndexSchema(
+      id: 2918041768256347220,
+      name: r'filePath',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'filePath',
+          type: IndexType.hash,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'synchronizedAt': IndexSchema(
+      id: 3963281966232891000,
+      name: r'synchronizedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'synchronizedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _codeTextGetId,
@@ -63,24 +90,9 @@ int _codeTextEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.filePath;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.fullText;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.language;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.filePath.length * 3;
+  bytesCount += 3 + object.fullText.length * 3;
+  bytesCount += 3 + object.language.length * 3;
   return bytesCount;
 }
 
@@ -105,10 +117,10 @@ CodeText _codeTextDeserialize(
 ) {
   final object = CodeText();
   object.createdAt = reader.readDateTime(offsets[0]);
-  object.filePath = reader.readStringOrNull(offsets[1]);
-  object.fullText = reader.readStringOrNull(offsets[2]);
+  object.filePath = reader.readString(offsets[1]);
+  object.fullText = reader.readString(offsets[2]);
   object.id = id;
-  object.language = reader.readStringOrNull(offsets[3]);
+  object.language = reader.readString(offsets[3]);
   object.synchronizedAt = reader.readDateTimeOrNull(offsets[4]);
   return object;
 }
@@ -123,11 +135,11 @@ P _codeTextDeserializeProp<P>(
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 4:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
@@ -147,10 +159,73 @@ void _codeTextAttach(IsarCollection<dynamic> col, Id id, CodeText object) {
   object.id = id;
 }
 
+extension CodeTextByIndex on IsarCollection<CodeText> {
+  Future<CodeText?> getByFilePath(String filePath) {
+    return getByIndex(r'filePath', [filePath]);
+  }
+
+  CodeText? getByFilePathSync(String filePath) {
+    return getByIndexSync(r'filePath', [filePath]);
+  }
+
+  Future<bool> deleteByFilePath(String filePath) {
+    return deleteByIndex(r'filePath', [filePath]);
+  }
+
+  bool deleteByFilePathSync(String filePath) {
+    return deleteByIndexSync(r'filePath', [filePath]);
+  }
+
+  Future<List<CodeText?>> getAllByFilePath(List<String> filePathValues) {
+    final values = filePathValues.map((e) => [e]).toList();
+    return getAllByIndex(r'filePath', values);
+  }
+
+  List<CodeText?> getAllByFilePathSync(List<String> filePathValues) {
+    final values = filePathValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'filePath', values);
+  }
+
+  Future<int> deleteAllByFilePath(List<String> filePathValues) {
+    final values = filePathValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'filePath', values);
+  }
+
+  int deleteAllByFilePathSync(List<String> filePathValues) {
+    final values = filePathValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'filePath', values);
+  }
+
+  Future<Id> putByFilePath(CodeText object) {
+    return putByIndex(r'filePath', object);
+  }
+
+  Id putByFilePathSync(CodeText object, {bool saveLinks = true}) {
+    return putByIndexSync(r'filePath', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByFilePath(List<CodeText> objects) {
+    return putAllByIndex(r'filePath', objects);
+  }
+
+  List<Id> putAllByFilePathSync(List<CodeText> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'filePath', objects, saveLinks: saveLinks);
+  }
+}
+
 extension CodeTextQueryWhereSort on QueryBuilder<CodeText, CodeText, QWhere> {
   QueryBuilder<CodeText, CodeText, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhere> anySynchronizedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'synchronizedAt'),
+      );
     });
   }
 }
@@ -220,6 +295,162 @@ extension CodeTextQueryWhere on QueryBuilder<CodeText, CodeText, QWhereClause> {
       ));
     });
   }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> filePathEqualTo(
+      String filePath) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'filePath',
+        value: [filePath],
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> filePathNotEqualTo(
+      String filePath) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'filePath',
+              lower: [],
+              upper: [filePath],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'filePath',
+              lower: [filePath],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'filePath',
+              lower: [filePath],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'filePath',
+              lower: [],
+              upper: [filePath],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> synchronizedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'synchronizedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause>
+      synchronizedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'synchronizedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> synchronizedAtEqualTo(
+      DateTime? synchronizedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'synchronizedAt',
+        value: [synchronizedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> synchronizedAtNotEqualTo(
+      DateTime? synchronizedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'synchronizedAt',
+              lower: [],
+              upper: [synchronizedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'synchronizedAt',
+              lower: [synchronizedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'synchronizedAt',
+              lower: [synchronizedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'synchronizedAt',
+              lower: [],
+              upper: [synchronizedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> synchronizedAtGreaterThan(
+    DateTime? synchronizedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'synchronizedAt',
+        lower: [synchronizedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> synchronizedAtLessThan(
+    DateTime? synchronizedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'synchronizedAt',
+        lower: [],
+        upper: [synchronizedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterWhereClause> synchronizedAtBetween(
+    DateTime? lowerSynchronizedAt,
+    DateTime? upperSynchronizedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'synchronizedAt',
+        lower: [lowerSynchronizedAt],
+        includeLower: includeLower,
+        upper: [upperSynchronizedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension CodeTextQueryFilter
@@ -277,24 +508,8 @@ extension CodeTextQueryFilter
     });
   }
 
-  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> filePathIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'filePath',
-      ));
-    });
-  }
-
-  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> filePathIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'filePath',
-      ));
-    });
-  }
-
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> filePathEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -307,7 +522,7 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> filePathGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -322,7 +537,7 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> filePathLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -337,8 +552,8 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> filePathBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -423,24 +638,8 @@ extension CodeTextQueryFilter
     });
   }
 
-  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> fullTextIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'fullText',
-      ));
-    });
-  }
-
-  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> fullTextIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'fullText',
-      ));
-    });
-  }
-
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> fullTextEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -453,7 +652,7 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> fullTextGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -468,7 +667,7 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> fullTextLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -483,8 +682,8 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> fullTextBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -621,24 +820,8 @@ extension CodeTextQueryFilter
     });
   }
 
-  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> languageIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'language',
-      ));
-    });
-  }
-
-  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> languageIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'language',
-      ));
-    });
-  }
-
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> languageEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -651,7 +834,7 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> languageGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -666,7 +849,7 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> languageLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -681,8 +864,8 @@ extension CodeTextQueryFilter
   }
 
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> languageBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1034,19 +1217,19 @@ extension CodeTextQueryProperty
     });
   }
 
-  QueryBuilder<CodeText, String?, QQueryOperations> filePathProperty() {
+  QueryBuilder<CodeText, String, QQueryOperations> filePathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'filePath');
     });
   }
 
-  QueryBuilder<CodeText, String?, QQueryOperations> fullTextProperty() {
+  QueryBuilder<CodeText, String, QQueryOperations> fullTextProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'fullText');
     });
   }
 
-  QueryBuilder<CodeText, String?, QQueryOperations> languageProperty() {
+  QueryBuilder<CodeText, String, QQueryOperations> languageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'language');
     });

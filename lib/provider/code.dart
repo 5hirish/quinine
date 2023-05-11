@@ -1,12 +1,16 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/code.dart';
+import '../collections/buffer/code.dart';
+import '../repository/buffer/code.dart';
 import '../utils.dart';
+import 'repository.dart';
 
 part 'code.g.dart';
 
 @Riverpod(keepAlive: true)
 class FileCode extends _$FileCode {
+
+  late CodeRepository codeBuffRepo;
 
   Future<String> _fetchCode(String filePath) async {
 
@@ -17,32 +21,78 @@ class FileCode extends _$FileCode {
     /// which naturally prevents simultaneous access and the potential
     /// data corruption that could occur from it.
 
-    return await readFileContent(filePath);
+    CodeText? bufferedCodeText = await readBufferCode();
+
+    if (bufferedCodeText == null || bufferedCodeText.fullText.isEmpty) {
+      return await readFileContent(filePath);
+    }
+
+    return bufferedCodeText.fullText;
   }
 
   @override
-  Future<CodeText> build({
-    required String filePath,
-    required String language,
-    String codeContent = ''}
-  ) async {
+  Future<CodeText> build({required String filePath}) async {
+    codeBuffRepo = await ref.watch(codeBufferRepoProvider.future);
+    String fileExtension = getFilePathExtension(filePath);
+
+    CodeText codeText = CodeText()
+      ..fullText = ''
+      ..filePath = filePath
+      ..language = fileExtension;
 
     String codeContent = await _fetchCode(filePath);
 
-    return CodeText(
-      fullText: codeContent,
-      language: language,
-      filePath: filePath,
-    );
+    return codeText
+      ..fullText = codeContent;
   }
 
   void bufferModifiedCode(String codeContent) async {
-    // Set the state to loading
+
     state = const AsyncValue.loading();
 
-    // state = await AsyncValue.guard(() async {
-    //   await writeToFile(state.value!.filePath, codeContent);
-    //   return codeContent;
-    // });
+    await AsyncValue.guard(() async {
+      codeBuffRepo.updateBufferCodeByFilePath(
+        CodeText()
+          ..fullText = codeContent
+          ..filePath = state.value!.filePath
+          ..language = state.value!.language
+      );
+      return codeContent;
+    });
+
+    state = AsyncValue.data(
+        CodeText()
+          ..fullText = codeContent
+          ..filePath = state.value!.filePath
+          ..language = state.value!.language
+    );
+  }
+
+  void syncCode() async {
+
+    state = const AsyncValue.loading();
+
+    await AsyncValue.guard(() async {
+      CodeText? syncCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
+      if (syncCode != null) {
+        state = AsyncValue.data(syncCode);
+        await writeToFile(state.value!.filePath, state.value!.fullText);
+        await codeBuffRepo.deleteBufferCodeByFilePath(filePath);
+      }
+    });
+  }
+
+  Future<CodeText?> readBufferCode() async {
+
+      state = const AsyncValue.loading();
+
+      await AsyncValue.guard(() async {
+        CodeText? bufferCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
+        if (bufferCode != null) {
+          state = AsyncValue.data(bufferCode);
+        }
+      });
+
+      return state.value;
   }
 }
