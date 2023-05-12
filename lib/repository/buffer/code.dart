@@ -19,16 +19,22 @@ class CodeRepository {
     return await getCodeTextCol().getByFilePath(filePath);
   }
 
-  Future<void> insertBufferCode(CodeText codeText) async {
-    await getCodeTextCol().put(codeText);
+  Future<Id> insertBufferCode(CodeText codeText) async {
+    return await db.writeTxn(() async {
+      return await getCodeTextCol().put(codeText);
+    });
   }
 
-  Future<void> updateBufferCodeByFilePath(CodeText codeText) async {
-    await getCodeTextCol().putByFilePath(codeText);
+  Future<Id> updateBufferCodeByFilePath(CodeText codeText) async {
+    return await db.writeTxn(() async {
+      return await getCodeTextCol().putByFilePath(codeText);
+    });
   }
 
   Future<bool> deleteBufferCodeByFilePath(String filePath) async {
-    return await getCodeTextCol().deleteByFilePath(filePath);
+    return await db.writeTxn(() async {
+      return await getCodeTextCol().deleteByFilePath(filePath);
+    });
   }
 
 }

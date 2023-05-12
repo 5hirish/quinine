@@ -17,28 +17,38 @@ const CodeTextSchema = CollectionSchema(
   name: r'CodeText',
   id: -5569399616699092146,
   properties: {
-    r'createdAt': PropertySchema(
+    r'baseOffset': PropertySchema(
       id: 0,
+      name: r'baseOffset',
+      type: IsarType.long,
+    ),
+    r'createdAt': PropertySchema(
+      id: 1,
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
+    r'extentOffset': PropertySchema(
+      id: 2,
+      name: r'extentOffset',
+      type: IsarType.long,
+    ),
     r'filePath': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'filePath',
       type: IsarType.string,
     ),
     r'fullText': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'fullText',
       type: IsarType.string,
     ),
     r'language': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'language',
       type: IsarType.string,
     ),
     r'synchronizedAt': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'synchronizedAt',
       type: IsarType.dateTime,
     )
@@ -102,11 +112,13 @@ void _codeTextSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeString(offsets[1], object.filePath);
-  writer.writeString(offsets[2], object.fullText);
-  writer.writeString(offsets[3], object.language);
-  writer.writeDateTime(offsets[4], object.synchronizedAt);
+  writer.writeLong(offsets[0], object.baseOffset);
+  writer.writeDateTime(offsets[1], object.createdAt);
+  writer.writeLong(offsets[2], object.extentOffset);
+  writer.writeString(offsets[3], object.filePath);
+  writer.writeString(offsets[4], object.fullText);
+  writer.writeString(offsets[5], object.language);
+  writer.writeDateTime(offsets[6], object.synchronizedAt);
 }
 
 CodeText _codeTextDeserialize(
@@ -116,12 +128,14 @@ CodeText _codeTextDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = CodeText();
-  object.createdAt = reader.readDateTime(offsets[0]);
-  object.filePath = reader.readString(offsets[1]);
-  object.fullText = reader.readString(offsets[2]);
+  object.baseOffset = reader.readLong(offsets[0]);
+  object.createdAt = reader.readDateTime(offsets[1]);
+  object.extentOffset = reader.readLong(offsets[2]);
+  object.filePath = reader.readString(offsets[3]);
+  object.fullText = reader.readString(offsets[4]);
   object.id = id;
-  object.language = reader.readString(offsets[3]);
-  object.synchronizedAt = reader.readDateTimeOrNull(offsets[4]);
+  object.language = reader.readString(offsets[5]);
+  object.synchronizedAt = reader.readDateTimeOrNull(offsets[6]);
   return object;
 }
 
@@ -133,14 +147,18 @@ P _codeTextDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -455,6 +473,59 @@ extension CodeTextQueryWhere on QueryBuilder<CodeText, CodeText, QWhereClause> {
 
 extension CodeTextQueryFilter
     on QueryBuilder<CodeText, CodeText, QFilterCondition> {
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> baseOffsetEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'baseOffset',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> baseOffsetGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'baseOffset',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> baseOffsetLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'baseOffset',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> baseOffsetBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'baseOffset',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<CodeText, CodeText, QAfterFilterCondition> createdAtEqualTo(
       DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -500,6 +571,60 @@ extension CodeTextQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> extentOffsetEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'extentOffset',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition>
+      extentOffsetGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'extentOffset',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> extentOffsetLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'extentOffset',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterFilterCondition> extentOffsetBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'extentOffset',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1031,6 +1156,18 @@ extension CodeTextQueryLinks
     on QueryBuilder<CodeText, CodeText, QFilterCondition> {}
 
 extension CodeTextQuerySortBy on QueryBuilder<CodeText, CodeText, QSortBy> {
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> sortByBaseOffset() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'baseOffset', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> sortByBaseOffsetDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'baseOffset', Sort.desc);
+    });
+  }
+
   QueryBuilder<CodeText, CodeText, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
@@ -1040,6 +1177,18 @@ extension CodeTextQuerySortBy on QueryBuilder<CodeText, CodeText, QSortBy> {
   QueryBuilder<CodeText, CodeText, QAfterSortBy> sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> sortByExtentOffset() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'extentOffset', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> sortByExtentOffsetDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'extentOffset', Sort.desc);
     });
   }
 
@@ -1094,6 +1243,18 @@ extension CodeTextQuerySortBy on QueryBuilder<CodeText, CodeText, QSortBy> {
 
 extension CodeTextQuerySortThenBy
     on QueryBuilder<CodeText, CodeText, QSortThenBy> {
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> thenByBaseOffset() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'baseOffset', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> thenByBaseOffsetDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'baseOffset', Sort.desc);
+    });
+  }
+
   QueryBuilder<CodeText, CodeText, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
@@ -1103,6 +1264,18 @@ extension CodeTextQuerySortThenBy
   QueryBuilder<CodeText, CodeText, QAfterSortBy> thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> thenByExtentOffset() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'extentOffset', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QAfterSortBy> thenByExtentOffsetDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'extentOffset', Sort.desc);
     });
   }
 
@@ -1169,9 +1342,21 @@ extension CodeTextQuerySortThenBy
 
 extension CodeTextQueryWhereDistinct
     on QueryBuilder<CodeText, CodeText, QDistinct> {
+  QueryBuilder<CodeText, CodeText, QDistinct> distinctByBaseOffset() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'baseOffset');
+    });
+  }
+
   QueryBuilder<CodeText, CodeText, QDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdAt');
+    });
+  }
+
+  QueryBuilder<CodeText, CodeText, QDistinct> distinctByExtentOffset() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'extentOffset');
     });
   }
 
@@ -1211,9 +1396,21 @@ extension CodeTextQueryProperty
     });
   }
 
+  QueryBuilder<CodeText, int, QQueryOperations> baseOffsetProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'baseOffset');
+    });
+  }
+
   QueryBuilder<CodeText, DateTime, QQueryOperations> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createdAt');
+    });
+  }
+
+  QueryBuilder<CodeText, int, QQueryOperations> extentOffsetProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'extentOffset');
     });
   }
 

@@ -13,6 +13,10 @@ class CodeText {
   @Index(unique: true, replace: true, caseSensitive: false)
   late String filePath;
 
+  late int baseOffset;
+
+  late int extentOffset;
+
   DateTime createdAt = DateTime.now();
 
   @Index()
