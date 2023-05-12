@@ -1,0 +1,23 @@
+flutter:
+  - lib/**
+
+router:
+  - lib/router/**
+
+services:
+  - lib/services/**
+
+provider:
+  - lib/provider/**
+
+test_cases: test/**
+
+documentation:
+  - docs/**
+  - README.md
+
+actions:
+  - .github/**/*.yml
+
+dependency:
+  - pubspec*
