@@ -74,7 +74,7 @@ dev_dependencies:
   test: any
   mockito: ^5.4.0
 
-  # For generating code.dart
+  # For generating code
   build_runner: any
   build_verify: any
   json_serializable: any
