@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../provider/file.dart';
 import '../provider/tab.dart';
+import '../services/file.dart';
 import '../utils.dart';
 import 'editor/code.dart';
 import 'landing.dart';
@@ -70,9 +71,8 @@ class EditorView extends HookConsumerWidget {
         contentBuilder: (BuildContext context, int tabIndex) {
 
           final filePath = openFiles[tabIndex];
-          final fileExtension = getFilePathExtension(filePath);
 
-          // If media open media viewer else open code.dart editor
+          //Todo: If media open media viewer else open code.dart editor
 
           return CodeEditor(filePath: filePath);
         },
@@ -100,7 +100,7 @@ class EditorView extends HookConsumerWidget {
 
   TabData createTabDataForFile(String filePath) {
 
-    String fileName = getFilePathName(filePath);
+    String fileName = FileService(filePath).getFilePathName();
 
     return TabData(
       text: fileName,

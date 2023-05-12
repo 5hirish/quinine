@@ -30,7 +30,7 @@ dependencies:
   # For user interface
   responsive_framework: ^1.0.0
   google_fonts: ^4.0.4
-  flex_color_scheme: ^7.0.5
+  flex_color_scheme: ^7.1.0
   font_awesome_flutter: ^10.4.0
   flutter_fancy_tree_view: ^1.1.1
   multi_split_view: ^2.4.0
@@ -72,6 +72,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   test: any
+  mockito: ^5.4.0
 
   # For generating code.dart
   build_runner: any

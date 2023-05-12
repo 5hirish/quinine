@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'code.dart';
+part of 'file.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sourceFileHash() => r'59b6c489dc9d46c9b0ed6d7e899daff3373031e6';
+String _$fileServiceHash() => r'b82b3897df7274d8b39ad05a496132310b1d9c81';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,38 +29,32 @@ class _SystemHash {
   }
 }
 
-abstract class _$SourceFile extends BuildlessAsyncNotifier<CodeText> {
-  late final String filePath;
+typedef FileServiceRef = ProviderRef<FileService>;
 
-  Future<CodeText> build({
-    required String filePath,
-  });
-}
+/// See also [fileService].
+@ProviderFor(fileService)
+const fileServiceProvider = FileServiceFamily();
 
-/// See also [SourceFile].
-@ProviderFor(SourceFile)
-const sourceFileProvider = SourceFileFamily();
+/// See also [fileService].
+class FileServiceFamily extends Family<FileService> {
+  /// See also [fileService].
+  const FileServiceFamily();
 
-/// See also [SourceFile].
-class SourceFileFamily extends Family<AsyncValue<CodeText>> {
-  /// See also [SourceFile].
-  const SourceFileFamily();
-
-  /// See also [SourceFile].
-  SourceFileProvider call({
-    required String filePath,
-  }) {
-    return SourceFileProvider(
-      filePath: filePath,
+  /// See also [fileService].
+  FileServiceProvider call(
+    String filePath,
+  ) {
+    return FileServiceProvider(
+      filePath,
     );
   }
 
   @override
-  SourceFileProvider getProviderOverride(
-    covariant SourceFileProvider provider,
+  FileServiceProvider getProviderOverride(
+    covariant FileServiceProvider provider,
   ) {
     return call(
-      filePath: provider.filePath,
+      provider.filePath,
     );
   }
 
@@ -76,33 +70,35 @@ class SourceFileFamily extends Family<AsyncValue<CodeText>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'sourceFileProvider';
+  String? get name => r'fileServiceProvider';
 }
 
-/// See also [SourceFile].
-class SourceFileProvider
-    extends AsyncNotifierProviderImpl<SourceFile, CodeText> {
-  /// See also [SourceFile].
-  SourceFileProvider({
-    required this.filePath,
-  }) : super.internal(
-          () => SourceFile()..filePath = filePath,
-          from: sourceFileProvider,
-          name: r'sourceFileProvider',
+/// See also [fileService].
+class FileServiceProvider extends Provider<FileService> {
+  /// See also [fileService].
+  FileServiceProvider(
+    this.filePath,
+  ) : super.internal(
+          (ref) => fileService(
+            ref,
+            filePath,
+          ),
+          from: fileServiceProvider,
+          name: r'fileServiceProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$sourceFileHash,
-          dependencies: SourceFileFamily._dependencies,
+                  : _$fileServiceHash,
+          dependencies: FileServiceFamily._dependencies,
           allTransitiveDependencies:
-              SourceFileFamily._allTransitiveDependencies,
+              FileServiceFamily._allTransitiveDependencies,
         );
 
   final String filePath;
 
   @override
   bool operator ==(Object other) {
-    return other is SourceFileProvider && other.filePath == filePath;
+    return other is FileServiceProvider && other.filePath == filePath;
   }
 
   @override
@@ -111,15 +107,6 @@ class SourceFileProvider
     hash = _SystemHash.combine(hash, filePath.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  Future<CodeText> runNotifierBuild(
-    covariant SourceFile notifier,
-  ) {
-    return notifier.build(
-      filePath: filePath,
-    );
   }
 }
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

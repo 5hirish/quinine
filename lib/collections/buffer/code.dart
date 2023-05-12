@@ -19,6 +19,9 @@ class CodeText {
 
   DateTime createdAt = DateTime.now();
 
+  @Ignore()
+  DateTime? updatedAt;
+
   @Index()
-  DateTime? synchronizedAt;
+  DateTime? bufferedAt;
 }

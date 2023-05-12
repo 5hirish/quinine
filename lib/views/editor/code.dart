@@ -5,13 +5,12 @@ import 'package:code_text_field/code_text_field.dart' as lite;
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:highlight/languages/dart.dart';
 
-
 import '../../hooks/code.dart';
 import '../../logger.dart';
 import '../../models/theme.dart';
 import '../../provider/code.dart';
 import '../../provider/theme.dart';
-import '../../utils.dart';
+import '../../services/file.dart';
 import '../lang/ext.dart';
 
 class CodeEditor extends HookConsumerWidget {
@@ -28,13 +27,13 @@ class CodeEditor extends HookConsumerWidget {
 
     final codeStyle = ref.watch(coreCodeThemeStateProvider);
     final sourceFile = ref.watch(sourceFileProvider(filePath: filePath));
-    // final isLoading = useState<bool>(true);
-    // final errorMsg = useState<String>("");
 
-    String fileExtension = getFilePathExtension(filePath);
-    final language = languageFromExtension(fileExtension);
+    FileService fileService = FileService(filePath);
+    String fileExtension = fileService.getFilePathExtension();
 
-    // https://github.com/dart-lang/dart-pad
+    final language = languageFromExtension(fileExtension);  // https://github.com/dart-lang/dart-pad
+
+    final focusNode = useFocusNode();
     final codeController = useCodeController(
       initialSource: '',
       language: language,
@@ -43,17 +42,19 @@ class CodeEditor extends HookConsumerWidget {
 
     logger.d("File Ext: $fileExtension");
 
-    // useEffect(() {
-    //   errorMsg.value = "";
-    //   isLoading.value = true;
-    //   readFileContent(filePath).then((content) {
-    //     codeController.text = content;
-    //   }).catchError((error) {
-    //     logger.e(error);
-    //     errorMsg.value = error.toString();
-    //   }).whenComplete(() => isLoading.value = false);
-    //   return null;
-    // }, [filePath]);
+    useEffect(() {
+      focusNode.addListener(() {
+        if (!focusNode.hasFocus) {
+          logger.d("Code field lost focus. Must save file.");
+          ref.read(sourceFileProvider(filePath: filePath).notifier).syncCode(
+            codeContent: codeController.fullText,
+            baseOffset: codeController.selection.baseOffset,
+            extentOffset: codeController.selection.extentOffset,
+          );
+        }
+      });
+      return null;
+    }, [focusNode, codeController]);
 
     return sourceFile.when(
       data: (sourceFile) {
@@ -63,7 +64,7 @@ class CodeEditor extends HookConsumerWidget {
           codeController.setCursor(sourceFile.extentOffset);
         }
 
-        return getCodeEditor(ref, codeController, codeStyle);
+        return getCodeEditor(ref, focusNode, codeController, codeStyle);
       },
       loading: () => const Center(
           child: SizedBox(width: 72, child: LinearProgressIndicator())
@@ -75,23 +76,16 @@ class CodeEditor extends HookConsumerWidget {
         ),
       ),
     );
-
-    // return isLoading.value?
-    //   const Center(
-    //       child: SizedBox(width: 72, child: LinearProgressIndicator())
-    //   ): errorMsg.value.isEmpty? getCodeEditor(codeController, codeStyle): Center(
-    //   child: Padding(
-    //     padding: const EdgeInsets.all(16.0),
-    //     child: Text("Error reading file: ${errorMsg.value}")
-    //   ),
-    // );
   }
 
-  Widget getCodeEditor(WidgetRef ref, CodeController codeController, CoreCodeTheme codeStyle) {
+  Widget getCodeEditor(WidgetRef ref,
+      FocusNode focusNode, CodeController codeController, CoreCodeTheme codeStyle) {
+
     return CodeTheme(
       data: CodeThemeData(styles: codeStyle.style),
       child: CodeField(
         expands: true,
+        focusNode: focusNode,
         controller: codeController,
         textStyle: TextStyle(
             fontSize: codeStyle.fontSize,

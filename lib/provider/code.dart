@@ -1,9 +1,10 @@
+import 'package:quinine/provider/file.dart';
+import 'package:quinine/services/file.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../collections/buffer/code.dart';
 import '../logger.dart';
 import '../repository/buffer/code.dart';
-import '../utils.dart';
 import 'repository.dart';
 
 part 'code.g.dart';
@@ -12,10 +13,12 @@ part 'code.g.dart';
 class SourceFile extends _$SourceFile {
 
   late CodeRepository codeBuffRepo;
+  late FileService fileService;
+
   final int maxBufferIntervalMS = 300;
   final int maxSyncIntervalMS = 3000;
 
-  Future<CodeText> _fetchCode(String filePath) async {
+  Future<CodeText> _fetchCode() async {
 
     /// In Dart and Flutter, you don't typically need to manually lock files
     /// before reading or writing to them. The reason for this is that Dart
@@ -27,18 +30,20 @@ class SourceFile extends _$SourceFile {
     String fullCodeContent = '';
     CodeText codeText = CodeText()
       ..fullText = fullCodeContent
-      ..filePath = filePath
-      ..language = getFilePathExtension(filePath)
+      ..filePath = fileService.path
+      ..language = fileService.extension
       ..baseOffset = 0
-      ..extentOffset = 0;
+      ..extentOffset = 0
+      ..updatedAt = DateTime.now();
 
     CodeText? bufferedCodeText = await readBufferCode();
     if (bufferedCodeText != null && bufferedCodeText.fullText.isNotEmpty) {
       logger.d("Returning buffered code");
-      return bufferedCodeText;
+      return bufferedCodeText
+        ..updatedAt = DateTime.now();
     }
 
-    fullCodeContent = await readFileContent(filePath);
+    fullCodeContent = await fileService.readFileContent();
     return codeText
       ..fullText = fullCodeContent;
   }
@@ -46,7 +51,9 @@ class SourceFile extends _$SourceFile {
   @override
   Future<CodeText> build({required String filePath}) async {
     codeBuffRepo = await ref.watch(codeBufferRepoProvider.future);
-    return await _fetchCode(filePath);
+    fileService = ref.watch(fileServiceProvider(filePath));
+
+    return await _fetchCode();
   }
 
   void bufferModifiedCode(String codeContent, int baseOffset, int extentOffset, {bool updateState = true}) async {
@@ -57,21 +64,22 @@ class SourceFile extends _$SourceFile {
       ..language = state.value!.language
       ..baseOffset = baseOffset
       ..extentOffset = extentOffset
-      ..synchronizedAt = state.value!.synchronizedAt;
+      ..bufferedAt = state.value!.bufferedAt
+      ..updatedAt = DateTime.now();
 
-    if (state.value != null && state.value!.synchronizedAt != null) {
-      int msSinceSync = DateTime.now().millisecondsSinceEpoch - state.value!.synchronizedAt!.millisecondsSinceEpoch;
-      if (msSinceSync < maxBufferIntervalMS) {
+    if (state.value != null && state.value!.bufferedAt != null) {
+      int msSinceBuffer = DateTime.now().millisecondsSinceEpoch - state.value!.bufferedAt!.millisecondsSinceEpoch;
+      if (msSinceBuffer < maxBufferIntervalMS) {
         if (updateState) {
           state = AsyncValue.data(codeText);
         }
         return;
       }
-      logger.d("Buffering code after $msSinceSync ms");
+      logger.d("Buffering code after $msSinceBuffer ms");
     }
 
     codeText = codeText
-      ..synchronizedAt = DateTime.now();
+      ..bufferedAt = DateTime.now();
 
     codeBuffRepo.updateBufferCodeByFilePath(codeText);
 
@@ -81,16 +89,45 @@ class SourceFile extends _$SourceFile {
 
   }
 
-  void syncCode() async {
+  void syncCode({String? codeContent, int baseOffset = 0, int extentOffset = 0, bool updateState = true}) async {
 
     state = const AsyncValue.loading();
 
     await AsyncValue.guard(() async {
-      CodeText? syncCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
-      if (syncCode != null) {
-        state = AsyncValue.data(syncCode);
-        await writeToFile(state.value!.filePath, state.value!.fullText);
+      CodeText? bufferedCode;
+      // If codeContent is not null, then we are syncing the code from the editor
+      if (codeContent != null) {
+        bufferedCode = CodeText()
+          ..fullText = codeContent
+          ..filePath = state.value!.filePath
+          ..language = state.value!.language
+          ..baseOffset = baseOffset
+          ..extentOffset = extentOffset
+          ..updatedAt = DateTime.now();
+      } else {
+        // If codeContent is null, then we are syncing the code from the buffer or state
+        CodeText? bufferedCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
+        if (bufferedCode == null) {
+          // If there is no buffered code, then we are syncing the code from the state
+          bufferedCode = state.value;
+        } else if (bufferedCode.bufferedAt != null && state.value != null && state.value!.updatedAt != null) {
+          // If the state code is newer than the buffered code, then we are syncing the code from the state
+          Duration codeDuration = bufferedCode.bufferedAt!.difference(state.value!.updatedAt!);
+          if (codeDuration.isNegative) {
+            logger.d("Syncing state code");
+            bufferedCode = state.value;
+          } else {
+            logger.d("Syncing buffered code");
+          }
+        }
+      }
+
+      if (bufferedCode != null) {
+        await fileService.writeToFile(state.value!.fullText);
         await codeBuffRepo.deleteBufferCodeByFilePath(filePath);
+        if (updateState) {
+          state = AsyncValue.data(bufferedCode);
+        }
       }
     });
   }
