@@ -1,0 +1,6 @@
+# excluding generated files and examples from the coverage report
+ignore:
+  - "**/example/"
+  - "examples"
+  - "**/*.g.dart"
+  - "**/*.freezed.dart"

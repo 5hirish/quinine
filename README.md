@@ -1,4 +1,8 @@
 # Quinine - Flutter Tonic IDE Core
+[![Test](https://github.com/5hirish/quinine/actions/workflows/build.yml/badge.svg)](https://github.com/5hirish/quinine/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/5hirish/quinine/branch/master/graph/badge.svg?token=0VJDUMLWO8)](https://codecov.io/gh/5hirish/quinine)
+[![GitHub](https://img.shields.io/github/license/5hirish/quinine)](https://www.apache.org/licenses/LICENSE-2.0)
+[![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCjE3XF9nr_MagQ2L5nCW7NA?style=social)](https://www.youtube.com/channel/UCjE3XF9nr_MagQ2L5nCW7NA)
 
 > Quinine is the core library that powers Tonic, a feature-rich Flutter IDE designed to improve the development experience for Flutter developers. Quinine provides essential functionalities such as syntax highlighting, autocompletion, error checking, and code navigation, making it the backbone of Tonic.
 
