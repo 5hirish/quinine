@@ -1,19 +1,22 @@
-import 'package:quinine/provider/file.dart';
-import 'package:quinine/services/file.dart';
+import 'package:clock/clock.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../collections/buffer/code.dart';
 import '../logger.dart';
 import '../repository/buffer/code.dart';
+import '../services/file.dart';
+import 'file.dart';
 import 'repository.dart';
 
 part 'code.g.dart';
 
+//Todo: To be re-engineered as the state management is incorrectly implemented
 @Riverpod(keepAlive: true)
 class SourceFile extends _$SourceFile {
 
   late CodeRepository codeBuffRepo;
   late FileService fileService;
+  late Clock clock;
 
   final int maxBufferIntervalMS = 300;
   final int maxSyncIntervalMS = 3000;
@@ -26,7 +29,7 @@ class SourceFile extends _$SourceFile {
     /// As a result, read and write operations are executed sequentially,
     /// which naturally prevents simultaneous access and the potential
     /// data corruption that could occur from it.
-
+    DateTime now = clock.now();
     String fullCodeContent = '';
     CodeText codeText = CodeText()
       ..fullText = fullCodeContent
@@ -34,13 +37,13 @@ class SourceFile extends _$SourceFile {
       ..language = fileService.extension
       ..baseOffset = 0
       ..extentOffset = 0
-      ..updatedAt = DateTime.now();
+      ..updatedAt = now;
 
     CodeText? bufferedCodeText = await readBufferCode();
     if (bufferedCodeText != null && bufferedCodeText.fullText.isNotEmpty) {
       logger.d("Returning buffered code");
       return bufferedCodeText
-        ..updatedAt = DateTime.now();
+        ..updatedAt = now;
     }
 
     fullCodeContent = await fileService.readFileContent();
@@ -52,12 +55,15 @@ class SourceFile extends _$SourceFile {
   Future<CodeText> build({required String filePath}) async {
     codeBuffRepo = await ref.watch(codeBufferRepoProvider.future);
     fileService = ref.watch(fileServiceProvider(filePath));
+    clock = const Clock();
 
     return await _fetchCode();
   }
 
-  void bufferModifiedCode(String codeContent, int baseOffset, int extentOffset, {bool updateState = true}) async {
+  void bufferModifiedCode(String codeContent, int baseOffset, int extentOffset,
+      {bool updateState = true}) {
 
+    DateTime now = clock.now();
     CodeText codeText = CodeText()
       ..fullText = codeContent
       ..filePath = state.value!.filePath
@@ -65,10 +71,10 @@ class SourceFile extends _$SourceFile {
       ..baseOffset = baseOffset
       ..extentOffset = extentOffset
       ..bufferedAt = state.value!.bufferedAt
-      ..updatedAt = DateTime.now();
+      ..updatedAt = now;
 
     if (state.value != null && state.value!.bufferedAt != null) {
-      int msSinceBuffer = DateTime.now().millisecondsSinceEpoch - state.value!.bufferedAt!.millisecondsSinceEpoch;
+      int msSinceBuffer = now.millisecondsSinceEpoch - state.value!.bufferedAt!.millisecondsSinceEpoch;
       if (msSinceBuffer < maxBufferIntervalMS) {
         if (updateState) {
           state = AsyncValue.data(codeText);
@@ -76,10 +82,12 @@ class SourceFile extends _$SourceFile {
         return;
       }
       logger.d("Buffering code after $msSinceBuffer ms");
+    } else {
+      logger.d("Buffering code since previous buffer time is null");
     }
 
     codeText = codeText
-      ..bufferedAt = DateTime.now();
+      ..bufferedAt = now;
 
     codeBuffRepo.updateBufferCodeByFilePath(codeText);
 
@@ -89,7 +97,9 @@ class SourceFile extends _$SourceFile {
 
   }
 
-  void syncCode({String? codeContent, int baseOffset = 0, int extentOffset = 0, bool updateState = true}) async {
+  Future<void> syncCode({
+    String? codeContent, int baseOffset = 0, int extentOffset = 0,
+    bool updateState = true}) async {
 
     state = const AsyncValue.loading();
 
@@ -103,7 +113,7 @@ class SourceFile extends _$SourceFile {
           ..language = state.value!.language
           ..baseOffset = baseOffset
           ..extentOffset = extentOffset
-          ..updatedAt = DateTime.now();
+          ..updatedAt = clock.now();
       } else {
         // If codeContent is null, then we are syncing the code from the buffer or state
         CodeText? bufferedCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);

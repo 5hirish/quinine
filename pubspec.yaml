@@ -20,12 +20,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # For utilities
   logger: any
   intl: any
-
-  # For utilities
-  nanoid: ^1.0.0
   path: any
+  nanoid: ^1.0.0
+  clock: ^1.1.1
 
   # For user interface
   responsive_framework: ^1.0.0
@@ -94,4 +94,5 @@ flutter:
 
   assets:
     - assets/
+    - assets/icon/
 
