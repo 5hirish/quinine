@@ -11,6 +11,7 @@ import 'repository.dart';
 part 'code.g.dart';
 
 //Todo: To be re-engineered as the state management is incorrectly implemented
+//Todo: Code type check ?!?
 @Riverpod(keepAlive: true)
 class SourceFile extends _$SourceFile {
 
@@ -133,6 +134,7 @@ class SourceFile extends _$SourceFile {
       }
 
       if (bufferedCode != null) {
+        //Todo: Write only if the code is modified ?!?
         await fileService.writeToFile(state.value!.fullText);
         await codeBuffRepo.deleteBufferCodeByFilePath(filePath);
         if (updateState) {

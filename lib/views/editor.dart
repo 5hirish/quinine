@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../provider/code.dart';
 import '../provider/file.dart';
 import '../provider/tab.dart';
 import '../services/file.dart';
@@ -24,6 +25,8 @@ class EditorView extends HookConsumerWidget {
       ref.read(openFilesPathProvider.notifier).state = openFiles.where((file) => file != filePath).toList();
       if (index > 0 && selectedIndex == index) {
         ref.read(selectedTabIndexProvider.notifier).state = index - 1;
+        //Todo: Only if a code file
+        ref.read(sourceFileProvider(filePath: filePath).notifier).syncCode();
       }
     }
 
