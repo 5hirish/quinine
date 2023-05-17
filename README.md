@@ -59,10 +59,9 @@ We welcome contributions from the community! Please read our [contributing guide
 
 ## Join the Community
 
-- Discord - [Tonic Flutter IDE](https://discord.gg/Yh5Nkrznaw)
-- YouTube - [Tonic - Flutter IDE by devs for devs](https://www.youtube.com/@tonic_ide)
-- Wiki - [Tonic Wiki](https://github.com/5hirish/quinine/wiki)
-
+- 🚀  **Discord** - [Tonic Flutter IDE](https://discord.gg/Yh5Nkrznaw)
+- 📺  **YouTube** - [Tonic - Flutter IDE by devs for devs](https://www.youtube.com/@tonic_ide)
+- 📚  **Wiki** - [Tonic Wiki](https://github.com/5hirish/quinine/wiki)
 
 ## Core Team
 Let's get to know the passionate minds behind Tonic IDE:
