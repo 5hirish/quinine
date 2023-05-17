@@ -102,46 +102,51 @@ class SourceFile extends _$SourceFile {
     String? codeContent, int baseOffset = 0, int extentOffset = 0,
     bool updateState = true}) async {
 
-    state = const AsyncValue.loading();
+    // state = const AsyncValue.loading();
 
-    await AsyncValue.guard(() async {
-      CodeText? bufferedCode;
-      // If codeContent is not null, then we are syncing the code from the editor
-      if (codeContent != null) {
-        bufferedCode = CodeText()
-          ..fullText = codeContent
-          ..filePath = state.value!.filePath
-          ..language = state.value!.language
-          ..baseOffset = baseOffset
-          ..extentOffset = extentOffset
-          ..updatedAt = clock.now();
-      } else {
-        // If codeContent is null, then we are syncing the code from the buffer or state
-        CodeText? bufferedCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
-        if (bufferedCode == null) {
-          // If there is no buffered code, then we are syncing the code from the state
+    CodeText? bufferedCode;
+
+    // If codeContent is not null, then we are syncing the code from the editor
+    if (codeContent != null) {
+      bufferedCode = CodeText()
+        ..fullText = codeContent
+        ..filePath = state.value!.filePath
+        ..language = state.value!.language
+        ..baseOffset = baseOffset
+        ..extentOffset = extentOffset
+        ..updatedAt = clock.now();
+    } else {
+
+      // If codeContent is null, then we are syncing the code from the buffer or state
+      bufferedCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
+
+      if (bufferedCode == null) {
+        // If there is no buffered code, then we are syncing the code from the state
+        bufferedCode = state.value;
+        logger.d("Buffered code is ${bufferedCode?.fullText.length}");
+
+      } else if (bufferedCode.bufferedAt != null && state.value != null && state.value!.updatedAt != null) {
+        // If the state code is newer than the buffered code, then we are syncing the code from the state
+
+        Duration codeDuration = bufferedCode.bufferedAt!.difference(state.value!.updatedAt!);
+        if (codeDuration.isNegative) {
+          logger.d("Syncing state code");
           bufferedCode = state.value;
-        } else if (bufferedCode.bufferedAt != null && state.value != null && state.value!.updatedAt != null) {
-          // If the state code is newer than the buffered code, then we are syncing the code from the state
-          Duration codeDuration = bufferedCode.bufferedAt!.difference(state.value!.updatedAt!);
-          if (codeDuration.isNegative) {
-            logger.d("Syncing state code");
-            bufferedCode = state.value;
-          } else {
-            logger.d("Syncing buffered code");
-          }
+        } else {
+          logger.d("Syncing buffered code");
         }
       }
+    }
 
-      if (bufferedCode != null) {
-        //Todo: Write only if the code is modified ?!?
-        await fileService.writeToFile(state.value!.fullText);
-        await codeBuffRepo.deleteBufferCodeByFilePath(filePath);
-        if (updateState) {
-          state = AsyncValue.data(bufferedCode);
-        }
+    if (bufferedCode != null) {
+      //Todo: Write only if the code is modified ?!?
+      await fileService.writeToFile(state.value!.fullText);
+      await codeBuffRepo.deleteBufferCodeByFilePath(filePath);
+      logger.d("File write complete!");
+      if (updateState) {
+        state = AsyncValue.data(bufferedCode);
       }
-    });
+    }
   }
 
   Future<CodeText?> readBufferCode() async {
