@@ -5,7 +5,7 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/5hirish/quinine/total)](https://github.com/5hirish/quinine/releases)
 [![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCjE3XF9nr_MagQ2L5nCW7NA?style=social)](https://www.youtube.com/channel/UCjE3XF9nr_MagQ2L5nCW7NA)
 
-> Quinine is the core library that powers Tonic, a feature-rich Flutter IDE designed to improve the development experience for Flutter developers. Quinine provides essential functionalities such as syntax highlighting, autocompletion, error checking, and code navigation, making it the backbone of Tonic.
+> Quinine is the core library that powers Tonic, a feature-rich low-code Flutter IDE designed to improve the development experience for Flutter developers. Quinine provides essential functionalities such as the low-code designer, syntax highlighting, autocompletion, error checking, and code navigation, making it the backbone of Tonic.
 
 *Quinine gets its name from the natural compound quinine, which has been historically used as a key ingredient in tonic water. In the 19th century, quinine was discovered to have antimalarial properties and was extracted from the bark of the cinchona tree. British officials stationed in India mixed quinine with sugar and water to make it more palatable, creating the first tonic water. Later, it became popular to mix tonic water with gin, giving birth to the classic gin and tonic cocktail.*
 
@@ -40,6 +40,19 @@ We intend to build an open-source tool which is the best of both worlds: a low-c
 - *Platform agnostic*: While the initial focus is on Flutter, the vision for Quinine IDE is to become platform agnostic with the aim of supporting other frameworks and languages in the future.
 - *Innovation*: Quinine IDE should continually innovate and push the boundaries of what’s possible in low-code development, always keeping an eye on the latest trends and technologies.
 
+## Progress Update
+
+We're excited to share the latest progress on Tonic IDE with our amazing community members! Here's what's been happening:
+
+- ✨ **Early Stages of Development**: Tonic IDE is steadily taking shape, and we're working tirelessly to bring you a powerful and user-friendly IDE experience. We're planning to release an Alpha version by the end of July, packed with features that will enhance your development workflow.
+- ⚡️ **VSCode-like Speed, Android Studio-like Ease of Use**: Our team is dedicated to creating an IDE that combines the lightning-fast performance of VSCode with the user-friendly interface of Android Studio. We want to provide you with a seamless and efficient coding experience that boosts your productivity.
+- 💡 **ChatGPT Boost**: We're thrilled to announce that we're incorporating the ChatGPT model into Tonic IDE to provide intelligent code assistance and enhance your development process. Get ready to experience the power of AI in your coding journey!
+
+###  🔍 Track Our Progress
+Stay updated with the latest developments by tracking our progress on our GitHub project board. Visit the following link to see our milestones, tasks, and the overall progress of Tonic IDE: [Tonic IDE Progress Board](https://github.com/users/5hirish/projects/4)
+
+We appreciate your support and patience as we continue to build and refine Tonic IDE. Your feedback and contributions are invaluable to us. Together, we're creating a game-changing IDE for Flutter developers.
+
 ## Contribute
 
 We welcome contributions from the community! Please read our [contributing guidelines](https://github.com/5hirish/quinine/blob/release/CONTRIBUTION.md) and [wiki](https://github.com/5hirish/quinine/wiki) before submitting a pull request.
@@ -49,6 +62,13 @@ We welcome contributions from the community! Please read our [contributing guide
 - Discord - [Tonic Flutter IDE](https://discord.gg/Yh5Nkrznaw)
 - YouTube - [Tonic - Flutter IDE by devs for devs](https://www.youtube.com/@tonic_ide)
 - Wiki - [Tonic Wiki](https://github.com/5hirish/quinine/wiki)
+
+
+## Core Team
+Let's get to know the passionate minds behind Tonic IDE:
+
+1. Shirish [@5hirish](https://twitter.com/5hirish): Core maintainer of Tonic IDE. Loves hiking and swimming on the weekends. Planning to get my diving license by the end of July!
+2. Marvin [@diazmarv](https://twitter.com/diazmarv): Community leader for Tonic IDE. Loves to run and shred guitar on the weekends.
 
 ## License
 
