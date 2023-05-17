@@ -66,8 +66,8 @@ We welcome contributions from the community! Please read our [contributing guide
 ## Core Team
 Let's get to know the passionate minds behind Tonic IDE:
 
-1. Shirish [@5hirish](https://twitter.com/5hirish): Core maintainer of Tonic IDE. Loves hiking and swimming on the weekends. Planning to get my diving license by the end of July!
-2. Marvin [@diazmarv](https://twitter.com/diazmarv): Community leader for Tonic IDE. Loves to run and shred guitar on the weekends.
+1. *Shirish [@5hirish](https://twitter.com/5hirish)* : Core maintainer of Tonic IDE. Loves hiking and swimming on the weekends. Planning to get my diving license by the end of July!
+2. *Marvin [@diazmarv](https://twitter.com/diazmarv)* : Community leader for Tonic IDE. Loves to run and shred guitar on the weekends.
 
 ## License
 
