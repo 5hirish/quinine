@@ -15,7 +15,6 @@ class WindowPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final toolIndex = ref.watch(coreToolBarStateProvider);
     double? weight = ref.watch(toolWindowWeightProvider);
 
@@ -23,7 +22,9 @@ class WindowPage extends HookConsumerWidget {
 
     if (toolIndex != null) {
       multiSplitViewController.areas = [
-        Area(minimalSize: 64, weight: weight), // 10% of the screen for tools, 90% for the editor
+        Area(
+            minimalSize: 64,
+            weight: weight), // 10% of the screen for tools, 90% for the editor
       ];
     } else {
       multiSplitViewController.areas = [
@@ -37,16 +38,16 @@ class WindowPage extends HookConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-
             const CoreToolBar(),
-
             Expanded(
               child: MultiSplitView(
                 controller: multiSplitViewController,
                 onWeightChange: () {
                   double? weight = multiSplitViewController.getArea(0).weight;
                   if (weight != null && weight > 0) {
-                    ref.read(toolWindowWeightProvider.notifier).setWeight(weight);
+                    ref
+                        .read(toolWindowWeightProvider.notifier)
+                        .setWeight(weight);
                   }
                 },
                 children: getMultiViewChildren(toolIndex),
@@ -59,15 +60,13 @@ class WindowPage extends HookConsumerWidget {
   }
 
   List<Widget> getMultiViewChildren(int? toolIndex) {
-
     return [
-      toolIndex != null? ResponsiveVisibility(
-        hiddenConditions: const [
-          Condition.smallerThan(name: TABLET)
-        ],
-        child: ToolsView(toolIndex),
-      ): const SizedBox.shrink(),
-
+      toolIndex != null
+          ? ResponsiveVisibility(
+              hiddenConditions: const [Condition.smallerThan(name: TABLET)],
+              child: ToolsView(toolIndex),
+            )
+          : const SizedBox.shrink(),
       const EditorView()
     ];
   }

@@ -20,7 +20,6 @@ import 'package:highlight/languages/kotlin.dart';
 import 'package:highlight/languages/properties.dart';
 import 'package:highlight/languages/shell.dart';
 
-
 Mode languageFromExtension(String extension) {
   // ref: https://github.com/git-touch/highlight.dart/tree/master/highlight/lib/languages
 
@@ -96,7 +95,7 @@ Mode languageFromExtension(String extension) {
     case 'properties':
       return properties;
 
-  // ... Add cases for other languages you want to support
+    // ... Add cases for other languages you want to support
 
     default:
       return plaintext; // Default language if no match is found

@@ -14,7 +14,6 @@ part 'code.g.dart';
 //Todo: Code type check ?!?
 @Riverpod(keepAlive: true)
 class SourceFile extends _$SourceFile {
-
   late CodeRepository codeBuffRepo;
   late FileService fileService;
   late Clock clock;
@@ -23,7 +22,6 @@ class SourceFile extends _$SourceFile {
   final int maxSyncIntervalMS = 3000;
 
   Future<CodeText> _fetchCode() async {
-
     /// In Dart and Flutter, you don't typically need to manually lock files
     /// before reading or writing to them. The reason for this is that Dart
     /// IO operations are single-threaded due to Dart's event loop model.
@@ -43,13 +41,11 @@ class SourceFile extends _$SourceFile {
     CodeText? bufferedCodeText = await readBufferCode();
     if (bufferedCodeText != null && bufferedCodeText.fullText.isNotEmpty) {
       logger.d("Returning buffered code");
-      return bufferedCodeText
-        ..updatedAt = now;
+      return bufferedCodeText..updatedAt = now;
     }
 
     fullCodeContent = await fileService.readFileContent();
-    return codeText
-      ..fullText = fullCodeContent;
+    return codeText..fullText = fullCodeContent;
   }
 
   @override
@@ -63,7 +59,6 @@ class SourceFile extends _$SourceFile {
 
   void bufferModifiedCode(String codeContent, int baseOffset, int extentOffset,
       {bool updateState = true}) {
-
     DateTime now = clock.now();
     CodeText codeText = CodeText()
       ..fullText = codeContent
@@ -75,7 +70,8 @@ class SourceFile extends _$SourceFile {
       ..updatedAt = now;
 
     if (state.value != null && state.value!.bufferedAt != null) {
-      int msSinceBuffer = now.millisecondsSinceEpoch - state.value!.bufferedAt!.millisecondsSinceEpoch;
+      int msSinceBuffer = now.millisecondsSinceEpoch -
+          state.value!.bufferedAt!.millisecondsSinceEpoch;
       if (msSinceBuffer < maxBufferIntervalMS) {
         if (updateState) {
           state = AsyncValue.data(codeText);
@@ -87,21 +83,20 @@ class SourceFile extends _$SourceFile {
       logger.d("Buffering code since previous buffer time is null");
     }
 
-    codeText = codeText
-      ..bufferedAt = now;
+    codeText = codeText..bufferedAt = now;
 
     codeBuffRepo.updateBufferCodeByFilePath(codeText);
 
     if (updateState) {
       state = AsyncValue.data(codeText);
     }
-
   }
 
-  Future<void> syncCode({
-    String? codeContent, int baseOffset = 0, int extentOffset = 0,
-    bool updateState = true}) async {
-
+  Future<void> syncCode(
+      {String? codeContent,
+      int baseOffset = 0,
+      int extentOffset = 0,
+      bool updateState = true}) async {
     // state = const AsyncValue.loading();
 
     CodeText? bufferedCode;
@@ -116,7 +111,6 @@ class SourceFile extends _$SourceFile {
         ..extentOffset = extentOffset
         ..updatedAt = clock.now();
     } else {
-
       // If codeContent is null, then we are syncing the code from the buffer or state
       bufferedCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
 
@@ -124,11 +118,13 @@ class SourceFile extends _$SourceFile {
         // If there is no buffered code, then we are syncing the code from the state
         bufferedCode = state.value;
         logger.d("Buffered code is ${bufferedCode?.fullText.length}");
-
-      } else if (bufferedCode.bufferedAt != null && state.value != null && state.value!.updatedAt != null) {
+      } else if (bufferedCode.bufferedAt != null &&
+          state.value != null &&
+          state.value!.updatedAt != null) {
         // If the state code is newer than the buffered code, then we are syncing the code from the state
 
-        Duration codeDuration = bufferedCode.bufferedAt!.difference(state.value!.updatedAt!);
+        Duration codeDuration =
+            bufferedCode.bufferedAt!.difference(state.value!.updatedAt!);
         if (codeDuration.isNegative) {
           logger.d("Syncing state code");
           bufferedCode = state.value;
@@ -150,16 +146,16 @@ class SourceFile extends _$SourceFile {
   }
 
   Future<CodeText?> readBufferCode() async {
+    state = const AsyncValue.loading();
 
-      state = const AsyncValue.loading();
+    await AsyncValue.guard(() async {
+      CodeText? bufferCode =
+          await codeBuffRepo.getBufferCodeByFilePath(filePath);
+      if (bufferCode != null) {
+        state = AsyncValue.data(bufferCode);
+      }
+    });
 
-      await AsyncValue.guard(() async {
-        CodeText? bufferCode = await codeBuffRepo.getBufferCodeByFilePath(filePath);
-        if (bufferCode != null) {
-          state = AsyncValue.data(bufferCode);
-        }
-      });
-
-      return state.value;
+    return state.value;
   }
 }

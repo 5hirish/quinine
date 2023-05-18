@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'explorer/project.dart';
 
-
 class ToolsView extends ConsumerWidget {
   const ToolsView(this.toolIndex, {super.key});
 
@@ -11,7 +10,9 @@ class ToolsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return toolIndex != null? getToolView(toolIndex!): const SizedBox.shrink();
+    return toolIndex != null
+        ? getToolView(toolIndex!)
+        : const SizedBox.shrink();
   }
 
   Widget getToolView(int toolIndex) {

@@ -7,5 +7,3 @@ String getFileName(FileSystemEntity file) {
 String getFileExtension(FileSystemEntity file) {
   return file.path.split('.').last;
 }
-
-

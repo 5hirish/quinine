@@ -23,5 +23,6 @@ class ErrorRoute extends GoRouteData {
   static const path = '/error';
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => ErrorPage(error: $extra.toString());
+  Widget build(BuildContext context, GoRouterState state) =>
+      ErrorPage(error: $extra.toString());
 }
