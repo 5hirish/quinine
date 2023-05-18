@@ -12,7 +12,7 @@ import 'router/router.dart';
 class QuinineCore extends ConsumerWidget {
   const QuinineCore({super.key});
 
-  // This widget is the root of your application.
+  // Todo: Add global root keyboard shortcuts here based on user preference
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     
