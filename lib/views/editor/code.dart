@@ -25,7 +25,6 @@ class CodeEditor extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     if (filePath.isEmpty) {
       return const Center(child: Text('No file selected'));
     }
@@ -36,13 +35,15 @@ class CodeEditor extends HookConsumerWidget {
     FileService fileService = FileService(filePath);
     String fileExtension = fileService.getFilePathExtension();
 
-    final language = languageFromExtension(fileExtension);  // https://github.com/dart-lang/dart-pad
+    final language = languageFromExtension(
+        fileExtension); // https://github.com/dart-lang/dart-pad
 
     final focusNode = useFocusNode();
     final codeController = useCodeController(
       initialSource: '',
       language: language,
-      analyzer: language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
+      analyzer:
+          language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
     );
 
     logger.d("File Ext: $fileExtension");
@@ -52,10 +53,10 @@ class CodeEditor extends HookConsumerWidget {
         if (!focusNode.hasFocus) {
           logger.d("Code field lost focus. Must save file.");
           ref.read(sourceFileProvider(filePath: filePath).notifier).syncCode(
-            codeContent: codeController.fullText,
-            baseOffset: codeController.selection.baseOffset,
-            extentOffset: codeController.selection.extentOffset,
-          );
+                codeContent: codeController.fullText,
+                baseOffset: codeController.selection.baseOffset,
+                extentOffset: codeController.selection.extentOffset,
+              );
         }
       });
       return null;
@@ -63,29 +64,26 @@ class CodeEditor extends HookConsumerWidget {
 
     return sourceFile.when(
       data: (sourceFile) {
-
         codeController.text = sourceFile.fullText;
-        if (sourceFile.extentOffset > 0 && sourceFile.extentOffset < sourceFile.fullText.length) {
+        if (sourceFile.extentOffset > 0 &&
+            sourceFile.extentOffset < sourceFile.fullText.length) {
           codeController.setCursor(sourceFile.extentOffset);
         }
 
         return getCodeEditor(ref, focusNode, codeController, codeStyle);
       },
       loading: () => const Center(
-          child: SizedBox(width: 72, child: LinearProgressIndicator())
-      ),
+          child: SizedBox(width: 72, child: LinearProgressIndicator())),
       error: (err, stack) => Center(
         child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text("Error reading file: ${err.toString()}")
-        ),
+            child: Text("Error reading file: ${err.toString()}")),
       ),
     );
   }
 
-  Widget getCodeEditor(WidgetRef ref,
-      FocusNode focusNode, CodeController codeController, CoreCodeTheme codeStyle) {
-
+  Widget getCodeEditor(WidgetRef ref, FocusNode focusNode,
+      CodeController codeController, CoreCodeTheme codeStyle) {
     return Shortcuts.manager(
       manager: LoggingShortcutManager(
         shortcuts: <ShortcutActivator, Intent>{
@@ -100,51 +98,44 @@ class CodeEditor extends HookConsumerWidget {
         actions: <Type, Action<Intent>>{
           SaveFileIntent: SaveFileAction(ref, filePath),
         },
-        child: Builder(
-          builder: (context) {
-            return CodeTheme(
-              data: CodeThemeData(styles: codeStyle.style),
-              child: CodeField(
-                expands: true,
-                focusNode: focusNode,
-                controller: codeController,
-                textStyle: TextStyle(
-                    fontSize: codeStyle.fontSize,
-                    fontFamily: codeStyle.fontFamily
-                ),
-                onChanged: (String value) {
-                  String modifiedCode = codeController.fullText;
-                  int baseOffset = codeController.selection.baseOffset;
-                  int extentOffset = codeController.selection.extentOffset;
+        child: Builder(builder: (context) {
+          return CodeTheme(
+            data: CodeThemeData(styles: codeStyle.style),
+            child: CodeField(
+              expands: true,
+              focusNode: focusNode,
+              controller: codeController,
+              textStyle: TextStyle(
+                  fontSize: codeStyle.fontSize,
+                  fontFamily: codeStyle.fontFamily),
+              onChanged: (String value) {
+                String modifiedCode = codeController.fullText;
+                int baseOffset = codeController.selection.baseOffset;
+                int extentOffset = codeController.selection.extentOffset;
 
-                  ref.read(sourceFileProvider(filePath: filePath).notifier)
-                      .bufferModifiedCode(modifiedCode, baseOffset, extentOffset, updateState: false);
-                  logger.d("Modified Code");
-                },
-              ),
-            );
-          }
-        ),
+                ref
+                    .read(sourceFileProvider(filePath: filePath).notifier)
+                    .bufferModifiedCode(modifiedCode, baseOffset, extentOffset,
+                        updateState: false);
+                logger.d("Modified Code");
+              },
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget getCodeEditorLite(lite.CodeController codeController, CoreCodeTheme codeStyle) {
+  Widget getCodeEditorLite(
+      lite.CodeController codeController, CoreCodeTheme codeStyle) {
     return lite.CodeTheme(
       data: lite.CodeThemeData(styles: codeStyle.style),
       child: lite.CodeField(
         expands: true,
         controller: codeController,
         textStyle: TextStyle(
-            fontSize: codeStyle.fontSize,
-            fontFamily: codeStyle.fontFamily
-        ),
+            fontSize: codeStyle.fontSize, fontFamily: codeStyle.fontFamily),
       ),
     );
   }
 }
-
-
-
-
-

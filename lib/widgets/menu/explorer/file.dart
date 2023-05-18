@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,11 +5,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../logger.dart';
 
-void showContextFileMenu(BuildContext context, Offset position, FileSystemEntity file) {
-
+void showContextFileMenu(
+    BuildContext context, Offset position, FileSystemEntity file) {
   showMenu(
     context: context,
-    position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx, position.dy),
+    position: RelativeRect.fromLTRB(
+        position.dx, position.dy, position.dx, position.dy),
     items: [
       getFilePopupMenuItem('new', 'New'),
       getFilePopupMenuItem('copy', 'Copy'),
@@ -30,36 +30,34 @@ void showContextFileMenu(BuildContext context, Offset position, FileSystemEntity
 
 PopupMenuItem getFilePopupMenuItem(String value, String menuTitle) {
   return PopupMenuItem(
-    value: value,
-    height: 32,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox.square(
-          dimension: 16,
-          child: Center(
-            child: getFilePopupMenuItemIcon(value),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(
-              menuTitle,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 12),
+      value: value,
+      height: 32,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox.square(
+            dimension: 16,
+            child: Center(
+              child: getFilePopupMenuItemIcon(value),
             ),
           ),
-        ),
-      ],
-    )
-  );
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                menuTitle,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+        ],
+      ));
 }
 
 Widget getFilePopupMenuItemIcon(String value, {double? iconSize = 12}) {
-
   switch (value) {
     case 'new':
       return FaIcon(FontAwesomeIcons.fileCirclePlus, size: iconSize);

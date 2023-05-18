@@ -10,7 +10,6 @@ part 'theme.g.dart';
 
 @Riverpod(keepAlive: true)
 class CoreThemeState extends _$CoreThemeState {
-  
   @override
   CoreTheme build() {
     return CoreTheme(
@@ -19,7 +18,7 @@ class CoreThemeState extends _$CoreThemeState {
       darkTheme: blueM3DarkTheme,
     );
   }
-  
+
   void changeMode(ThemeMode mode) {
     state = state.copyWith(mode: mode);
   }
@@ -35,7 +34,6 @@ class CoreThemeState extends _$CoreThemeState {
 
 @Riverpod(keepAlive: true)
 class CoreCodeThemeState extends _$CoreCodeThemeState {
-
   @override
   CoreCodeTheme build() {
     return CoreCodeTheme(
