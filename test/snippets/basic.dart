@@ -1,4 +1,3 @@
-
 /// Use: https://dartpad.dev/?
 
 const counterProviderMaterialApp = '''
