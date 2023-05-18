@@ -10,7 +10,6 @@ import '../../../provider/project.dart';
 import '../../../provider/tab.dart';
 import '../../../widgets/item/file.dart';
 
-
 class ProjectExplorer extends ConsumerStatefulWidget {
   const ProjectExplorer({super.key});
 
@@ -29,12 +28,14 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
     super.initState();
 
     projectFiles = ref.read(projectFilesProvider.notifier);
-    _expandedNodes = ref.read(projectExpandedNodesProvider.notifier).getExpandedNodes();
+    _expandedNodes =
+        ref.read(projectExpandedNodesProvider.notifier).getExpandedNodes();
 
     _treeController = TreeController<FileSystemEntity>(
-      roots: [],   // initialize with your roots
+      roots: [], // initialize with your roots
       childrenProvider: (FileSystemEntity parent) {
-        return projectFiles.getProjectParentFiles(parent.path) ?? const Iterable.empty();
+        return projectFiles.getProjectParentFiles(parent.path) ??
+            const Iterable.empty();
       },
     );
 
@@ -43,7 +44,6 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
         _treeController.expand(file);
       }
     }
-
   }
 
   @override
@@ -53,43 +53,40 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
     return projectFilesAsync.when(
         data: (projectFiles) => getProjectFilesTree(context, ref),
         error: (err, stack) => const Center(
-            child: Padding(
+                child: Padding(
               padding: EdgeInsets.all(8.0),
               child: Text("Something went wrong :("),
-            )
-        ),
+            )),
         loading: () => const Center(
-            child: SizedBox(width: 32, child: LinearProgressIndicator())
-        )
-    );
+            child: SizedBox(width: 32, child: LinearProgressIndicator())));
   }
 
   Widget getProjectFilesTree(BuildContext context, WidgetRef ref) {
-    final roots = ref.read(projectFilesProvider.notifier).getProjectRootFiles() ?? [];
+    final roots =
+        ref.read(projectFilesProvider.notifier).getProjectRootFiles() ?? [];
 
     if (roots.isEmpty) {
       return const Center(
           child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text("Select a project"),
-          )
-      );
-    }  else {
+        padding: EdgeInsets.all(8.0),
+        child: Text("Select a project"),
+      ));
+    } else {
       _treeController.roots = roots;
     }
 
     return AnimatedTreeView<FileSystemEntity>(
       treeController: _treeController,
       nodeBuilder: (BuildContext context, TreeEntry<FileSystemEntity> entry) {
-
         FileSystemEntity file = entry.node;
 
         bool isOpen = false;
         VoidCallback? onPressed;
 
         if (file is Directory) {
-
-          List<FileSystemEntity>? childFiles = ref.read(projectFilesProvider.notifier).getProjectParentFiles(file.path);
+          List<FileSystemEntity>? childFiles = ref
+              .read(projectFilesProvider.notifier)
+              .getProjectParentFiles(file.path);
 
           if (childFiles == null) {
             isOpen = false;
@@ -122,10 +119,7 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
     );
   }
 
-  Future<void> getFileDescendants(
-      WidgetRef ref,
-      FileSystemEntity file) async {
-
+  Future<void> getFileDescendants(WidgetRef ref, FileSystemEntity file) async {
     _loadingFiles.add(file.path);
 
     await ref.read(projectFilesProvider.notifier).loadChildren(file.path) ?? {};
@@ -142,11 +136,13 @@ class ProjectExplorerState extends ConsumerState<ProjectExplorer> {
   }
 
   void openFile(WidgetRef ref, FileSystemEntity file, {bool focusTab = true}) {
-    List<String> openFiles = ref.read(openFilesPathProvider);
-    ref.read(openFilesPathProvider.notifier).state = [...openFiles, file.path];
+    final openFiles = ref.read(openFilesPathProvider);
+    openFiles.add(file.path);
+    ref.read(openFilesPathProvider.notifier).state = {...openFiles};
 
     if (focusTab) {
-      ref.read(selectedTabIndexProvider.notifier).state = openFiles.length;
+      ref.read(selectedTabIndexProvider.notifier).state =
+          openFiles.toList().indexOf(file.path);
     }
   }
 
