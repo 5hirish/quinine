@@ -36,5 +36,4 @@ class CodeRepository {
       return await getCodeTextCol().deleteByFilePath(filePath);
     });
   }
-
 }

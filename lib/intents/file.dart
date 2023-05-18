@@ -16,7 +16,6 @@ class SaveFileAction extends Action<SaveFileIntent> {
 
   @override
   Object? invoke(covariant SaveFileIntent intent) {
-
     ref.read(sourceFileProvider(filePath: filePath).notifier).syncCode();
 
     return null;

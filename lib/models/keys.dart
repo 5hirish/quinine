@@ -1,4 +1,3 @@
-
 enum KeyboardPreference {
   vscode,
   androidStudio,

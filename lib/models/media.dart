@@ -1,4 +1,3 @@
-
 List<String> imageExtensions = [
   'jpg',
   'jpeg',

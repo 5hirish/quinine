@@ -8,7 +8,6 @@ part 'project.g.dart';
 
 @Riverpod(keepAlive: true)
 class ProjectDirectoryPath extends _$ProjectDirectoryPath {
-
   @override
   String? build() {
     return null;
@@ -21,7 +20,6 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
 
 @Riverpod(keepAlive: true)
 class ProjectFiles extends _$ProjectFiles {
-
   late String? projectDirectoryPath;
 
   Directory fetchDirectory(String workingDirectory) {
@@ -36,7 +34,8 @@ class ProjectFiles extends _$ProjectFiles {
   List<FileSystemEntity> _sortFiles(List<FileSystemEntity> projectFiles) {
     projectFiles.sort((fileA, fileB) {
       // Compare the entity types to prioritize directories
-      int compareType = fileA.runtimeType.toString().compareTo(fileB.runtimeType.toString());
+      int compareType =
+          fileA.runtimeType.toString().compareTo(fileB.runtimeType.toString());
 
       // If both entities are of the same type, compare their names alphabetically
       if (compareType == 0) {
@@ -57,9 +56,11 @@ class ProjectFiles extends _$ProjectFiles {
     }).toList();
   }
 
-  Future<Map<String, List<FileSystemEntity>>> _loadFiles(String directoryPath) async {
+  Future<Map<String, List<FileSystemEntity>>> _loadFiles(
+      String directoryPath) async {
     Directory projectDirectory = fetchDirectory(directoryPath);
-    List<FileSystemEntity> projectFileList = await _fetchFiles(projectDirectory);
+    List<FileSystemEntity> projectFileList =
+        await _fetchFiles(projectDirectory);
     projectFileList = _sortFiles(projectFileList);
     projectFileList = _ignoreFiles(projectFileList);
 
@@ -79,12 +80,13 @@ class ProjectFiles extends _$ProjectFiles {
     return projectDirectoryPath != null;
   }
 
-  Future<Map<String, List<FileSystemEntity>>?> loadChildren(String parentDirectoryPath) async {
-
+  Future<Map<String, List<FileSystemEntity>>?> loadChildren(
+      String parentDirectoryPath) async {
     // state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
-      Map<String, List<FileSystemEntity>> childrenFileMap = await _loadFiles(parentDirectoryPath);
+      Map<String, List<FileSystemEntity>> childrenFileMap =
+          await _loadFiles(parentDirectoryPath);
       return {...?state.value, ...childrenFileMap};
     });
 
@@ -92,7 +94,9 @@ class ProjectFiles extends _$ProjectFiles {
   }
 
   List<FileSystemEntity>? getProjectRootFiles() {
-    if (state.value != null && projectDirectoryPath != null && state.value!.containsKey(projectDirectoryPath)) {
+    if (state.value != null &&
+        projectDirectoryPath != null &&
+        state.value!.containsKey(projectDirectoryPath)) {
       return state.value![projectDirectoryPath!];
     }
     return null;
@@ -106,10 +110,8 @@ class ProjectFiles extends _$ProjectFiles {
   }
 }
 
-
 @Riverpod(keepAlive: true)
 class ProjectExpandedNodes extends _$ProjectExpandedNodes {
-
   @override
   Set<FileSystemEntity> build() {
     return {};

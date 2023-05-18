@@ -9,7 +9,6 @@ import 'core.dart';
 import 'utils/state_logger.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await windowManager.ensureInitialized();
@@ -20,10 +19,5 @@ void main() async {
   // Turn off the # in the URLs on the web
   usePathUrlStrategy();
 
-  runApp(
-    const ProviderScope(
-      observers: [StateLogger()],
-      child: QuinineCore()
-    )
-  );
+  runApp(const ProviderScope(observers: [StateLogger()], child: QuinineCore()));
 }

@@ -1,4 +1,3 @@
-
 const List<String> ignoredFilesAndDirectories = [
   // Version Control
   '.git',

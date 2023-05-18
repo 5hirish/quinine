@@ -1,11 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../intents/file.dart';
 
 class KeyActivators {
-  static SingleActivator cmdS = const SingleActivator(LogicalKeyboardKey.keyS, meta: true);
+  static SingleActivator cmdS =
+      const SingleActivator(LogicalKeyboardKey.keyS, meta: true);
 }
 
 const fileOperationShortcuts = {

@@ -3,10 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'theme.freezed.dart';
 
-
 @freezed
 class CoreTheme with _$CoreTheme {
-
   const factory CoreTheme({
     required ThemeMode mode,
     required ThemeData? lightTheme,
@@ -16,7 +14,6 @@ class CoreTheme with _$CoreTheme {
 
 @freezed
 class CoreCodeTheme with _$CoreCodeTheme {
-
   const factory CoreCodeTheme({
     required Map<String, TextStyle> style,
     required String? fontFamily,
