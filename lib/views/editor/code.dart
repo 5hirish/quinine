@@ -6,6 +6,7 @@ import 'package:code_text_field/code_text_field.dart' as lite;
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:highlight/languages/dart.dart';
 import 'package:quinine/keys/activators.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../hooks/code.dart';
 import '../../intents/file.dart';
@@ -70,7 +71,34 @@ class CodeEditor extends HookConsumerWidget {
           codeController.setCursor(sourceFile.extentOffset);
         }
 
-        return getCodeEditor(ref, focusNode, codeController, codeStyle);
+        return Row(
+          children: [
+            Expanded(
+              child: getCodeEditor(ref, focusNode, codeController, codeStyle),
+            ),
+            if (fileExtension == "md")
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "MarkDown Viewer",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Expanded(
+                        child: Markdown(data: codeController.text),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+          ],
+        );
       },
       loading: () => const Center(
           child: SizedBox(width: 72, child: LinearProgressIndicator())),

@@ -1,7 +1,7 @@
 name: quinine
 description: A core IDE for Flutter development
 
-publish_to: 'none' 
+publish_to: 'none'
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -15,77 +15,60 @@ environment:
   sdk: '>=2.19.6 <3.0.0'
 
 dependencies:
+  clock: ^1.1.1
+  code_text_field: ^1.1.0
+  file_picker: ^5.3.0
+  flex_color_scheme: ^7.1.0
   flutter:
     sdk: flutter
+  flutter_code_editor: ^0.2.23
+  flutter_fancy_tree_view: ^1.1.1
+  flutter_highlight: ^0.7.0
+  flutter_hooks: ^0.18.6
   flutter_localizations:
     sdk: flutter
-
-  # For utilities
-  logger: any
-  intl: any
-  path: any
-  nanoid: ^1.0.0
-  clock: ^1.1.1
-
-  # For user interface
-  responsive_framework: ^1.0.0
-  google_fonts: ^4.0.4
-  flex_color_scheme: ^7.1.0
+  flutter_markdown: ^0.6.14
   font_awesome_flutter: ^10.4.0
-  flutter_fancy_tree_view: ^1.1.1
-  multi_split_view: ^2.4.0
-  highlight: ^0.7.0
-  flutter_highlight: ^0.7.0
-  code_text_field: ^1.1.0
-  flutter_code_editor: ^0.2.23
-  tabbed_view: ^1.16.0+1
-
-  # For window management
-  window_manager: ^0.3.2
-
-  # For state management
-  flutter_hooks: ^0.18.6
-  hooks_riverpod: ^2.3.6
-
-  # For routing
+  freezed_annotation: ^2.2.0
   go_router: ^7.0.1
-
-  # For file management
-  watcher: ^1.0.2
-  file_picker: ^5.3.0
-  path_provider: ^2.0.15
-
-  # For storage management
+  google_fonts: ^4.0.4
+  highlight: ^0.7.0
+  hooks_riverpod: ^2.3.6
+  intl: any
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
-
-  # For annotations
   json_annotation: ^4.8.1
-  freezed_annotation: ^2.2.0
+  logger: any
+  multi_split_view: ^2.4.0
+  nanoid: ^1.0.0
+  path: any
+  path_provider: ^2.0.15
+  responsive_framework: ^1.0.0
   riverpod_annotation: ^2.1.1
+  tabbed_view: ^1.16.0+1
+  watcher: ^1.0.2
+  window_manager: ^0.3.2
 
 dev_dependencies:
-
-  # For testing
-  flutter_test:
-    sdk: flutter
-  integration_test:
-    sdk: flutter
-  test: any
-  mockito: ^5.4.0
 
   # For generating code
   build_runner: any
   build_verify: any
-  json_serializable: any
-  freezed: ^2.3.3
-  riverpod_generator: ^2.2.1
-  isar_generator: ^3.1.0+1
-  go_router_builder: ^2.0.1
 
   # For linting
   flutter_lints: ^2.0.1
+  flutter_test:
+    sdk: flutter
+  freezed: ^2.3.3
+  go_router_builder: ^2.0.1
+  integration_test:
+    sdk: flutter
+  isar_generator: ^3.1.0+1
+  json_serializable: any
+  mockito: ^5.4.0
+  riverpod_generator: ^2.2.1
   riverpod_lint: ^1.3.1
+  test: any
 
 flutter:
 
@@ -95,4 +78,3 @@ flutter:
   assets:
     - assets/
     - assets/icon/
-
