@@ -5,12 +5,6 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/5hirish/quinine/total)](https://github.com/5hirish/quinine/releases)
 [![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCjE3XF9nr_MagQ2L5nCW7NA?style=social)](https://www.youtube.com/channel/UCjE3XF9nr_MagQ2L5nCW7NA)
 
-> Quinine is the core library that powers Tonic, a feature-rich low-code Flutter IDE designed to improve the development experience for Flutter developers. Quinine provides essential functionalities such as the low-code designer, syntax highlighting, autocompletion, error checking, and code navigation, making it the backbone of Tonic.
-
-*Quinine gets its name from the natural compound quinine, which has been historically used as a key ingredient in tonic water. In the 19th century, quinine was discovered to have antimalarial properties and was extracted from the bark of the cinchona tree. British officials stationed in India mixed quinine with sugar and water to make it more palatable, creating the first tonic water. Later, it became popular to mix tonic water with gin, giving birth to the classic gin and tonic cocktail.*
-
-*In a similar fashion, Quinine serves as the essential ingredient that gives Tonic its powerful capabilities. By integrating Quinine into Tonic, developers can enjoy a seamless and efficient coding experience when working with Flutter projects.*
-
 ⭐️ *An IDE for developers by developers* 🥂
 
 ## Why a new IDE?
@@ -55,7 +49,7 @@ We appreciate your support and patience as we continue to build and refine Tonic
 
 ## Contribute
 
-We welcome contributions from the community! Please read our [contributing guidelines](https://github.com/5hirish/quinine/blob/release/CONTRIBUTION.md) and [wiki](https://github.com/5hirish/quinine/wiki) before submitting a pull request.
+We welcome contributions from the community! Please read our [contributing guidelines](https://github.com/5hirish/quinine/blob/release/CONTRIBUTING.md) and [wiki](https://github.com/5hirish/quinine/wiki) before submitting a pull request.
 
 ## Join the Community
 
@@ -72,3 +66,11 @@ Let's get to know the passionate minds behind Tonic IDE:
 ## License
 
 Quinine is available under the [Apache License 2.0](https://github.com/5hirish/quinine/blob/release/LICENSE). Use it wisely.
+
+## About
+
+> Quinine is the core library that powers Tonic, a feature-rich low-code Flutter IDE designed to improve the development experience for Flutter developers. Quinine provides essential functionalities such as the low-code designer, syntax highlighting, autocompletion, error checking, and code navigation, making it the backbone of Tonic.
+
+*Quinine gets its name from the natural compound quinine, which has been historically used as a key ingredient in tonic water. In the 19th century, quinine was discovered to have antimalarial properties and was extracted from the bark of the cinchona tree. British officials stationed in India mixed quinine with sugar and water to make it more palatable, creating the first tonic water. Later, it became popular to mix tonic water with gin, giving birth to the classic gin and tonic cocktail.*
+
+*In a similar fashion, Quinine serves as the essential ingredient that gives Tonic its powerful capabilities. By integrating Quinine into Tonic, developers can enjoy a seamless and efficient coding experience when working with Flutter projects.*
