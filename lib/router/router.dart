@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-
 import '../error.dart';
 import 'routes.dart';
 
@@ -12,7 +11,6 @@ final _key = GlobalKey<NavigatorState>(debugLabel: 'routerKey');
 
 @riverpod
 GoRouter router(RouterRef ref) {
-
   return GoRouter(
     navigatorKey: _key,
     debugLogDiagnostics: true,

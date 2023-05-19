@@ -17,12 +17,12 @@ class EditorView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final openFiles = ref.watch(openFilesPathProvider);
     final selectedIndex = ref.watch(selectedTabIndexProvider);
 
     void removeFile(int index, String filePath) {
-      ref.read(openFilesPathProvider.notifier).state = openFiles.where((file) => file != filePath).toList();
+      ref.read(openFilesPathProvider.notifier).state =
+          openFiles.where((file) => file != filePath).toSet();
       if (index > 0 && selectedIndex == index) {
         ref.read(selectedTabIndexProvider.notifier).state = index - 1;
         //Todo: Only if a code file
@@ -30,34 +30,31 @@ class EditorView extends HookConsumerWidget {
       }
     }
 
-    final tabbedViewController = useMemoized(() {
-        List<TabData> tabs = openFiles.map((file) => createTabDataForFile(file)).toList();
+    final tabbedViewController = useMemoized(
+      () {
+        List<TabData> tabs =
+            openFiles.map((file) => createTabDataForFile(file)).toList();
         return TabbedViewController(tabs);
       },
       [openFiles],
     );
 
     if (tabbedViewController.tabs.isEmpty) {
-      tabbedViewController.addTab(
-        TabData(
+      tabbedViewController.addTab(TabData(
           text: AppLocalizations.of(context)!.welcome,
           value: "${AppLocalizations.of(context)!.welcome} ${DateTime.now()}",
           closable: false,
-          content: const LandingView()
-        )
-      );
+          content: const LandingView()));
 
       return TabbedViewTheme(
           data: TabbedViewThemeData.dark(),
-          child: TabbedView(controller: tabbedViewController)
-      );
+          child: TabbedView(controller: tabbedViewController));
     }
 
     if (openFiles.isEmpty) {
       return TabbedViewTheme(
           data: TabbedViewThemeData.dark(),
-          child: TabbedView(controller: tabbedViewController)
-      );
+          child: TabbedView(controller: tabbedViewController));
     }
 
     if (selectedIndex != null) {
@@ -69,11 +66,12 @@ class EditorView extends HookConsumerWidget {
       child: TabbedView(
         selectToEnableButtons: false,
         controller: tabbedViewController,
-        onTabSelection: (int? index) => ref.read(selectedTabIndexProvider.notifier).state = index,
-        onTabClose: (int index, TabData tabData) => removeFile(index, tabData.value),
+        onTabSelection: (int? index) =>
+            ref.read(selectedTabIndexProvider.notifier).state = index,
+        onTabClose: (int index, TabData tabData) =>
+            removeFile(index, tabData.value),
         contentBuilder: (BuildContext context, int tabIndex) {
-
-          final filePath = openFiles[tabIndex];
+          final filePath = openFiles.elementAt(tabIndex);
 
           //Todo: If media open media viewer else open code_test.dart editor
 
@@ -102,7 +100,6 @@ class EditorView extends HookConsumerWidget {
   }
 
   TabData createTabDataForFile(String filePath) {
-
     String fileName = FileService(filePath).getFilePathName();
 
     return TabData(
@@ -111,5 +108,4 @@ class EditorView extends HookConsumerWidget {
       closable: true,
     );
   }
-
 }

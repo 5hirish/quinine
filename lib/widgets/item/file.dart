@@ -15,7 +15,7 @@ class FileExplorerItem extends HookConsumerWidget {
     required this.entry,
     required this.onPressed,
     required this.isOpen,
-    required this.isFileLoading, 
+    required this.isFileLoading,
   });
 
   final TreeEntry<FileSystemEntity> entry;
@@ -25,7 +25,6 @@ class FileExplorerItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
     FileSystemEntity file = entry.node;
 
     String fileName = getFileName(file);
@@ -35,26 +34,21 @@ class FileExplorerItem extends HookConsumerWidget {
     return TreeIndentation(
       entry: entry,
       guide: const IndentGuide(indent: 12),
-      
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onSecondaryTapDown: (details) {
           showContextFileMenu(context, details.globalPosition, file);
         },
         child: InkWell(
-          onTap: () => onPressed != null? onPressed!(): null,
-          child: getFileExplorerRow(
-              fileName, isFileLoading, isInstanceOfFile,
-              fileExt: fileExt, isOpen: isOpen
-          )
-        ),
+            onTap: () => onPressed != null ? onPressed!() : null,
+            child: getFileExplorerRow(fileName, isFileLoading, isInstanceOfFile,
+                fileExt: fileExt, isOpen: isOpen)),
       ),
     );
   }
 
   Widget getFileExplorerRow(String fileName, bool isLoading, bool isFile,
       {String fileExt = "dart", bool isOpen = false}) {
-    
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -80,7 +74,6 @@ class FileExplorerItem extends HookConsumerWidget {
 
   Widget getLeadingFor(bool isLoading, bool isFile,
       {String fileExt = ".dart", bool isOpen = false}) {
-    
     if (isLoading) {
       return const Center(
         child: SizedBox.square(

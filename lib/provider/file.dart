@@ -5,7 +5,7 @@ import '../services/file.dart';
 
 part 'file.g.dart';
 
-final openFilesPathProvider = StateProvider<List<String>>((ref) => []);
+final openFilesPathProvider = StateProvider<Set<String>>((ref) => <String>{});
 
 @Riverpod(keepAlive: true)
 FileService fileService(FileServiceRef ref, String filePath) {
