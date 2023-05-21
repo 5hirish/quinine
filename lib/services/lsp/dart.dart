@@ -10,7 +10,15 @@ class DartLspService {
   String clientVersion = '0.1';
   StreamController<String>? _responseController;
 
+  // This is to keep track of whether the server is running.
+  bool _isServerRunning = false;
+
   int _id = 0; // we're going to use this to keep track of the request ID
+
+  Stream<String> get responses =>
+      _responseController?.stream ?? const Stream.empty();
+
+  bool get isServerRunning => _isServerRunning;
 
   Future<void> start() async {
     _responseController = StreamController();
@@ -24,10 +32,9 @@ class DartLspService {
     ]);
     // listen for responses
     _process.stdout.transform(utf8.decoder).listen(_responseController!.add);
-  }
 
-  Stream<String> get responses =>
-      _responseController?.stream ?? const Stream.empty();
+    _isServerRunning = true; // Mark the server as running after starting it.
+  }
 
   void sendRequest(String method, [Map<String, dynamic> params = const {}]) {
     // merge the standard part of the payload with the provided method and params
@@ -54,6 +61,8 @@ class DartLspService {
 
   Future<bool?> stop() async {
     await _responseController?.close();
-    return _process.kill();
+    _isServerRunning =
+        !_process.kill(); // Mark the server as not running after stopping it.
+    return _isServerRunning;
   }
 }

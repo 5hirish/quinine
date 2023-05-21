@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/ignored.dart';
+import 'lsp.dart';
 
 part 'project.g.dart';
 
@@ -14,6 +15,9 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
   }
 
   void changeDirectoryPath(String? directoryPath) {
+    final lspDartProvider = ref.read(dartLSPProvider);
+    lspDartProvider.initialize(directoryPath!);
+
     state = directoryPath;
   }
 }
