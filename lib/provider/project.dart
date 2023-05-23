@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,6 +25,8 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
   void changeDirectoryPath(String? directoryPath) async {
     final lspDartProvider = ref.read(dartLSPProvider);
 
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
     int lspParentProcessId = await lspDartProvider.getParentProcessId();
 
     WorkspaceFolder workspaceFolder = WorkspaceFolder(
@@ -37,7 +40,8 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
       initializationOptions: const InitializationOptions(),
       trace: "verbose",
       workspaceFolder: [workspaceFolder],
-      clientInfo: const ClientInfo(name: "Quinine", version: "0.1"),
+      clientInfo: ClientInfo(
+          name: packageInfo.packageName, version: packageInfo.version),
       locale: getCurrentLocale(),
     );
 

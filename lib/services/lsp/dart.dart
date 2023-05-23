@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../logger.dart';
 import '../../models/lsp/params/initialize.dart';
 
 class DartLSPService {
   late Process _process;
-
-  String clientID = 'quinine.dart';
-  String clientVersion = '0.1';
 
   // To allow multiple subscriptions to a single stream.
   StreamController<String>? _controller = StreamController<String>.broadcast();
@@ -62,13 +62,17 @@ class DartLSPService {
   Future<void> _start() async {
     _controller = StreamController();
 
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
     // Start the process
     _process = await Process.start('dart', [
       'language-server',
       '--client-id',
-      clientID,
+      packageInfo.packageName,
       '--client-version',
-      clientVersion
+      packageInfo.version,
+      '--protocol-traffic-log',
+      'dart-sdk-lsp.log',
     ]);
 
     // Listen for responses and errors from the language server on the
@@ -86,6 +90,8 @@ class DartLSPService {
 
     // Mark the server as running after starting it.
     _isServerRunning = true;
+
+    logger.i("Dart SDK LSP Server started");
   }
 
   Future<Map<String, dynamic>> _sendMessage(String method, bool isNotification,
@@ -231,6 +237,8 @@ class DartLSPService {
 
     // Kill the process and mark the server as not running
     _isServerRunning = !_process.kill();
+
+    logger.i("Dart SDK LSP Server stopped");
 
     return _isServerRunning;
   }

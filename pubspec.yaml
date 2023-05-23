@@ -26,6 +26,7 @@ dependencies:
   path: any
   nanoid: ^1.0.0
   clock: ^1.1.1
+  package_info_plus: ^4.0.1
 
   # For user interface
   responsive_framework: ^1.0.0
