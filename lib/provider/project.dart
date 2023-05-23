@@ -1,8 +1,15 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/ignored.dart';
+import '../models/lsp/params/capabilities.dart';
+import '../models/lsp/params/clientInfo.dart';
+import '../models/lsp/params/initializationOptions.dart';
+import '../models/lsp/params/initialize.dart';
+import '../models/lsp/params/workspaceFolder.dart';
+import '../utils.dart';
 import 'lsp.dart';
 
 part 'project.g.dart';
@@ -14,9 +21,27 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
     return null;
   }
 
-  void changeDirectoryPath(String? directoryPath) {
+  void changeDirectoryPath(String? directoryPath) async {
     final lspDartProvider = ref.read(dartLSPProvider);
-    lspDartProvider.initialize(directoryPath!);
+
+    int lspParentProcessId = await lspDartProvider.getParentProcessId();
+
+    WorkspaceFolder workspaceFolder = WorkspaceFolder(
+      uri: Uri.parse(directoryPath!),
+      name: basename(directoryPath),
+    );
+
+    Initialize initialize = Initialize(
+      processId: lspParentProcessId,
+      capabilities: clientCapabilities,
+      initializationOptions: const InitializationOptions(),
+      trace: "verbose",
+      workspaceFolder: [workspaceFolder],
+      clientInfo: const ClientInfo(name: "Quinine", version: "0.1"),
+      locale: getCurrentLocale(),
+    );
+
+    lspDartProvider.initialize(initialize);
 
     state = directoryPath;
   }

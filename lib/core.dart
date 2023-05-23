@@ -18,21 +18,16 @@ class QuinineCore extends ConsumerStatefulWidget {
 }
 
 class QuinineCoreState extends ConsumerState<QuinineCore> {
-  late final DartLspService _lspService;
+  late final DartLSPService _lspService;
 
   @override
   void initState() {
     super.initState();
     _lspService = ref.read(dartLSPProvider);
-
-    _lspService.start().then((_) {
-      logger.i("LSP server started");
-    });
   }
 
   @override
   void dispose() {
-    _lspService.stop();
     super.dispose();
   }
 
