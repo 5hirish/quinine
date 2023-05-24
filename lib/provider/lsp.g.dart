@@ -6,11 +6,11 @@ part of 'lsp.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dartLSPHash() => r'1342e47f39c8315cb56b9ad3c1012f93fcaa5993';
+String _$dartLSPHash() => r'43be2b0901049124cf91f25b1750ee135c3cdd45';
 
 /// See also [dartLSP].
 @ProviderFor(dartLSP)
-final dartLSPProvider = Provider<DartLSPService>.internal(
+final dartLSPProvider = FutureProvider<DartLSPService>.internal(
   dartLSP,
   name: r'dartLSPProvider',
   debugGetCreateSourceHash:
@@ -19,5 +19,5 @@ final dartLSPProvider = Provider<DartLSPService>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef DartLSPRef = ProviderRef<DartLSPService>;
+typedef DartLSPRef = FutureProviderRef<DartLSPService>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

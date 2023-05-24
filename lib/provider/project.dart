@@ -22,33 +22,37 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
     return null;
   }
 
-  void changeDirectoryPath(String? directoryPath) async {
-    final lspDartProvider = ref.read(dartLSPProvider);
-
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-    int lspParentProcessId = await lspDartProvider.getParentProcessId();
-
-    WorkspaceFolder workspaceFolder = WorkspaceFolder(
-      uri: Uri.parse(directoryPath!),
-      name: basename(directoryPath),
-    );
-
-    Initialize initialize = Initialize(
-      processId: lspParentProcessId,
-      capabilities: clientCapabilities,
-      initializationOptions: const InitializationOptions(),
-      trace: "verbose",
-      workspaceFolder: [workspaceFolder],
-      clientInfo: ClientInfo(
-          name: packageInfo.packageName, version: packageInfo.version),
-      locale: getCurrentLocale(),
-    );
-
-    lspDartProvider.initialize(initialize);
+  void changeDirectoryPath(String? directoryPath) {
+    // initializeLSP(directoryPath!);
 
     state = directoryPath;
   }
+
+  // void initializeLSP(String directoryPath) async {
+  //   ref.read(dartLSPProvider).whenData((lspDart) async {
+  //     PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //
+  //     int lspParentProcessId = await lspDart.getParentProcessId();
+  //
+  //     WorkspaceFolder workspaceFolder = WorkspaceFolder(
+  //       uri: Uri.parse(directoryPath),
+  //       name: basename(directoryPath),
+  //     );
+  //
+  //     Initialize initialize = Initialize(
+  //       processId: lspParentProcessId,
+  //       capabilities: clientCapabilities,
+  //       initializationOptions: const InitializationOptions(),
+  //       trace: "verbose",
+  //       workspaceFolder: [workspaceFolder],
+  //       clientInfo: ClientInfo(
+  //           name: packageInfo.packageName, version: packageInfo.version),
+  //       locale: getCurrentLocale(),
+  //     );
+  //
+  //     lspDart.initialize(initialize);
+  //   });
+  // }
 }
 
 @Riverpod(keepAlive: true)
