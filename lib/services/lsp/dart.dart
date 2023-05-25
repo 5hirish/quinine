@@ -4,13 +4,17 @@ import 'dart:io';
 
 import '../../logger.dart';
 import '../../models/lsp/params/initialize.dart';
+import '../../wrapper/process.dart';
 
 class DartLSPService {
-  late Process _process;
+  final ProcessWrapper processWrapper;
+  late ProcessWrapper _process;
 
   // To allow multiple subscriptions to a single stream.
   final StreamController<String> _controller =
       StreamController<String>.broadcast();
+
+  final _buffer = StringBuffer();
 
   // To store the IDs of pending requests in a map when you send the request,
   // and then remove them from the map when you receive the response.
@@ -22,11 +26,8 @@ class DartLSPService {
   int _id = 1; // we're going to use this to keep track of the request ID
 
   Stream<String> get responses => _controller.stream;
-
   bool get isServerRunning => _isServerRunning;
-
   int get requestId => _id;
-
   int get pid => _process.pid;
 
   final String logFilePath;
@@ -34,7 +35,8 @@ class DartLSPService {
   final String clientVersion;
 
   DartLSPService._start(
-      {required this.clientId,
+      {required this.processWrapper,
+      required this.clientId,
       required this.clientVersion,
       this.logFilePath = ''});
 
@@ -49,12 +51,12 @@ class DartLSPService {
     ];
 
     if (logFilePath.isNotEmpty) {
-      processParams.add('--protocol-traffic-log');
+      processParams.add('--instrumentation-log-file');
       processParams.add(logFilePath);
     }
 
     // Start the LSP server process
-    _process = await Process.start('dart', processParams);
+    _process = await processWrapper.start('dart', processParams);
 
     // Listen for responses and errors from the language server on the
     // standard output and standard error streams.
@@ -64,7 +66,7 @@ class DartLSPService {
     });
 
     _process.stderr.transform(utf8.decoder).listen((data) {
-      logger.d("Error from Dart SDK LSP Server: $data");
+      logger.e("Error from Dart SDK LSP Server: $data");
       _controller.add(data);
     });
 
@@ -76,10 +78,12 @@ class DartLSPService {
 
   /// Public factory to start the LSP server
   static Future<DartLSPService> start(
-      {required String clientId,
+      {required ProcessWrapper processWrapper,
+      required String clientId,
       required String clientVersion,
       String logFilePath = ''}) async {
     var dartLSP = DartLSPService._start(
+        processWrapper: processWrapper,
         clientId: clientId,
         clientVersion: clientVersion,
         logFilePath: logFilePath);
@@ -89,7 +93,11 @@ class DartLSPService {
     return dartLSP;
   }
 
-  void _handleResponse(String message) {
+  void _handleResponse(String data) {
+    _handleMessage(data);
+  }
+
+  void _handleMessage(String message) {
     /**
      * A Response Message sent as a result of a request.
      * If a request doesn’t provide a result value the receiver of a request
@@ -153,7 +161,7 @@ class DartLSPService {
 
     final List<int> fullMessage = [...encodedHeader, ...encodedContent];
 
-    _process.stdin.add(encodedContent);
+    _process.stdin.add(fullMessage);
 
     if (isNotification) {
       return Future.value({});
@@ -198,7 +206,7 @@ class DartLSPService {
     return sendRequest('initialize', initialize.toJson());
   }
 
-  void initialized() {
+  Future<Map<String, dynamic>> initialized() {
     /**
      * The initialized notification is sent from the client to the server
      * after the client received the result of the initialize request but before
@@ -207,15 +215,15 @@ class DartLSPService {
      * dynamically register capabilities. The initialized notification may only be sent once.
      * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initialized
      */
-    sendNotification('initialized');
+    return sendNotification('initialized');
   }
 
-  void cancelRequest(int id) {
+  Future<Map<String, dynamic>> cancelRequest(int id) {
     /**
      * To cancel a request, a notification message with the request id to cancel is sent
      * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#cancelRequest
      */
-    sendNotification('\$/cancelRequest', {'id': id});
+    return sendNotification('\$/cancelRequest', {'id': id});
   }
 
   Future<Map<String, dynamic>> shutdown() {
@@ -228,13 +236,13 @@ class DartLSPService {
     return sendRequest('shutdown');
   }
 
-  void exit() {
+  Future<Map<String, dynamic>> exit() {
     /**
      * A notification to ask the server to exit its process.
      * The server should exit with success code 0 if the shutdown request
      * has been received before; otherwise with error code 1.
      */
-    sendNotification('exit');
+    return sendNotification('exit');
   }
 
   Future<int> getParentProcessId() async {
@@ -255,12 +263,10 @@ class DartLSPService {
   }
 
   Future<bool?> stop() async {
-    logger.i("Dart SDK LSP Server shutting down");
-
     Map<String, dynamic>? response = await shutdown();
 
     if (response['result'] == null) {
-      exit();
+      await exit();
     }
 
     // Close the stream controller and kill the process.
@@ -268,6 +274,8 @@ class DartLSPService {
 
     // Kill the process and mark the server as not running
     _isServerRunning = !_process.kill();
+
+    logger.i("Dart SDK LSP Server shut down");
 
     return _isServerRunning;
   }

@@ -9,6 +9,7 @@ part of 'initialize.dart';
 _$_Initialize _$$_InitializeFromJson(Map<String, dynamic> json) =>
     _$_Initialize(
       processId: json['processId'] as int,
+      rootUri: json['rootUri'] as String,
       clientInfo: json['clientInfo'] == null
           ? null
           : ClientInfo.fromJson(json['clientInfo'] as Map<String, dynamic>),
@@ -27,6 +28,7 @@ _$_Initialize _$$_InitializeFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$_InitializeToJson(_$_Initialize instance) =>
     <String, dynamic>{
       'processId': instance.processId,
+      'rootUri': instance.rootUri,
       'clientInfo': instance.clientInfo,
       'locale': instance.locale,
       'trace': instance.trace,

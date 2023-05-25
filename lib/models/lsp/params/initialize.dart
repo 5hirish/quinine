@@ -13,6 +13,7 @@ class Initialize with _$Initialize {
     required int
         processId, // process Id of parent process that started the server
 
+    required String rootUri,
     required ClientInfo? clientInfo, // Information about the client
     required String? locale, // Uses IETF language tags as the value's syntax
     required String? trace, // The initial trace setting

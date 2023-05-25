@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:quinine/models/lsp/params/capabilities.dart';
@@ -13,31 +10,11 @@ import 'package:quinine/models/lsp/params/workspaceFolder.dart';
 import 'package:quinine/services/lsp/dart.dart';
 import 'package:quinine/wrapper/process.dart';
 
-import '../data/lsp.dart';
-@GenerateNiceMocks([MockSpec<ActualProcessWrapper>(), MockSpec<IOSink>()])
-import 'lsp_test.mocks.dart';
-
 void main() {
-  group('DartLSPService mock tests', () {
+  group('DartLSPService tests', () {
     late DartLSPService service;
-    late MockActualProcessWrapper mockProcess;
-    late MockIOSink mockIOSink;
-
-    List<List<int>> encodedStrings =
-        lspOutputChunkingTestData.map((str) => utf8.encode(str)).toList();
 
     setUp(() async {
-      mockProcess = MockActualProcessWrapper();
-      mockIOSink = MockIOSink();
-
-      when(mockProcess.start(any, any)).thenAnswer((_) async => mockProcess);
-
-      when(mockProcess.stdout)
-          .thenAnswer((_) => Stream.fromIterable(encodedStrings));
-
-      when(mockProcess.stdin).thenReturn(mockIOSink);
-      // when(mockProcess.stdin.add([0, 0])).thenReturn(null);
-
       PackageInfo.setMockInitialValues(
           appName: 'Quinine Test',
           packageName: 'quinine.test',
@@ -46,7 +23,7 @@ void main() {
           buildSignature: 'buildSignature');
 
       service = await DartLSPService.start(
-          processWrapper: mockProcess,
+          processWrapper: ActualProcessWrapper(),
           clientId: 'quinine.test',
           clientVersion: '1',
           logFilePath: 'test-dart-sdk-lsp.log');
@@ -57,9 +34,14 @@ void main() {
     });
 
     test(
-      'test DartLSPService message handling',
+      'initialize the LSP server path',
       () async {
-        int lspPpId = 100;
+        expect(service, isA<DartLSPService>());
+
+        int lspPpId = await service.getParentProcessId();
+
+        expect(lspPpId, isA<int>());
+
         final directoryPath = Directory.current.path;
         final directoryUri = Uri.parse(directoryPath);
         WorkspaceFolder workspaceFolder = WorkspaceFolder(
@@ -80,7 +62,17 @@ void main() {
 
         final result = await service.initialize(initializeParams);
 
-        expect(result, isNotNull);
+        expect(
+            result,
+            isA<Map<String, dynamic>>()
+                .having((resp) => resp.containsKey('capabilities'),
+                    'capabilities', isTrue)
+                .having((resp) => resp.containsKey('serverInfo'), 'server info',
+                    isTrue));
+
+        final notification = await service.initialized();
+
+        expect(notification.length, 0);
       },
       timeout: const Timeout(Duration(seconds: 3)),
     );

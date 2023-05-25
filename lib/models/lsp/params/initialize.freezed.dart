@@ -22,6 +22,7 @@ Initialize _$InitializeFromJson(Map<String, dynamic> json) {
 mixin _$Initialize {
   int get processId =>
       throw _privateConstructorUsedError; // process Id of parent process that started the server
+  String get rootUri => throw _privateConstructorUsedError;
   ClientInfo? get clientInfo =>
       throw _privateConstructorUsedError; // Information about the client
   String? get locale =>
@@ -48,6 +49,7 @@ abstract class $InitializeCopyWith<$Res> {
   @useResult
   $Res call(
       {int processId,
+      String rootUri,
       ClientInfo? clientInfo,
       String? locale,
       String? trace,
@@ -73,6 +75,7 @@ class _$InitializeCopyWithImpl<$Res, $Val extends Initialize>
   @override
   $Res call({
     Object? processId = null,
+    Object? rootUri = null,
     Object? clientInfo = freezed,
     Object? locale = freezed,
     Object? trace = freezed,
@@ -85,6 +88,10 @@ class _$InitializeCopyWithImpl<$Res, $Val extends Initialize>
           ? _value.processId
           : processId // ignore: cast_nullable_to_non_nullable
               as int,
+      rootUri: null == rootUri
+          ? _value.rootUri
+          : rootUri // ignore: cast_nullable_to_non_nullable
+              as String,
       clientInfo: freezed == clientInfo
           ? _value.clientInfo
           : clientInfo // ignore: cast_nullable_to_non_nullable
@@ -148,6 +155,7 @@ abstract class _$$_InitializeCopyWith<$Res>
   @useResult
   $Res call(
       {int processId,
+      String rootUri,
       ClientInfo? clientInfo,
       String? locale,
       String? trace,
@@ -173,6 +181,7 @@ class __$$_InitializeCopyWithImpl<$Res>
   @override
   $Res call({
     Object? processId = null,
+    Object? rootUri = null,
     Object? clientInfo = freezed,
     Object? locale = freezed,
     Object? trace = freezed,
@@ -185,6 +194,10 @@ class __$$_InitializeCopyWithImpl<$Res>
           ? _value.processId
           : processId // ignore: cast_nullable_to_non_nullable
               as int,
+      rootUri: null == rootUri
+          ? _value.rootUri
+          : rootUri // ignore: cast_nullable_to_non_nullable
+              as String,
       clientInfo: freezed == clientInfo
           ? _value.clientInfo
           : clientInfo // ignore: cast_nullable_to_non_nullable
@@ -218,6 +231,7 @@ class __$$_InitializeCopyWithImpl<$Res>
 class _$_Initialize implements _Initialize {
   const _$_Initialize(
       {required this.processId,
+      required this.rootUri,
       required this.clientInfo,
       required this.locale,
       required this.trace,
@@ -233,6 +247,8 @@ class _$_Initialize implements _Initialize {
   @override
   final int processId;
 // process Id of parent process that started the server
+  @override
+  final String rootUri;
   @override
   final ClientInfo? clientInfo;
 // Information about the client
@@ -265,7 +281,7 @@ class _$_Initialize implements _Initialize {
 
   @override
   String toString() {
-    return 'Initialize(processId: $processId, clientInfo: $clientInfo, locale: $locale, trace: $trace, capabilities: $capabilities, initializationOptions: $initializationOptions, workspaceFolder: $workspaceFolder)';
+    return 'Initialize(processId: $processId, rootUri: $rootUri, clientInfo: $clientInfo, locale: $locale, trace: $trace, capabilities: $capabilities, initializationOptions: $initializationOptions, workspaceFolder: $workspaceFolder)';
   }
 
   @override
@@ -275,6 +291,7 @@ class _$_Initialize implements _Initialize {
             other is _$_Initialize &&
             (identical(other.processId, processId) ||
                 other.processId == processId) &&
+            (identical(other.rootUri, rootUri) || other.rootUri == rootUri) &&
             (identical(other.clientInfo, clientInfo) ||
                 other.clientInfo == clientInfo) &&
             (identical(other.locale, locale) || other.locale == locale) &&
@@ -292,6 +309,7 @@ class _$_Initialize implements _Initialize {
   int get hashCode => Object.hash(
       runtimeType,
       processId,
+      rootUri,
       clientInfo,
       locale,
       trace,
@@ -316,6 +334,7 @@ class _$_Initialize implements _Initialize {
 abstract class _Initialize implements Initialize {
   const factory _Initialize(
       {required final int processId,
+      required final String rootUri,
       required final ClientInfo? clientInfo,
       required final String? locale,
       required final String? trace,
@@ -329,6 +348,8 @@ abstract class _Initialize implements Initialize {
   @override
   int get processId;
   @override // process Id of parent process that started the server
+  String get rootUri;
+  @override
   ClientInfo? get clientInfo;
   @override // Information about the client
   String? get locale;
