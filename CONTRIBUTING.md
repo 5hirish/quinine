@@ -12,7 +12,7 @@ There are several ways you can contribute to Tonic IDE Core:
 
 - **Report Bugs:** If you find a bug, please create an issue in our [issue tracker](https://github.com/5hirish/quinine/issues) with the "bug" label. Include as much information as possible, such as steps to reproduce, expected behavior, and screenshots if applicable.
 - **Suggest Enhancements:** If you have an idea for a new feature or enhancement, please create an issue in our [issue tracker](https://github.com/5hirish/quinine/issues) with the "enhancement" label. Provide a clear description of the feature and explain why it would be beneficial to the project.
-- **Contribute Code:** You can contribute code by submitting a pull request. Before submitting a pull request, make sure to discuss the changes in a corresponding issue or create a new issue for the changes.
+- **Contribute Code:** If you would like to contribute to the upcoming release, please go through our backlog of features in our [issue tracker](https://github.com/5hirish/quinine/issues) with the "good-first-issue" label. You can contribute code by submitting a pull request. Before submitting a pull request, make sure to discuss the changes in a corresponding issue or create a new issue for the changes.
 
 ## Resources
 
@@ -23,6 +23,7 @@ There are several ways you can contribute to Tonic IDE Core:
 - [Theme: Flex Color Scheme](https://docs.flexcolorscheme.com)
 - [Routing: Go Router](https://pub.dev/documentation/go_router/latest/)
 - [Localisation: ICU i18n syntax](https://unicode-org.github.io/icu/userguide/)
+- [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)
 
 
 ## Submitting a Pull Request
