@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,36 +22,43 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
   }
 
   void changeDirectoryPath(String? directoryPath) {
-    // initializeLSP(directoryPath!);
+    initializeLSP(directoryPath!);
 
     state = directoryPath;
   }
 
-  // void initializeLSP(String directoryPath) async {
-  //   ref.read(dartLSPProvider).whenData((lspDart) async {
-  //     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  //
-  //     int lspParentProcessId = await lspDart.getParentProcessId();
-  //
-  //     WorkspaceFolder workspaceFolder = WorkspaceFolder(
-  //       uri: Uri.parse(directoryPath),
-  //       name: basename(directoryPath),
-  //     );
-  //
-  //     Initialize initialize = Initialize(
-  //       processId: lspParentProcessId,
-  //       capabilities: clientCapabilities,
-  //       initializationOptions: const InitializationOptions(),
-  //       trace: "verbose",
-  //       workspaceFolder: [workspaceFolder],
-  //       clientInfo: ClientInfo(
-  //           name: packageInfo.packageName, version: packageInfo.version),
-  //       locale: getCurrentLocale(),
-  //     );
-  //
-  //     lspDart.initialize(initialize);
-  //   });
-  // }
+  void initializeLSP(String directoryPath) async {
+    ref.read(dartLSPProvider).whenData((lspDart) async {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+      int lspParentProcessId = await lspDart.getParentProcessId();
+
+      final directoryUri = Uri.parse(directoryPath);
+      WorkspaceFolder workspaceFolder = WorkspaceFolder(
+        uri: directoryUri,
+        name: basename(directoryPath),
+      );
+
+      Initialize initialize = Initialize(
+        processId: lspParentProcessId,
+        rootUri: directoryUri.toString(),
+        capabilities: clientCapabilities,
+        initializationOptions: const InitializationOptions(),
+        trace: "verbose",
+        workspaceFolder: [workspaceFolder],
+        clientInfo: ClientInfo(
+            name: packageInfo.packageName, version: packageInfo.version),
+        locale: getCurrentLocale(),
+      );
+
+      Map<String, dynamic> initialized = await lspDart.initialize(initialize);
+
+      if (initialized['capabilities'] != null &&
+          initialized['serverInfo'] != null) {
+        lspDart.initialized();
+      }
+    });
+  }
 }
 
 @Riverpod(keepAlive: true)

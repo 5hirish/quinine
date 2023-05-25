@@ -1,14 +1,10 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import 'logger.dart';
-import 'provider/lsp.dart';
 import 'provider/theme.dart';
 import 'router/router.dart';
-import 'services/lsp/lang/dart.dart';
 
 class QuinineCore extends ConsumerStatefulWidget {
   const QuinineCore({super.key});
