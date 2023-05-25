@@ -7,13 +7,15 @@ import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
 import 'buffer.dart';
 
+/// ref: https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/lib/src/lsp/channel/lsp_byte_stream_channel.dart
+
 abstract class LSPService {
   final ProcessWrapper processWrapper;
   late ProcessWrapper _process;
 
   // To allow multiple subscriptions to a single stream.
-  final StreamController<String> _controller =
-      StreamController<String>.broadcast();
+  final StreamController<Map<String, dynamic>?> _controller =
+      StreamController<Map<String, dynamic>?>.broadcast();
 
   final lspBuffer = LSPBuffer();
 
@@ -26,7 +28,7 @@ abstract class LSPService {
 
   int _id = 1; // we're going to use this to keep track of the request ID
 
-  Stream<String> get responses => _controller.stream;
+  Stream<Map<String, dynamic>?> get responses => _controller.stream;
   bool get isServerRunning => _isServerRunning;
   int get requestId => _id;
   int get pid => _process.pid;
@@ -61,6 +63,8 @@ abstract class LSPService {
         }
 
         if (message is Map<String, dynamic>) {
+          logger.d("RES::MSG::$message");
+          _controller.add(message);
           _handleMessage(message);
         } else {
           logger.e("ERR::FMT::$message");
@@ -68,9 +72,8 @@ abstract class LSPService {
       }
     });
 
-    _process.stderr.transform(utf8.decoder).listen((data) {
-      logger.e("ERR:: $data");
-      _controller.add(data);
+    _process.stderr.transform(utf8.decoder).listen((error) {
+      logger.e("ERR:: $error");
     });
 
     // Mark the server as running after starting it.
@@ -91,11 +94,13 @@ abstract class LSPService {
     final result = message['result'];
     final error = message['error'];
 
-    if (_pendingRequests.containsKey(id)) {
+    if (id != null && _pendingRequests.containsKey(id)) {
       if (error != null) {
         _pendingRequests[id]!.completeError(error);
-      } else {
+      } else if (result != null) {
         _pendingRequests[id]!.complete(result);
+      } else {
+        _pendingRequests[id]!.complete({'': null});
       }
       _pendingRequests.remove(id);
     }
@@ -116,9 +121,11 @@ abstract class LSPService {
       'params': params,
     };
 
+    int id = -1;
     if (!isNotification) {
+      id = _id++;
       // Increment and use the ID for this request
-      content['id'] = _id++;
+      content['id'] = id;
     }
 
     final jsonContent = jsonEncode(content);
@@ -137,10 +144,10 @@ abstract class LSPService {
       return Future.value({});
     }
 
-    logger.d("${isNotification ? "NFN" : "REQ"}::$_id::$method");
+    logger.d("${isNotification ? "NTF" : "REQ"}::$id::$method");
 
     final completer = Completer<Map<String, dynamic>>();
-    _pendingRequests[_id] = completer;
+    _pendingRequests[id] = completer;
     return completer.future;
   }
 

@@ -4,12 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path/path.dart';
-import 'package:quinine/models/lsp/params/capabilities.dart';
-import 'package:quinine/models/lsp/params/clientInfo.dart';
-import 'package:quinine/models/lsp/params/initializationOptions.dart';
-import 'package:quinine/models/lsp/params/initialize.dart';
-import 'package:quinine/models/lsp/params/workspaceFolder.dart';
 import 'package:quinine/services/lsp/lang/dart.dart';
 import 'package:quinine/wrapper/process.dart';
 
@@ -52,37 +46,21 @@ void main() {
           logFilePath: 'test-dart-sdk-lsp.log');
     });
 
-    tearDown(() async {
-      await service.stop();
-    });
-
     test(
-      'test DartLSPService message handling',
+      'mock test DartLSPService message handling',
       () async {
-        int lspPpId = 100;
-        final directoryPath = Directory.current.path;
-        final directoryUri = Uri.parse(directoryPath);
-        WorkspaceFolder workspaceFolder = WorkspaceFolder(
-          uri: directoryUri,
-          name: basename(directoryPath),
-        );
+        List<Map<String, dynamic>> events = [];
 
-        Initialize initializeParams = Initialize(
-          processId: lspPpId,
-          rootUri: directoryUri.toString(),
-          capabilities: clientCapabilities,
-          initializationOptions: const InitializationOptions(),
-          trace: "verbose",
-          workspaceFolder: [workspaceFolder],
-          clientInfo: const ClientInfo(name: 'quinine.test', version: '0.1'),
-          locale: "en_US",
-        );
+        service.responses.listen((event) {
+          expect(event, isA<Map<String, dynamic>>());
+          expect(event, isNotNull);
+          events.add(event!);
+        });
 
-        final result = await service.initialize(initializeParams);
+        await Future.delayed(const Duration(seconds: 1));
 
-        expect(result, isNotNull);
+        expect(events.length, 6);
       },
-      timeout: const Timeout(Duration(seconds: 3)),
     );
   });
 }

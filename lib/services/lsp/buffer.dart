@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+/// ref: https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/lib/src/lsp/lsp_packet_transformer.dart
+
 class LSPBuffer {
   // The buffer that stores the incoming data
   StringBuffer buffer = StringBuffer();
@@ -9,6 +11,8 @@ class LSPBuffer {
 
   // The index where the headers end and the message body begins
   int? headersEnd;
+
+  bool hasExpectedEncoding = false;
 
   // Adds data to the buffer
   void feed(String data) {
@@ -34,12 +38,21 @@ class LSPBuffer {
         if (h.toLowerCase().startsWith('content-length:')) {
           // Parse the length from the header
           expectedLength = int.tryParse(h.split(':')[1].trim());
+        } else if (h.toLowerCase().startsWith('content-type:')) {
+          hasExpectedEncoding = h.toLowerCase().contains('utf-8');
+        }
+
+        if (expectedLength != null && hasExpectedEncoding) {
           break;
         }
       }
       if (expectedLength == null) {
         // If the Content-Length header was not found, throw an error
         throw const FormatException("Missing Content-Length header");
+      }
+
+      if (!hasExpectedEncoding) {
+        throw const FormatException("Missing UTF-8 encoding");
       }
     }
 
