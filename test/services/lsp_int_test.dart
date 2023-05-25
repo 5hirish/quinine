@@ -7,7 +7,7 @@ import 'package:quinine/models/lsp/params/clientInfo.dart';
 import 'package:quinine/models/lsp/params/initializationOptions.dart';
 import 'package:quinine/models/lsp/params/initialize.dart';
 import 'package:quinine/models/lsp/params/workspaceFolder.dart';
-import 'package:quinine/services/lsp/dart.dart';
+import 'package:quinine/services/lsp/lang/dart.dart';
 import 'package:quinine/wrapper/process.dart';
 
 void main() {

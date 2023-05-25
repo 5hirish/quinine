@@ -8,7 +8,7 @@ import 'logger.dart';
 import 'provider/lsp.dart';
 import 'provider/theme.dart';
 import 'router/router.dart';
-import 'services/lsp/dart.dart';
+import 'services/lsp/lang/dart.dart';
 
 class QuinineCore extends ConsumerStatefulWidget {
   const QuinineCore({super.key});

@@ -5,8 +5,9 @@ import 'dart:io';
 import '../../logger.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
+import 'buffer.dart';
 
-class DartLSPService {
+abstract class LSPService {
   final ProcessWrapper processWrapper;
   late ProcessWrapper _process;
 
@@ -14,7 +15,7 @@ class DartLSPService {
   final StreamController<String> _controller =
       StreamController<String>.broadcast();
 
-  final _buffer = StringBuffer();
+  final lspBuffer = LSPBuffer();
 
   // To store the IDs of pending requests in a map when you send the request,
   // and then remove them from the map when you receive the response.
@@ -30,74 +31,55 @@ class DartLSPService {
   int get requestId => _id;
   int get pid => _process.pid;
 
-  final String logFilePath;
   final String clientId;
   final String clientVersion;
 
-  DartLSPService._start(
+  LSPService(
       {required this.processWrapper,
       required this.clientId,
-      required this.clientVersion,
-      this.logFilePath = ''});
+      required this.clientVersion});
 
-  Future<void> _startProcess() async {
-    // LSP Server params
-    List<String> processParams = [
-      'language-server',
-      '--client-id',
-      clientId,
-      '--client-version',
-      clientVersion
-    ];
-
-    if (logFilePath.isNotEmpty) {
-      processParams.add('--instrumentation-log-file');
-      processParams.add(logFilePath);
-    }
-
+  Future<void> startProcess(
+      String executable, List<String> processParams) async {
     // Start the LSP server process
-    _process = await processWrapper.start('dart', processParams);
+    _process = await processWrapper.start(executable, processParams);
 
     // Listen for responses and errors from the language server on the
     // standard output and standard error streams.
     _process.stdout.transform(utf8.decoder).listen((data) {
-      logger.d("Response from Dart SDK LSP Server: $data");
-      _handleResponse(data);
+      logger.d("RES:: $data");
+
+      // Feed the raw data into the LSPBuffer
+      lspBuffer.feed(data);
+
+      // Try to process the buffer
+      while (true) {
+        var message = lspBuffer.process();
+        if (message == null) {
+          // If there's not enough data to process a complete message, break the loop
+          break;
+        }
+
+        if (message is Map<String, dynamic>) {
+          _handleMessage(message);
+        } else {
+          logger.e("ERR::FMT::$message");
+        }
+      }
     });
 
     _process.stderr.transform(utf8.decoder).listen((data) {
-      logger.e("Error from Dart SDK LSP Server: $data");
+      logger.e("ERR:: $data");
       _controller.add(data);
     });
 
     // Mark the server as running after starting it.
     _isServerRunning = true;
 
-    logger.i("Dart SDK LSP Server started");
+    logger.i("SIG::STARTED::$executable");
   }
 
-  /// Public factory to start the LSP server
-  static Future<DartLSPService> start(
-      {required ProcessWrapper processWrapper,
-      required String clientId,
-      required String clientVersion,
-      String logFilePath = ''}) async {
-    var dartLSP = DartLSPService._start(
-        processWrapper: processWrapper,
-        clientId: clientId,
-        clientVersion: clientVersion,
-        logFilePath: logFilePath);
-
-    await dartLSP._startProcess();
-
-    return dartLSP;
-  }
-
-  void _handleResponse(String data) {
-    _handleMessage(data);
-  }
-
-  void _handleMessage(String message) {
+  void _handleMessage(Map<String, dynamic> message) {
     /**
      * A Response Message sent as a result of a request.
      * If a request doesn’t provide a result value the receiver of a request
@@ -105,11 +87,9 @@ class DartLSPService {
      * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#responseMessage
      */
 
-    Map<String, dynamic> jsonMessage = jsonDecode(message);
-
-    final id = jsonMessage['id'];
-    final result = jsonMessage['result'];
-    final error = jsonMessage['error'];
+    final id = message['id'];
+    final result = message['result'];
+    final error = message['error'];
 
     if (_pendingRequests.containsKey(id)) {
       if (error != null) {
@@ -130,25 +110,15 @@ class DartLSPService {
      * The content part is encoded using the ‘utf8’ encoding.
      */
 
-    Map<String, dynamic> content = {};
+    Map<String, dynamic> content = {
+      'jsonrpc': '2.0',
+      'method': method,
+      'params': params,
+    };
 
-    int id = _id;
     if (!isNotification) {
       // Increment and use the ID for this request
-      id = _id++;
-      content = {
-        'id': id,
-        'jsonrpc': '2.0',
-        'method': method,
-        'params': params,
-      };
-    } else {
-      // Use the same ID for all notifications
-      content = {
-        'jsonrpc': '2.0',
-        'method': method,
-        'params': params,
-      };
+      content['id'] = _id++;
     }
 
     final jsonContent = jsonEncode(content);
@@ -167,10 +137,10 @@ class DartLSPService {
       return Future.value({});
     }
 
-    logger.d("Sent message to Dart SDK LSP Server: $id:$method");
+    logger.d("${isNotification ? "NFN" : "REQ"}::$_id::$method");
 
     final completer = Completer<Map<String, dynamic>>();
-    _pendingRequests[id] = completer;
+    _pendingRequests[_id] = completer;
     return completer.future;
   }
 
@@ -275,7 +245,7 @@ class DartLSPService {
     // Kill the process and mark the server as not running
     _isServerRunning = !_process.kill();
 
-    logger.i("Dart SDK LSP Server shut down");
+    logger.i("SIG::SHUTDOWN");
 
     return _isServerRunning;
   }

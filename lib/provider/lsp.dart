@@ -2,7 +2,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quinine/wrapper/process.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../services/lsp/dart.dart';
+import '../services/lsp/lang/dart.dart';
 
 part 'lsp.g.dart';
 
