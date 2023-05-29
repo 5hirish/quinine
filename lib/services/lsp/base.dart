@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../logger.dart';
+import '../../models/lsp/params/document/textDocItem.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
 import 'buffer.dart';
@@ -80,6 +81,23 @@ abstract class LSPService {
     _isServerRunning = true;
 
     logger.i("SIG::STARTED::$executable");
+  }
+
+  Future<int> getParentProcessId() async {
+    ProcessResult result;
+
+    if (Platform.isWindows) {
+      result = await Process.run('powershell.exe', [
+        '-Command',
+        'gwmi win32_process | ? processid -eq ${_process.pid} | select parentprocessid'
+      ]);
+
+      return int.parse(result.stdout.split('\n')[3].trim());
+    } else {
+      result =
+          await Process.run('ps', ['-p', _process.pid.toString(), '-oppid=']);
+      return int.parse(result.stdout.trim());
+    }
   }
 
   void _handleMessage(Map<String, dynamic> message) {
@@ -172,6 +190,8 @@ abstract class LSPService {
     return _sendMessage(method, true, params);
   }
 
+  /// Life cycle messages
+
   Future<Map<String, dynamic>> initialize(Initialize initialize) {
     /**
      * The initialize request is sent as the first request from the client to the server.
@@ -222,21 +242,17 @@ abstract class LSPService {
     return sendNotification('exit');
   }
 
-  Future<int> getParentProcessId() async {
-    ProcessResult result;
+  /// Document Synchronization messages
 
-    if (Platform.isWindows) {
-      result = await Process.run('powershell.exe', [
-        '-Command',
-        'gwmi win32_process | ? processid -eq ${_process.pid} | select parentprocessid'
-      ]);
-
-      return int.parse(result.stdout.split('\n')[3].trim());
-    } else {
-      result =
-          await Process.run('ps', ['-p', _process.pid.toString(), '-oppid=']);
-      return int.parse(result.stdout.trim());
-    }
+  Future<Map<String, dynamic>> textDocDidOpen(TextDocItem textDocItem) {
+    /**
+     * The document open notification is sent from the client to the server to
+     * signal newly opened text documents. The document’s content is now
+     * managed by the client and the server must not try to read the
+     * document’s content using the document’s Uri.
+     */
+    return sendNotification(
+        'textDocument/didOpen', {'textDocument': textDocItem});
   }
 
   Future<bool?> stop() async {
