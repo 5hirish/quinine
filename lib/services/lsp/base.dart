@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../logger.dart';
-import '../../models/lsp/params/document/textDocItem.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
 import 'buffer.dart';
@@ -243,17 +242,6 @@ abstract class LSPService {
   }
 
   /// Document Synchronization messages
-
-  Future<Map<String, dynamic>> textDocDidOpen(TextDocItem textDocItem) {
-    /**
-     * The document open notification is sent from the client to the server to
-     * signal newly opened text documents. The document’s content is now
-     * managed by the client and the server must not try to read the
-     * document’s content using the document’s Uri.
-     */
-    return sendNotification(
-        'textDocument/didOpen', {'textDocument': textDocItem});
-  }
 
   Future<bool?> stop() async {
     Map<String, dynamic>? response = await shutdown();

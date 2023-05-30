@@ -2,8 +2,9 @@ import 'dart:async';
 
 import '../../../wrapper/process.dart';
 import '../base.dart';
+import '../document.dart';
 
-class DartLSPService extends LSPService {
+class DartLSPService extends LSPService with DocumentSynchronization {
   final String logFilePath;
 
   DartLSPService._start(
