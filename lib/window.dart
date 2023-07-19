@@ -63,7 +63,9 @@ class WindowPage extends HookConsumerWidget {
     return [
       toolIndex != null
           ? ResponsiveVisibility(
-              hiddenConditions: const [Condition.smallerThan(name: TABLET)],
+              hiddenConditions: [
+                Condition.smallerThan(name: TABLET, value: 451)
+              ],
               child: ToolsView(toolIndex),
             )
           : const SizedBox.shrink(),
