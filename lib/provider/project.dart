@@ -3,7 +3,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../logger.dart';
 import '../models/ignored.dart';
+import '../models/log_level.dart';
+import '../models/lsp/error.dart';
 import '../models/lsp/params/capabilities.dart';
 import '../models/lsp/params/clientInfo.dart';
 import '../models/lsp/params/initializationOptions.dart';
@@ -11,6 +14,7 @@ import '../models/lsp/params/initialize.dart';
 import '../models/lsp/params/workspaceFolder.dart';
 import '../utils.dart';
 import 'lsp.dart';
+import 'notifications.dart';
 
 part 'project.g.dart';
 
@@ -51,11 +55,34 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
         locale: getCurrentLocale(),
       );
 
-      Map<String, dynamic> initialized = await lspDart.initialize(initialize);
+      try {
+        Map<String, dynamic> initialized = await lspDart.initialize(initialize);
+        logger.i("LSP:initialize: >>>");
 
-      if (initialized['capabilities'] != null &&
-          initialized['serverInfo'] != null) {
-        lspDart.initialized();
+        if (initialized['capabilities'] != null &&
+            initialized['serverInfo'] != null) {
+          lspDart.initialized();
+          logger.i("LSP:initialized: <<< ");
+
+          ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
+                'Dart LSP server initialized!',
+                logLevel: LogLevel.info,
+              );
+        }
+      } catch (err) {
+        if (err is LSPError) {
+          if (err.code == -32002) {
+            // Todo: Call change directory path
+          } else {
+            ref
+                .watch(inAppNotificationStateProvider.notifier)
+                .fireInNotification(
+                  'Failed to initialize Dart LSP server',
+                  logLevel: LogLevel.fatal,
+                );
+          }
+        }
+        logger.e(err);
       }
     });
   }

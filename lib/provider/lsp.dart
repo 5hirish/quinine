@@ -1,8 +1,8 @@
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:quinine/wrapper/process.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../services/lsp/lang/dart.dart';
+import '../wrapper/process.dart';
 
 part 'lsp.g.dart';
 
@@ -14,7 +14,7 @@ Future<DartLSPService> dartLSP(DartLSPRef ref) async {
       processWrapper: ActualProcessWrapper(),
       clientId: packageInfo.packageName,
       clientVersion: packageInfo.version,
-      logFilePath: 'dart-sdk-lsp.log');
+      logFilePath: '${packageInfo.packageName}-dart-sdk-lsp.log');
 
   ref.onDispose(service.stop);
 

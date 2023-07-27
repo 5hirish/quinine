@@ -1,6 +1,8 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
+// https://rydmike.com/flexcolorscheme/themesplayground-v7-2/#/
+
 ThemeData blueM3LightTheme = FlexThemeData.light(
   scheme: FlexScheme.blueM3,
   surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,

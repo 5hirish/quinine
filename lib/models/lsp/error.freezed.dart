@@ -14,33 +14,34 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-Error _$ErrorFromJson(Map<String, dynamic> json) {
-  return _Error.fromJson(json);
+LSPError _$LSPErrorFromJson(Map<String, dynamic> json) {
+  return _LSPError.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Error {
+mixin _$LSPError {
   int get code => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
   dynamic get data => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ErrorCopyWith<Error> get copyWith => throw _privateConstructorUsedError;
+  $LSPErrorCopyWith<LSPError> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ErrorCopyWith<$Res> {
-  factory $ErrorCopyWith(Error value, $Res Function(Error) then) =
-      _$ErrorCopyWithImpl<$Res, Error>;
+abstract class $LSPErrorCopyWith<$Res> {
+  factory $LSPErrorCopyWith(LSPError value, $Res Function(LSPError) then) =
+      _$LSPErrorCopyWithImpl<$Res, LSPError>;
   @useResult
   $Res call({int code, String message, dynamic data});
 }
 
 /// @nodoc
-class _$ErrorCopyWithImpl<$Res, $Val extends Error>
-    implements $ErrorCopyWith<$Res> {
-  _$ErrorCopyWithImpl(this._value, this._then);
+class _$LSPErrorCopyWithImpl<$Res, $Val extends LSPError>
+    implements $LSPErrorCopyWith<$Res> {
+  _$LSPErrorCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -72,18 +73,21 @@ class _$ErrorCopyWithImpl<$Res, $Val extends Error>
 }
 
 /// @nodoc
-abstract class _$$_ErrorCopyWith<$Res> implements $ErrorCopyWith<$Res> {
-  factory _$$_ErrorCopyWith(_$_Error value, $Res Function(_$_Error) then) =
-      __$$_ErrorCopyWithImpl<$Res>;
+abstract class _$$_LSPErrorCopyWith<$Res> implements $LSPErrorCopyWith<$Res> {
+  factory _$$_LSPErrorCopyWith(
+          _$_LSPError value, $Res Function(_$_LSPError) then) =
+      __$$_LSPErrorCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int code, String message, dynamic data});
 }
 
 /// @nodoc
-class __$$_ErrorCopyWithImpl<$Res> extends _$ErrorCopyWithImpl<$Res, _$_Error>
-    implements _$$_ErrorCopyWith<$Res> {
-  __$$_ErrorCopyWithImpl(_$_Error _value, $Res Function(_$_Error) _then)
+class __$$_LSPErrorCopyWithImpl<$Res>
+    extends _$LSPErrorCopyWithImpl<$Res, _$_LSPError>
+    implements _$$_LSPErrorCopyWith<$Res> {
+  __$$_LSPErrorCopyWithImpl(
+      _$_LSPError _value, $Res Function(_$_LSPError) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -93,7 +97,7 @@ class __$$_ErrorCopyWithImpl<$Res> extends _$ErrorCopyWithImpl<$Res, _$_Error>
     Object? message = null,
     Object? data = freezed,
   }) {
-    return _then(_$_Error(
+    return _then(_$_LSPError(
       code: null == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
@@ -112,12 +116,12 @@ class __$$_ErrorCopyWithImpl<$Res> extends _$ErrorCopyWithImpl<$Res, _$_Error>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Error implements _Error {
-  const _$_Error(
+class _$_LSPError implements _LSPError {
+  const _$_LSPError(
       {required this.code, required this.message, required this.data});
 
-  factory _$_Error.fromJson(Map<String, dynamic> json) =>
-      _$$_ErrorFromJson(json);
+  factory _$_LSPError.fromJson(Map<String, dynamic> json) =>
+      _$$_LSPErrorFromJson(json);
 
   @override
   final int code;
@@ -128,14 +132,14 @@ class _$_Error implements _Error {
 
   @override
   String toString() {
-    return 'Error(code: $code, message: $message, data: $data)';
+    return 'LSPError(code: $code, message: $message, data: $data)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Error &&
+            other is _$_LSPError &&
             (identical(other.code, code) || other.code == code) &&
             (identical(other.message, message) || other.message == message) &&
             const DeepCollectionEquality().equals(other.data, data));
@@ -149,24 +153,24 @@ class _$_Error implements _Error {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ErrorCopyWith<_$_Error> get copyWith =>
-      __$$_ErrorCopyWithImpl<_$_Error>(this, _$identity);
+  _$$_LSPErrorCopyWith<_$_LSPError> get copyWith =>
+      __$$_LSPErrorCopyWithImpl<_$_LSPError>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ErrorToJson(
+    return _$$_LSPErrorToJson(
       this,
     );
   }
 }
 
-abstract class _Error implements Error {
-  const factory _Error(
+abstract class _LSPError implements LSPError {
+  const factory _LSPError(
       {required final int code,
       required final String message,
-      required final dynamic data}) = _$_Error;
+      required final dynamic data}) = _$_LSPError;
 
-  factory _Error.fromJson(Map<String, dynamic> json) = _$_Error.fromJson;
+  factory _LSPError.fromJson(Map<String, dynamic> json) = _$_LSPError.fromJson;
 
   @override
   int get code;
@@ -176,6 +180,6 @@ abstract class _Error implements Error {
   dynamic get data;
   @override
   @JsonKey(ignore: true)
-  _$$_ErrorCopyWith<_$_Error> get copyWith =>
+  _$$_LSPErrorCopyWith<_$_LSPError> get copyWith =>
       throw _privateConstructorUsedError;
 }

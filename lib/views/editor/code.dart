@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:code_text_field/code_text_field.dart' as lite;
@@ -45,6 +44,7 @@ class CodeEditor extends HookConsumerWidget {
       analyzer:
           language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
     );
+    //Todo: Replace with the Dart LSP server
 
     logger.d("File Ext: $fileExtension");
 

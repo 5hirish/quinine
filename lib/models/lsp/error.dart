@@ -3,13 +3,16 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'error.g.dart';
 part 'error.freezed.dart';
 
+/// Error Codes: ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#errorCodes
+
 @freezed
-class Error with _$Error {
-  const factory Error({
+class LSPError with _$LSPError {
+  const factory LSPError({
     required int code,
     required String message,
     required dynamic data,
-  }) = _Error;
+  }) = _LSPError;
 
-  factory Error.fromJson(Map<String, dynamic> json) => _$ErrorFromJson(json);
+  factory LSPError.fromJson(Map<String, dynamic> json) =>
+      _$LSPErrorFromJson(json);
 }

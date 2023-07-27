@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../logger.dart';
+import '../../models/lsp/error.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
 import 'buffer.dart';
@@ -21,7 +22,7 @@ abstract class LSPService {
 
   // To store the IDs of pending requests in a map when you send the request,
   // and then remove them from the map when you receive the response.
-  final Map<int, Completer> _pendingRequests = {};
+  final Map<int, Completer<Map<String, dynamic>?>> _pendingRequests = {};
 
   // To keep track of whether the server is running.
   bool _isServerRunning = false;
@@ -113,7 +114,11 @@ abstract class LSPService {
 
     if (id != null && _pendingRequests.containsKey(id)) {
       if (error != null) {
-        _pendingRequests[id]!.completeError(error);
+        try {
+          _pendingRequests[id]!.completeError(LSPError.fromJson(error));
+        } catch (e) {
+          _pendingRequests[id]!.completeError(error);
+        }
       } else if (result != null) {
         _pendingRequests[id]!.complete(result);
       } else {

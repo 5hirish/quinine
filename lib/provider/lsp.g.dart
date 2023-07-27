@@ -6,7 +6,7 @@ part of 'lsp.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dartLSPHash() => r'c38d167d0cd403e61b98f209d3b41175fc3a5f70';
+String _$dartLSPHash() => r'828e95e43a9296182919bc1050000ccc5a92ff85';
 
 /// See also [dartLSP].
 @ProviderFor(dartLSP)

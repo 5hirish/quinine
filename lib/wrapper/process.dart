@@ -26,6 +26,13 @@ class ActualProcessWrapper implements ProcessWrapper {
   //   });
   // }
 
+  /// Starts a process running the [executable] with the specified
+  /// [arguments].
+  /// Using an absolute path for [executable] is recommended since resolving
+  /// the [executable] path is platform-specific.
+  /// [mode] is [ProcessStartMode.normal] (the default) a child
+  /// process will be started with `stdin`, `stdout` and `stderr`
+  /// connected.
   @override
   Future<ProcessWrapper> start(
       String executable, List<String> arguments) async {
