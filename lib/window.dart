@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:multi_split_view/multi_split_view.dart';
+import 'package:quinine/logger.dart';
 import 'package:quinine/provider/notifications.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -88,7 +90,7 @@ class WindowPage extends HookConsumerWidget {
 }
 
 // Create stateless widget for notification
-class InAppNotificationWidget extends ConsumerWidget {
+class InAppNotificationWidget extends HookConsumerWidget {
   const InAppNotificationWidget({Key? key}) : super(key: key);
 
   @override
@@ -99,12 +101,24 @@ class InAppNotificationWidget extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    return getNotification(
-      context,
-      notification.description,
-      title: notification.title,
-      code: notification.code,
-      logLevel: notification.logLevel,
-    );
+    final controller =
+        useAnimationController(duration: const Duration(seconds: 2));
+
+    return Dismissible(
+        key: const Key("notification"),
+        onDismissed: (DismissDirection direction) {
+          ref.invalidate(inAppNotificationStateProvider);
+        },
+        child: getNotification(
+          context,
+          controller,
+          notification.description,
+          title: notification.title,
+          code: notification.code,
+          logLevel: notification.logLevel,
+          onDismissed: () {
+            ref.invalidate(inAppNotificationStateProvider);
+          },
+        ));
   }
 }
