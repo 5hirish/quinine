@@ -7,7 +7,7 @@ part of 'project.dart';
 // **************************************************************************
 
 String _$projectDirectoryPathHash() =>
-    r'c479f90c95530de067c737caf2592a289794503f';
+    r'0b2c542f304be176577b22ef334f4aa0957764c3';
 
 /// See also [ProjectDirectoryPath].
 @ProviderFor(ProjectDirectoryPath)
@@ -55,4 +55,5 @@ final projectExpandedNodesProvider =
 );
 
 typedef _$ProjectExpandedNodes = Notifier<Set<FileSystemEntity>>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

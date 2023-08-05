@@ -1,20 +1,9 @@
 import 'dart:io';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../logger.dart';
 import '../models/ignored.dart';
-import '../models/log_level.dart';
-import '../models/lsp/error.dart';
-import '../models/lsp/params/capabilities.dart';
-import '../models/lsp/params/clientInfo.dart';
-import '../models/lsp/params/initializationOptions.dart';
-import '../models/lsp/params/initialize.dart';
-import '../models/lsp/params/workspaceFolder.dart';
-import '../utils.dart';
 import 'lsp.dart';
-import 'notifications.dart';
 
 part 'project.g.dart';
 
@@ -26,65 +15,12 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
   }
 
   void changeDirectoryPath(String? directoryPath) {
-    initializeLSP(directoryPath!);
+    // Reading the dartLSPProvider.future will start the LSP service if it hasn't been started yet
+    // Reading dartLSPProvider as its used inside functions triggered by user interactions (User select workspace)
+    ref.read(dartLSPProvider.future).then((dartLSPService) =>
+        ref.read(dartLSPProvider.notifier).initializeLSP(directoryPath!));
 
     state = directoryPath;
-  }
-
-  void initializeLSP(String directoryPath) async {
-    ref.read(dartLSPProvider).whenData((lspDart) async {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-      int lspParentProcessId = await lspDart.getParentProcessId();
-
-      final directoryUri = Uri.parse(directoryPath);
-      WorkspaceFolder workspaceFolder = WorkspaceFolder(
-        uri: directoryUri,
-        name: basename(directoryPath),
-      );
-
-      Initialize initialize = Initialize(
-        processId: lspParentProcessId,
-        rootUri: directoryUri.toString(),
-        capabilities: clientCapabilities,
-        initializationOptions: const InitializationOptions(),
-        trace: "verbose",
-        workspaceFolder: [workspaceFolder],
-        clientInfo: ClientInfo(
-            name: packageInfo.packageName, version: packageInfo.version),
-        locale: getCurrentLocale(),
-      );
-
-      try {
-        Map<String, dynamic> initialized = await lspDart.initialize(initialize);
-        logger.i("LSP:initialize: >>>");
-
-        if (initialized['capabilities'] != null &&
-            initialized['serverInfo'] != null) {
-          lspDart.initialized();
-          logger.i("LSP:initialized: <<< ");
-
-          ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
-                'Dart LSP server initialized!',
-                logLevel: LogLevel.info,
-              );
-        }
-      } catch (err) {
-        if (err is LSPError) {
-          if (err.code == -32002) {
-            // Todo: Call change directory path
-          } else {
-            ref
-                .watch(inAppNotificationStateProvider.notifier)
-                .fireInNotification(
-                  'Failed to initialize Dart LSP server',
-                  logLevel: LogLevel.fatal,
-                );
-          }
-        }
-        logger.e(err);
-      }
-    });
   }
 }
 

@@ -7,7 +7,7 @@ part of 'notifications.dart';
 // **************************************************************************
 
 String _$inAppNotificationStateHash() =>
-    r'c5107f5e96d2ab76db10fd51f8ea4e0c14738fa7';
+    r'f81ee8f515dc66a41b5a7aecac90c0d65802106d';
 
 /// See also [InAppNotificationState].
 @ProviderFor(InAppNotificationState)
@@ -23,4 +23,5 @@ final inAppNotificationStateProvider =
 );
 
 typedef _$InAppNotificationState = Notifier<InAppNotification?>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
