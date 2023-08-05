@@ -93,6 +93,8 @@ class WindowPage extends HookConsumerWidget {
 class InAppNotificationWidget extends HookConsumerWidget {
   const InAppNotificationWidget({Key? key}) : super(key: key);
 
+  static const Duration notificationDismissDuration = Duration(seconds: 5);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notification = ref.watch(inAppNotificationStateProvider);
@@ -103,6 +105,13 @@ class InAppNotificationWidget extends HookConsumerWidget {
 
     final controller =
         useAnimationController(duration: const Duration(seconds: 2));
+
+    useEffect(() {
+      Future.delayed(notificationDismissDuration, () {
+        ref.invalidate(inAppNotificationStateProvider);
+      });
+      return null;
+    }, const []);
 
     return Dismissible(
         key: const Key("notification"),
