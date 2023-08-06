@@ -7,7 +7,7 @@ part of 'project.dart';
 // **************************************************************************
 
 String _$projectDirectoryPathHash() =>
-    r'0b2c542f304be176577b22ef334f4aa0957764c3';
+    r'870ab9a4e60cde972396091923390663206f2eca';
 
 /// See also [ProjectDirectoryPath].
 @ProviderFor(ProjectDirectoryPath)

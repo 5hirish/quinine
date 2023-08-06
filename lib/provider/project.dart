@@ -14,11 +14,11 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
     return null;
   }
 
-  void changeDirectoryPath(String? directoryPath) {
+  void changeDirectoryPath(String directoryPath) {
     // Reading the dartLSPProvider.future will start the LSP service if it hasn't been started yet
     // Reading dartLSPProvider as its used inside functions triggered by user interactions (User select workspace)
-    ref.read(dartLSPProvider.future).then((dartLSPService) =>
-        ref.read(dartLSPProvider.notifier).initializeLSP(directoryPath!));
+    ref.read(dartLSPProvider(directoryPath).future).then((dartLSPService) =>
+        ref.read(dartLSPProvider(directoryPath).notifier).initializeLSP());
 
     state = directoryPath;
   }

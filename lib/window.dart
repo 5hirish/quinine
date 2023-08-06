@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:multi_split_view/multi_split_view.dart';
-import 'package:quinine/logger.dart';
-import 'package:quinine/provider/notifications.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'hooks/multi_view.dart';
+import 'provider/notifications.dart';
 import 'provider/tools.dart';
 import 'views/editor.dart';
 import 'views/tools/tools.dart';

@@ -19,6 +19,9 @@ part 'lsp.g.dart';
 
 @Riverpod(keepAlive: true)
 class DartLSP extends _$DartLSP {
+  late String _workspaceRootUri;
+  bool _isServerInitialized = false;
+
   Future<DartLSPService> startDartLSP() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -34,13 +37,18 @@ class DartLSP extends _$DartLSP {
   }
 
   @override
-  Future<DartLSPService> build() async {
+  Future<DartLSPService> build(String workspaceRootUri) async {
+    _workspaceRootUri = workspaceRootUri;
     return startDartLSP();
   }
 
-  void initializeLSP(String directoryPath) async {
+  void initializeLSP() async {
     if (!state.hasValue) {
       await startDartLSP();
+    }
+
+    if (_isServerInitialized) {
+      return;
     }
 
     DartLSPService lspDart = state.requireValue;
@@ -48,10 +56,10 @@ class DartLSP extends _$DartLSP {
 
     int lspParentProcessId = await lspDart.getParentProcessId();
 
-    final directoryUri = Uri.parse(directoryPath);
+    final directoryUri = Uri.parse(_workspaceRootUri);
     WorkspaceFolder workspaceFolder = WorkspaceFolder(
       uri: directoryUri,
-      name: basename(directoryPath),
+      name: basename(_workspaceRootUri),
     );
 
     Initialize initialize = Initialize(
@@ -73,6 +81,7 @@ class DartLSP extends _$DartLSP {
       if (initialized['capabilities'] != null &&
           initialized['serverInfo'] != null) {
         lspDart.initialized();
+        _isServerInitialized = true;
         logger.i("LSP:initialized: <<< ");
 
         ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
@@ -83,7 +92,10 @@ class DartLSP extends _$DartLSP {
     } catch (err) {
       if (err is LSPError) {
         if (err.code == -32002) {
-          // Todo: Call change directory path
+          ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
+                'Dart LSP server is already initialized',
+                logLevel: LogLevel.info,
+              );
         } else {
           ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
                 'Failed to initialize Dart LSP server',
@@ -93,5 +105,12 @@ class DartLSP extends _$DartLSP {
       }
       logger.e(err);
     }
+  }
+
+  void shutdown() {
+    if (!state.hasValue) {
+      return;
+    }
+    state.requireValue.stop();
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import 'binders/lifecycle.dart';
 import 'provider/theme.dart';
 import 'router/router.dart';
 
@@ -14,13 +15,18 @@ class QuinineCore extends ConsumerStatefulWidget {
 }
 
 class QuinineCoreState extends ConsumerState<QuinineCore> {
+  late LifecycleObserver lifeCycleObserver;
+
   @override
   void initState() {
     super.initState();
+    lifeCycleObserver = LifecycleObserver(ref);
+    WidgetsBinding.instance.addObserver(lifeCycleObserver);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(lifeCycleObserver);
     super.dispose();
   }
 
