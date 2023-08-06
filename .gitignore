@@ -1,6 +1,7 @@
 # Miscellaneous
 *.class
 *.log
+*.log.?
 *.pyc
 *.swp
 .DS_Store
@@ -20,6 +21,10 @@ migrate_working_dir/
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
+analyzerInstrumentationLogFile.txt
+analyzerInstrumentationLogFile.txt.?
+analyzerLogFile.txt
+analyzerLogFile.txt.?
 
 # Flutter/Dart/Pub related
 **/doc/api/

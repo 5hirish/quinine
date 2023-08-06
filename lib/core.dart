@@ -1,18 +1,38 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import 'binders/lifecycle.dart';
 import 'provider/theme.dart';
 import 'router/router.dart';
 
-class QuinineCore extends ConsumerWidget {
+class QuinineCore extends ConsumerStatefulWidget {
   const QuinineCore({super.key});
+
+  @override
+  QuinineCoreState createState() => QuinineCoreState();
+}
+
+class QuinineCoreState extends ConsumerState<QuinineCore> {
+  late LifecycleObserver lifeCycleObserver;
+
+  @override
+  void initState() {
+    super.initState();
+    lifeCycleObserver = LifecycleObserver(ref);
+    WidgetsBinding.instance.addObserver(lifeCycleObserver);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(lifeCycleObserver);
+    super.dispose();
+  }
 
   // Todo: Add global root keyboard shortcuts here based on user preference
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final coreTheme = ref.watch(coreThemeStateProvider);
     final router = ref.watch(routerProvider);
 

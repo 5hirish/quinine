@@ -29,6 +29,8 @@ extension $CoreRouteExtension on CoreRoute {
 
   void pushReplacement(BuildContext context) =>
       context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $errorRoute => GoRouteData.$route(
@@ -52,4 +54,7 @@ extension $ErrorRouteExtension on ErrorRoute {
 
   void pushReplacement(BuildContext context) =>
       context.pushReplacement(location, extra: $extra);
+
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }

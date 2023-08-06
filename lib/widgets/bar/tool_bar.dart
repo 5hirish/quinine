@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quinine/provider/project.dart';
-import 'package:quinine/provider/tools.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+
+import '../../provider/project.dart';
+import '../../provider/tools.dart';
 
 class CoreToolBar extends ConsumerWidget {
   const CoreToolBar({super.key});

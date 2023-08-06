@@ -49,7 +49,7 @@ We appreciate your support and patience as we continue to build and refine Tonic
 
 ## Contribute
 
-We welcome contributions from the community! Please read our [contributing guidelines](https://github.com/5hirish/quinine/blob/release/CONTRIBUTING.md) and [wiki](https://github.com/5hirish/quinine/wiki) before submitting a pull request.
+We welcome contributions from the community! Please read our [contributing guidelines](https://github.com/5hirish/quinine/blob/master/CONTRIBUTING.md) and [wiki](https://github.com/5hirish/quinine/wiki) before submitting a pull request.
 
 ## Join the Community
 
@@ -65,7 +65,7 @@ Let's get to know the passionate minds behind Tonic IDE:
 
 ## License
 
-Quinine is available under the [Apache License 2.0](https://github.com/5hirish/quinine/blob/release/LICENSE). Use it wisely.
+Quinine is available under the [Apache License 2.0](https://github.com/5hirish/quinine/blob/master/LICENSE). Use it wisely.
 
 ## About
 

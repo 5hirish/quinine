@@ -26,7 +26,7 @@ void main() {
       {bool isLessThan = true}) {
     if (bufferedAt != null) {
       int diffMs = now.difference(bufferedAt).inMilliseconds;
-      print(diffMs);
+
       return isLessThan
           ? diffMs < thresholdMilliseconds
           : diffMs > thresholdMilliseconds;

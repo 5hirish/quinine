@@ -6,7 +6,7 @@ part of 'code.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sourceFileHash() => r'ef4dfde14a136d2b9d8430b027fabd1b74542289';
+String _$sourceFileHash() => r'6207fae35eebfad95812d923f2c6dfb560811a58';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -122,4 +122,5 @@ class SourceFileProvider
     );
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
