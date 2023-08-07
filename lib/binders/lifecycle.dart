@@ -59,7 +59,7 @@ class LifecycleObserver with WidgetsBindingObserver {
   void _startShutdownTimer(String rootWorkspaceUri) {
     _shutdownTimer?.cancel(); // Cancel any previous timer.
     _shutdownTimer = Timer(const Duration(minutes: _shutdownTimeout), () {
-      ref.read(dartLSPProvider(rootWorkspaceUri).notifier).shutdown();
+      ref.read(dartLSPProvider(rootWorkspaceUri).notifier).stop();
     });
   }
 

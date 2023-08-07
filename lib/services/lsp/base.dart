@@ -80,7 +80,7 @@ abstract class LSPService {
     // Mark the server as running after starting it.
     _isServerRunning = true;
 
-    logger.i("SIG::STARTED::$executable");
+    logger.i("SIG::STARTED::$executable::${_process.pid}");
   }
 
   Future<int> getParentProcessId() async {
@@ -96,6 +96,9 @@ abstract class LSPService {
     } else {
       result =
           await Process.run('ps', ['-p', _process.pid.toString(), '-oppid=']);
+      if (result.stdout.trim().isEmpty) {
+        return -1;
+      }
       return int.parse(result.stdout.trim());
     }
   }

@@ -17,6 +17,7 @@ import 'notifications.dart';
 
 part 'lsp.g.dart';
 
+/// the provider will be kept alive as long as there's at least one listener.
 @Riverpod(keepAlive: true)
 class DartLSP extends _$DartLSP {
   late String _workspaceRootUri;
@@ -43,19 +44,44 @@ class DartLSP extends _$DartLSP {
   }
 
   void initializeLSP() async {
+    /// If the state is empty and server is not initialised, start it
     if (!state.hasValue) {
-      await startDartLSP();
+      _isServerInitialized = false;
+      state = AsyncData(await startDartLSP());
     }
 
+    /// If the server is already initialised, then shut it down, start again and reinitialise
     if (_isServerInitialized) {
-      return;
+      await state.requireValue.stop();
+      state = AsyncData(await startDartLSP());
+
+      ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
+            'Dart LSP server restarted!',
+            logLevel: LogLevel.info,
+          );
     }
 
-    DartLSPService lspDart = state.requireValue;
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
+    DartLSPService lspDart = state.requireValue;
     int lspParentProcessId = await lspDart.getParentProcessId();
 
+    if (lspParentProcessId == -1) {
+      /// If the parent process id is -1, it means that the server is not running
+      state = AsyncData(await startDartLSP());
+      lspDart = state.requireValue;
+      lspParentProcessId = await lspDart.getParentProcessId();
+
+      if (lspParentProcessId == -1) {
+        ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
+              'Failed to start Dart LSP server',
+              logLevel: LogLevel.fatal,
+            );
+        return;
+      }
+    }
+
+    /// Initialise the server
     final directoryUri = Uri.parse(_workspaceRootUri);
     WorkspaceFolder workspaceFolder = WorkspaceFolder(
       uri: directoryUri,
@@ -107,10 +133,15 @@ class DartLSP extends _$DartLSP {
     }
   }
 
-  void shutdown() {
-    if (!state.hasValue) {
-      return;
+  Future<void> stop() async {
+    if (state.hasValue) {
+      await state.requireValue.stop();
+      _isServerInitialized = false;
     }
-    state.requireValue.stop();
+
+    ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
+          'Dart LSP server shutdown!',
+          logLevel: LogLevel.info,
+        );
   }
 }
