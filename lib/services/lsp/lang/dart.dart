@@ -2,9 +2,10 @@ import 'dart:async';
 
 import '../../../wrapper/process.dart';
 import '../base.dart';
-import '../document.dart';
 
-class DartLSPService extends LSPService with DocumentSynchronization {
+/// These classes will inherit from the base LSPService and provide
+/// the specifics for setting up and running an LSP for a particular language.
+class DartLSPService extends LSPService {
   final String logFilePath;
 
   DartLSPService._start(

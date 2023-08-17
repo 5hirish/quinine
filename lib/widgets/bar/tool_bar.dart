@@ -11,7 +11,7 @@ import '../../provider/tools.dart';
 class CoreToolBar extends ConsumerWidget {
   const CoreToolBar({super.key});
 
-  final double groupAligment = -1.0; // -1.0 = top, 0.0 = center, 1.0 = bottom
+  final double groupAlignment = -1.0; // -1.0 = top, 0.0 = center, 1.0 = bottom
   final double coreToolBarIconSize = 20;
   final NavigationRailLabelType labelType = NavigationRailLabelType.none;
 
@@ -21,7 +21,7 @@ class CoreToolBar extends ConsumerWidget {
 
     return NavigationRail(
       selectedIndex: toolBarIndex,
-      groupAlignment: groupAligment,
+      groupAlignment: groupAlignment,
       onDestinationSelected: (int index) {
         ref.read(coreToolBarStateProvider.notifier).toggleTool(index);
       },

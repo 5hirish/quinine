@@ -8,7 +8,6 @@ import '../provider/code.dart';
 import '../provider/file.dart';
 import '../provider/tab.dart';
 import '../services/file.dart';
-import '../utils.dart';
 import 'editor/code.dart';
 import 'landing.dart';
 
@@ -26,6 +25,7 @@ class EditorView extends HookConsumerWidget {
       if (index > 0 && selectedIndex == index) {
         ref.read(selectedTabIndexProvider.notifier).state = index - 1;
         //Todo: Only if a code file
+        //Todo: Close the LSP file
         ref.read(sourceFileProvider(filePath: filePath).notifier).syncCode();
       }
     }
@@ -73,7 +73,7 @@ class EditorView extends HookConsumerWidget {
         contentBuilder: (BuildContext context, int tabIndex) {
           final filePath = openFiles.elementAt(tabIndex);
 
-          //Todo: If media open media viewer else open code_test.dart editor
+          //Todo: If media open media viewer else open code.dart editor
 
           return CodeEditor(filePath: filePath);
         },

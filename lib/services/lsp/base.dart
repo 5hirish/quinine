@@ -3,13 +3,21 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../logger.dart';
+import '../../models/lang.dart';
 import '../../models/lsp/error.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
 import 'buffer.dart';
+import 'lang/dart.dart';
 
 /// ref: https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/lib/src/lsp/channel/lsp_byte_stream_channel.dart
 
+/// By keeping the main LSPService generic and allowing for modular components,
+/// one can easily add support for other languages in the future.
+/// As LSP or your requirements evolve, one should be able to extend or
+/// modify parts without major refactoring.
+/// This class will be responsible for setting up the connection,
+/// handling the basic protocol, and sending and receiving messages.
 abstract class LSPService {
   final ProcessWrapper processWrapper;
   late ProcessWrapper _process;
@@ -41,6 +49,31 @@ abstract class LSPService {
       {required this.processWrapper,
       required this.clientId,
       required this.clientVersion});
+
+  static Future<LSPService> createLSPService({
+    required SupportedLanguages language,
+    required ProcessWrapper processWrapper,
+    required String clientId,
+    required String clientVersion,
+    String logFilePath = '',
+  }) async {
+    switch (language) {
+      case SupportedLanguages.dart:
+        return await DartLSPService.start(
+          processWrapper: processWrapper,
+          clientId: clientId,
+          clientVersion: clientVersion,
+          logFilePath: logFilePath,
+        );
+      // case SupportedLanguages.Java:
+      //     return await JavaLSPService.start(...);
+      // case SupportedLanguages.Kotlin:
+      //     return await KotlinLSPService.start(...);
+      // ... add other cases as you define more LSPServices
+      default:
+        throw UnsupportedError('Unsupported Language for LSP');
+    }
+  }
 
   Future<void> startProcess(
       String executable, List<String> processParams) async {

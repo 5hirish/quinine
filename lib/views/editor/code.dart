@@ -4,10 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:code_text_field/code_text_field.dart' as lite;
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:highlight/languages/dart.dart';
-import 'package:quinine/keys/activators.dart';
 
 import '../../hooks/code.dart';
 import '../../intents/file.dart';
+import '../../keys/activators.dart';
 import '../../logger.dart';
 import '../../models/theme.dart';
 import '../../provider/code.dart';
@@ -15,7 +15,7 @@ import '../../provider/theme.dart';
 import '../../services/file.dart';
 import '../../utils/action_logger.dart';
 import '../../utils/shortcut_logger.dart';
-import '../lang/ext.dart';
+import '../../utils/ext.dart';
 
 class CodeEditor extends HookConsumerWidget {
   const CodeEditor({super.key, required this.filePath});
@@ -44,7 +44,7 @@ class CodeEditor extends HookConsumerWidget {
       analyzer:
           language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
     );
-    //Todo: Replace with the Dart LSP server
+    //Todo: Replace with the LSP server: open the LSP file
 
     logger.d("File Ext: $fileExtension");
 

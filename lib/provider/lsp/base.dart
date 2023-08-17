@@ -2,31 +2,36 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../logger.dart';
-import '../models/log_level.dart';
-import '../models/lsp/error.dart';
-import '../models/lsp/params/capabilities.dart';
-import '../models/lsp/params/clientInfo.dart';
-import '../models/lsp/params/initializationOptions.dart';
-import '../models/lsp/params/initialize.dart';
-import '../models/lsp/params/workspaceFolder.dart';
-import '../services/lsp/lang/dart.dart';
-import '../utils.dart';
-import '../wrapper/process.dart';
-import 'notifications.dart';
+import '../../logger.dart';
+import '../../models/lang.dart';
+import '../../models/log_level.dart';
+import '../../models/lsp/error.dart';
+import '../../models/lsp/params/capabilities.dart';
+import '../../models/lsp/params/clientInfo.dart';
+import '../../models/lsp/params/initializationOptions.dart';
+import '../../models/lsp/params/initialize.dart';
+import '../../models/lsp/params/workspaceFolder.dart';
+import '../../services/lsp/base.dart';
+import '../../utils.dart';
+import '../../wrapper/process.dart';
+import '../notifications.dart';
+import '../project.dart';
 
-part 'lsp.g.dart';
+part 'base.g.dart';
 
-/// the provider will be kept alive as long as there's at least one listener.
+/// A foundational provider made for the LSPService since it will be the
+/// backbone of all the language-specific functionalities.
+/// The provider will be kept alive as long as there's at least one listener.
 @Riverpod(keepAlive: true)
-class DartLSP extends _$DartLSP {
-  late String _workspaceRootUri;
+class LSP extends _$LSP {
+  late String? _workspaceRootUri;
   bool _isServerInitialized = false;
 
-  Future<DartLSPService> startDartLSP() async {
+  Future<LSPService> startDartLSP() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    DartLSPService service = await DartLSPService.start(
+    LSPService service = await LSPService.createLSPService(
+        language: SupportedLanguages.dart,
         processWrapper: ActualProcessWrapper(),
         clientId: packageInfo.packageName,
         clientVersion: packageInfo.version,
@@ -38,12 +43,21 @@ class DartLSP extends _$DartLSP {
   }
 
   @override
-  Future<DartLSPService> build(String workspaceRootUri) async {
-    _workspaceRootUri = workspaceRootUri;
+  Future<LSPService?> build(
+      {SupportedLanguages language = SupportedLanguages.dart}) async {
+    _workspaceRootUri = ref.watch(projectDirectoryPathProvider);
+    if (_workspaceRootUri == null) {
+      return null;
+    }
     return startDartLSP();
   }
 
   void initializeLSP() async {
+    /// If the working directory is null, return
+    if (_workspaceRootUri == null) {
+      return;
+    }
+
     /// If the state is empty and server is not initialised, start it
     if (!state.hasValue) {
       _isServerInitialized = false;
@@ -52,7 +66,7 @@ class DartLSP extends _$DartLSP {
 
     /// If the server is already initialised, then shut it down, start again and reinitialise
     if (_isServerInitialized) {
-      await state.requireValue.stop();
+      await state.requireValue!.stop();
       state = AsyncData(await startDartLSP());
 
       ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
@@ -63,14 +77,14 @@ class DartLSP extends _$DartLSP {
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    DartLSPService lspDart = state.requireValue;
-    int lspParentProcessId = await lspDart.getParentProcessId();
+    LSPService? lspDart = state.requireValue;
+    int lspParentProcessId = await lspDart!.getParentProcessId();
 
     if (lspParentProcessId == -1) {
       /// If the parent process id is -1, it means that the server is not running
       state = AsyncData(await startDartLSP());
       lspDart = state.requireValue;
-      lspParentProcessId = await lspDart.getParentProcessId();
+      lspParentProcessId = await lspDart!.getParentProcessId();
 
       if (lspParentProcessId == -1) {
         ref.watch(inAppNotificationStateProvider.notifier).fireInNotification(
@@ -82,10 +96,10 @@ class DartLSP extends _$DartLSP {
     }
 
     /// Initialise the server
-    final directoryUri = Uri.parse(_workspaceRootUri);
+    final directoryUri = Uri.parse(_workspaceRootUri!);
     WorkspaceFolder workspaceFolder = WorkspaceFolder(
       uri: directoryUri,
-      name: basename(_workspaceRootUri),
+      name: basename(_workspaceRootUri!),
     );
 
     Initialize initialize = Initialize(
@@ -135,7 +149,7 @@ class DartLSP extends _$DartLSP {
 
   Future<void> stop() async {
     if (state.hasValue) {
-      await state.requireValue.stop();
+      await state.requireValue!.stop();
       _isServerInitialized = false;
     }
 

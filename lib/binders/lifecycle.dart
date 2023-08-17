@@ -4,8 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../logger.dart';
-import '../provider/lsp.dart';
-import '../provider/project.dart';
+import '../provider/lsp/base.dart';
 
 class LifecycleObserver with WidgetsBindingObserver {
   final WidgetRef ref;
@@ -18,18 +17,12 @@ class LifecycleObserver with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    String? rootWorkspaceUri = ref.read(projectDirectoryPathProvider);
-
-    if (rootWorkspaceUri == null || rootWorkspaceUri.isEmpty) {
-      return;
-    }
-
     switch (state) {
       /// The application is not currently visible to the user, not responding to
       /// user input, and running in the background.
       case AppLifecycleState.paused:
         // Handle backgrounding or app termination
-        _startShutdownTimer(rootWorkspaceUri);
+        _startShutdownTimer();
         logger.d('<<Lifecycle::PAUSED>>');
         break;
 
@@ -37,14 +30,14 @@ class LifecycleObserver with WidgetsBindingObserver {
       /// any host views.
       case AppLifecycleState.detached:
         // Handle backgrounding or app termination
-        _cancelShutdownTimerAndInitialize(rootWorkspaceUri);
+        _cancelShutdownTimerAndInitialize();
         logger.d('<<Lifecycle::DETACHED>>');
         break;
 
       /// The application is visible and responding to user input.
       case AppLifecycleState.resumed:
         // Handle foreground
-        _cancelShutdownTimerAndInitialize(rootWorkspaceUri);
+        _cancelShutdownTimerAndInitialize();
         logger.d('<<Lifecycle::RESUMED>>');
         break;
 
@@ -56,19 +49,19 @@ class LifecycleObserver with WidgetsBindingObserver {
     }
   }
 
-  void _startShutdownTimer(String rootWorkspaceUri) {
+  void _startShutdownTimer() {
     _shutdownTimer?.cancel(); // Cancel any previous timer.
     _shutdownTimer = Timer(const Duration(minutes: _shutdownTimeout), () {
-      ref.read(dartLSPProvider(rootWorkspaceUri).notifier).stop();
+      ref.read(lSPProvider().notifier).stop();
     });
   }
 
-  void _cancelShutdownTimerAndInitialize(String rootWorkspaceUri) {
+  void _cancelShutdownTimerAndInitialize() {
     _shutdownTimer?.cancel();
-    ref.read(dartLSPProvider(rootWorkspaceUri).future).then(
+    ref.read(lSPProvider().future).then(
           (dartLSPService) => ref
               .read(
-                dartLSPProvider(rootWorkspaceUri).notifier,
+                lSPProvider().notifier,
               )
               .initializeLSP(),
         );
