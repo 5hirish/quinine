@@ -15,7 +15,7 @@ import '../../provider/theme.dart';
 import '../../services/file.dart';
 import '../../utils/action_logger.dart';
 import '../../utils/shortcut_logger.dart';
-import '../../utils/ext.dart';
+import '../../models/utils/ext.dart';
 
 class CodeEditor extends HookConsumerWidget {
   const CodeEditor({super.key, required this.filePath});

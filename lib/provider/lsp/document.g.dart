@@ -6,7 +6,7 @@ part of 'document.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lSPDocumentHash() => r'3cdfd77c5adabc6bfee4f2719dce415eccbf54dc';
+String _$lSPDocumentHash() => r'9c5e78c75bd2bebd5109c64fa3461778c6f4735e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,11 +31,11 @@ class _SystemHash {
 
 abstract class _$LSPDocument
     extends BuildlessAsyncNotifier<DocumentSynchronization?> {
-  late final SupportedLanguages language;
+  late final String uri;
 
-  Future<DocumentSynchronization?> build({
-    SupportedLanguages language = SupportedLanguages.dart,
-  });
+  Future<DocumentSynchronization?> build(
+    String uri,
+  );
 }
 
 /// A feature specific provider made for the LSPService specific functionalities
@@ -56,11 +56,11 @@ class LSPDocumentFamily extends Family<AsyncValue<DocumentSynchronization?>> {
   /// A feature specific provider made for the LSPService specific functionalities
   ///
   /// Copied from [LSPDocument].
-  LSPDocumentProvider call({
-    SupportedLanguages language = SupportedLanguages.dart,
-  }) {
+  LSPDocumentProvider call(
+    String uri,
+  ) {
     return LSPDocumentProvider(
-      language: language,
+      uri,
     );
   }
 
@@ -69,7 +69,7 @@ class LSPDocumentFamily extends Family<AsyncValue<DocumentSynchronization?>> {
     covariant LSPDocumentProvider provider,
   ) {
     return call(
-      language: provider.language,
+      provider.uri,
     );
   }
 
@@ -96,10 +96,10 @@ class LSPDocumentProvider
   /// A feature specific provider made for the LSPService specific functionalities
   ///
   /// Copied from [LSPDocument].
-  LSPDocumentProvider({
-    this.language = SupportedLanguages.dart,
-  }) : super.internal(
-          () => LSPDocument()..language = language,
+  LSPDocumentProvider(
+    this.uri,
+  ) : super.internal(
+          () => LSPDocument()..uri = uri,
           from: lSPDocumentProvider,
           name: r'lSPDocumentProvider',
           debugGetCreateSourceHash:
@@ -111,17 +111,17 @@ class LSPDocumentProvider
               LSPDocumentFamily._allTransitiveDependencies,
         );
 
-  final SupportedLanguages language;
+  final String uri;
 
   @override
   bool operator ==(Object other) {
-    return other is LSPDocumentProvider && other.language == language;
+    return other is LSPDocumentProvider && other.uri == uri;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, language.hashCode);
+    hash = _SystemHash.combine(hash, uri.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -131,7 +131,7 @@ class LSPDocumentProvider
     covariant LSPDocument notifier,
   ) {
     return notifier.build(
-      language: language,
+      uri,
     );
   }
 }

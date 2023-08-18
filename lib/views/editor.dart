@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:quinine/provider/lsp/base.dart';
+import 'package:quinine/provider/lsp/document.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,10 +24,13 @@ class EditorView extends HookConsumerWidget {
     void removeFile(int index, String filePath) {
       ref.read(openFilesPathProvider.notifier).state =
           openFiles.where((file) => file != filePath).toSet();
+
+      //Todo: Only if a code file
+      ref.read(lSPDocumentProvider(filePath).notifier).textDocDidClose();
+
       if (index > 0 && selectedIndex == index) {
         ref.read(selectedTabIndexProvider.notifier).state = index - 1;
         //Todo: Only if a code file
-        //Todo: Close the LSP file
         ref.read(sourceFileProvider(filePath: filePath).notifier).syncCode();
       }
     }
@@ -74,6 +79,9 @@ class EditorView extends HookConsumerWidget {
           final filePath = openFiles.elementAt(tabIndex);
 
           //Todo: If media open media viewer else open code.dart editor
+          ref.read(lSPDocumentProvider(filePath).future).then((lspDoc) => ref
+              .read(lSPDocumentProvider(filePath).notifier)
+              .textDocDidOpen());
 
           return CodeEditor(filePath: filePath);
         },

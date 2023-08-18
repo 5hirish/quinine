@@ -6,7 +6,7 @@ part of 'base.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lSPHash() => r'20eb7e478c481b33a1efe09fc550a0aa5d5f13a7';
+String _$lSPHash() => r'b52bcf20c7b09fff514520c281d6373d3e8acbb2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,10 +30,10 @@ class _SystemHash {
 }
 
 abstract class _$LSP extends BuildlessAsyncNotifier<LSPService?> {
-  late final SupportedLanguages language;
+  late final LSPLanguage language;
 
   Future<LSPService?> build({
-    SupportedLanguages language = SupportedLanguages.dart,
+    LSPLanguage language = LSPLanguage.dart,
   });
 }
 
@@ -64,7 +64,7 @@ class LSPFamily extends Family<AsyncValue<LSPService?>> {
   ///
   /// Copied from [LSP].
   LSPProvider call({
-    SupportedLanguages language = SupportedLanguages.dart,
+    LSPLanguage language = LSPLanguage.dart,
   }) {
     return LSPProvider(
       language: language,
@@ -107,7 +107,7 @@ class LSPProvider extends AsyncNotifierProviderImpl<LSP, LSPService?> {
   ///
   /// Copied from [LSP].
   LSPProvider({
-    this.language = SupportedLanguages.dart,
+    this.language = LSPLanguage.dart,
   }) : super.internal(
           () => LSP()..language = language,
           from: lSPProvider,
@@ -118,7 +118,7 @@ class LSPProvider extends AsyncNotifierProviderImpl<LSP, LSPService?> {
           allTransitiveDependencies: LSPFamily._allTransitiveDependencies,
         );
 
-  final SupportedLanguages language;
+  final LSPLanguage language;
 
   @override
   bool operator ==(Object other) {

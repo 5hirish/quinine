@@ -2,6 +2,10 @@ import 'package:highlight/highlight.dart';
 
 // Import the languages
 import 'package:highlight/languages/dart.dart';
+import 'package:highlight/languages/less.dart';
+import 'package:highlight/languages/sas.dart';
+import 'package:highlight/languages/scss.dart';
+import 'package:highlight/languages/typescript.dart';
 import 'package:highlight/languages/yaml.dart';
 import 'package:highlight/languages/markdown.dart';
 import 'package:highlight/languages/cpp.dart';
@@ -20,6 +24,62 @@ import 'package:highlight/languages/kotlin.dart';
 import 'package:highlight/languages/properties.dart';
 import 'package:highlight/languages/shell.dart';
 
+// Create an enum of file extensions from below switch case
+enum FileExtension {
+  dart,
+  py,
+
+  js,
+  ts,
+
+  css,
+  less,
+  scss,
+  sass,
+
+  java,
+  kt,
+  gradle,
+  swift,
+
+  cpp,
+  h,
+  c,
+  cc,
+
+  ruby,
+  pod,
+  lock,
+
+  txt,
+  gitignore,
+  license,
+  metadata,
+
+  html,
+  xml,
+  plist,
+  iml,
+  xcscheme,
+  xcworkspacedata,
+  xcodeproj,
+  pbxproj,
+  xcconfig,
+  xcsettings,
+  storyboard,
+
+  cmake,
+
+  json,
+  arb,
+  firebaserc,
+
+  yaml,
+  md,
+  sh,
+  properties,
+}
+
 Mode languageFromExtension(String extension) {
   // ref: https://github.com/git-touch/highlight.dart/tree/master/highlight/lib/languages
 
@@ -32,8 +92,17 @@ Mode languageFromExtension(String extension) {
 
     case 'js':
       return javascript;
+    case 'ts':
+      return typescript;
+
     case 'css':
       return css;
+    case 'less':
+      return less;
+    case 'scss':
+      return scss;
+    case 'sass':
+      return sas;
 
     case 'java':
       return java;

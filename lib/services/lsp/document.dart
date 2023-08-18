@@ -35,6 +35,7 @@ class DocumentSynchronization {
      * document it must claim ownership of its content using the
      * textDocument/didOpen notification
      *
+     * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_didChange
      *
      * contentChanges: An event describing a change to a text document.
      *    If only a text is provided it is considered to be the full

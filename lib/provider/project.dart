@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../config/lang.dart';
 import '../models/ignored.dart';
 import 'lsp/base.dart';
 
@@ -14,14 +15,13 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
     return null;
   }
 
-  void changeDirectoryPath(String directoryPath) {
+  void changeDirectoryPath(String directoryPath,
+      {LSPLanguage language = LSPLanguage.dart}) {
+    state = directoryPath;
     // Reading the dartLSPProvider.future will start the LSP service if it hasn't been started yet
     // Reading dartLSPProvider as its used inside functions triggered by user interactions (User select workspace)
-    // Todo: Since now that we have the LSP service provider reading from the project directory provider (this), we can remove this?
-    ref.read(LSPProvider().future).then(
-        (dartLSPService) => ref.read(LSPProvider().notifier).initializeLSP());
-
-    state = directoryPath;
+    // Todo: If the LSP is tied to the application lifecycle, then this is redundant
+    ref.read(LSPProvider(language: language).future);
   }
 }
 

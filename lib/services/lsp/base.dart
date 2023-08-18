@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../logger.dart';
-import '../../models/lang.dart';
+import '../../config/lang.dart';
 import '../../models/lsp/error.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../wrapper/process.dart';
@@ -51,14 +51,14 @@ abstract class LSPService {
       required this.clientVersion});
 
   static Future<LSPService> createLSPService({
-    required SupportedLanguages language,
+    required LSPLanguage language,
     required ProcessWrapper processWrapper,
     required String clientId,
     required String clientVersion,
     String logFilePath = '',
   }) async {
     switch (language) {
-      case SupportedLanguages.dart:
+      case LSPLanguage.dart:
         return await DartLSPService.start(
           processWrapper: processWrapper,
           clientId: clientId,

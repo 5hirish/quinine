@@ -15,18 +15,19 @@ class QuinineCore extends ConsumerStatefulWidget {
 }
 
 class QuinineCoreState extends ConsumerState<QuinineCore> {
-  late LifecycleObserver lifeCycleObserver;
+  // late LifecycleObserver lifeCycleObserver;
 
   @override
   void initState() {
     super.initState();
-    lifeCycleObserver = LifecycleObserver(ref);
-    WidgetsBinding.instance.addObserver(lifeCycleObserver);
+    // Todo: Enable lifecycle observer to handle LSP server lifecycle
+    // lifeCycleObserver = LifecycleObserver(ref);
+    // WidgetsBinding.instance.addObserver(lifeCycleObserver);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(lifeCycleObserver);
+    // WidgetsBinding.instance.removeObserver(lifeCycleObserver);
     super.dispose();
   }
 

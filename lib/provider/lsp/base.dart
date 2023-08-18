@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../logger.dart';
-import '../../models/lang.dart';
+import '../../config/lang.dart';
 import '../../models/log_level.dart';
 import '../../models/lsp/error.dart';
 import '../../models/lsp/params/capabilities.dart';
@@ -31,7 +31,7 @@ class LSP extends _$LSP {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     LSPService service = await LSPService.createLSPService(
-        language: SupportedLanguages.dart,
+        language: LSPLanguage.dart,
         processWrapper: ActualProcessWrapper(),
         clientId: packageInfo.packageName,
         clientVersion: packageInfo.version,
@@ -43,23 +43,26 @@ class LSP extends _$LSP {
   }
 
   @override
-  Future<LSPService?> build(
-      {SupportedLanguages language = SupportedLanguages.dart}) async {
+  Future<LSPService?> build({LSPLanguage language = LSPLanguage.dart}) async {
     _workspaceRootUri = ref.watch(projectDirectoryPathProvider);
     if (_workspaceRootUri == null) {
       return null;
     }
-    return startDartLSP();
+
+    LSPService? lspDart = await startDartLSP();
+    await initializeLSP();
+
+    return lspDart;
   }
 
-  void initializeLSP() async {
+  Future<void> initializeLSP() async {
     /// If the working directory is null, return
     if (_workspaceRootUri == null) {
       return;
     }
 
     /// If the state is empty and server is not initialised, start it
-    if (!state.hasValue) {
+    if (!state.hasValue || state.requireValue == null) {
       _isServerInitialized = false;
       state = AsyncData(await startDartLSP());
     }
@@ -148,7 +151,7 @@ class LSP extends _$LSP {
   }
 
   Future<void> stop() async {
-    if (state.hasValue) {
+    if (state.hasValue && state.requireValue != null) {
       await state.requireValue!.stop();
       _isServerInitialized = false;
     }
