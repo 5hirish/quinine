@@ -28,16 +28,29 @@ abstract class LSPService {
 
   final lspBuffer = LSPBuffer();
 
-  // To store the IDs of pending requests in a map when you send the request,
-  // and then remove them from the map when you receive the response.
-  final Map<int, Completer<Map<String, dynamic>?>> _pendingRequests = {};
+  // To store the IDs of pending client requests in a map when a client makes
+  // a request and then remove them from the map when server responds.
+  final Map<int, Completer<Map<String, dynamic>?>> _pendingClientRequests = {};
+
+  // To allow filtered subscriptions to server requests
+  final StreamController<Map<String, dynamic>> _serverRequestController =
+      StreamController<Map<String, dynamic>>.broadcast();
+
+  // To allow filtered subscriptions to server messages
+  final StreamController<Map<String, dynamic>> _serverMessageController =
+      StreamController<Map<String, dynamic>>.broadcast();
 
   // To keep track of whether the server is running.
   bool _isServerRunning = false;
 
-  int _id = 1; // we're going to use this to keep track of the request ID
+  int _id = 0; // we're going to use this to keep track of the request ID
 
   Stream<Map<String, dynamic>?> get responses => _controller.stream;
+  Stream<Map<String, dynamic>> get serverRequests =>
+      _serverRequestController.stream;
+  Stream<Map<String, dynamic>> get serverMessages =>
+      _serverRequestController.stream;
+
   bool get isServerRunning => _isServerRunning;
   int get requestId => _id;
   int get pid => _process.pid;
@@ -83,7 +96,7 @@ abstract class LSPService {
     // Listen for responses and errors from the language server on the
     // standard output and standard error streams.
     _process.stdout.transform(utf8.decoder).listen((data) {
-      logger.d("RES:: $data");
+      // logger.d("RES:: $data");
 
       // Feed the raw data into the LSPBuffer
       lspBuffer.feed(data);
@@ -113,7 +126,8 @@ abstract class LSPService {
     // Mark the server as running after starting it.
     _isServerRunning = true;
 
-    logger.i("SIG::STARTED::$executable::${_process.pid}");
+    logger.i(
+        "SIG::STARTED::$executable::${_process.pid}::Diagnostics-> http://localhost:8081/");
   }
 
   Future<int> getParentProcessId() async {
@@ -147,20 +161,32 @@ abstract class LSPService {
     final id = message['id'];
     final result = message['result'];
     final error = message['error'];
+    final method = message['method'];
+    final params = message['params'];
 
-    if (id != null && _pendingRequests.containsKey(id)) {
-      if (error != null) {
-        try {
-          _pendingRequests[id]!.completeError(LSPError.fromJson(error));
-        } catch (e) {
-          _pendingRequests[id]!.completeError(error);
+    if (id != null) {
+      if (_pendingClientRequests.containsKey(id)) {
+        if (error != null) {
+          try {
+            _pendingClientRequests[id]!.completeError(LSPError.fromJson(error));
+          } catch (e) {
+            _pendingClientRequests[id]!.completeError(error);
+          }
+        } else if (result != null) {
+          _pendingClientRequests[id]!.complete(result);
+        } else {
+          _pendingClientRequests[id]!.complete({'': null});
         }
-      } else if (result != null) {
-        _pendingRequests[id]!.complete(result);
+        _pendingClientRequests.remove(id);
       } else {
-        _pendingRequests[id]!.complete({'': null});
+        if (method != null && params != null) {
+          _serverRequestController.add(message);
+        }
       }
-      _pendingRequests.remove(id);
+    } else {
+      if (method != null && params != null) {
+        _serverMessageController.add(message);
+      }
     }
   }
 
@@ -205,8 +231,49 @@ abstract class LSPService {
     logger.d("${isNotification ? "NTF" : "REQ"}::$id::$method");
 
     final completer = Completer<Map<String, dynamic>>();
-    _pendingRequests[id] = completer;
+    _pendingClientRequests[id] = completer;
     return completer.future;
+  }
+
+  void _sendResponse(int id, [dynamic result, dynamic error]) {
+    /**
+     * The base protocol consists of a header and a content part.
+     * The header and content part are separated by a ‘\r\n’.
+     * The header part is encoded using the ‘ascii’ encoding.
+     * The content part is encoded using the ‘utf8’ encoding.
+     */
+
+    Map<String, dynamic> content = {
+      'jsonrpc': '2.0',
+      'id': id,
+      'clientRequestTime': DateTime.now().millisecondsSinceEpoch,
+    };
+
+    if (id > _id) {
+      _id = id;
+    }
+
+    if (error != null) {
+      content['error'] = error;
+    } else {
+      // The result of a request. This member is REQUIRED on success.
+      // * This member MUST NOT exist if there was an error invoking the method.
+      content['result'] = result;
+    }
+
+    final jsonContent = jsonEncode(content);
+    final encodedContent = utf8.encode(jsonContent);
+
+    final header = 'Content-Length: ${encodedContent.length}\r\n'
+        'Content-Type: application/quinine-jsonrpc; charset=utf-8\r\n\r\n';
+
+    final encodedHeader = ascii.encode(header);
+
+    final List<int> fullMessage = [...encodedHeader, ...encodedContent];
+
+    _process.stdin.add(fullMessage);
+
+    logger.d("RES::$id");
   }
 
   Future<Map<String, dynamic>> sendRequest(String method,
@@ -218,6 +285,19 @@ abstract class LSPService {
      */
 
     return _sendMessage(method, false, params);
+  }
+
+  void sendResponse(int requestId, [dynamic result, dynamic error]) {
+    /**
+     * A Response Message sent as a result of a request. If a request doesn’t
+     * provide a result value the receiver of a request still needs to return
+     * a response message to conform to the JSON-RPC specification.
+     * The result property of the ResponseMessage should be set to null in
+     * this case to signal a successful request.
+     * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#responseMessage
+     */
+
+    return _sendResponse(requestId, result, error);
   }
 
   Future<Map<String, dynamic>> sendNotification(String method,
@@ -253,6 +333,29 @@ abstract class LSPService {
      * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initialized
      */
     return sendNotification('initialized');
+  }
+
+  static const String mRegisterCapability = 'client/registerCapability';
+
+  void registerCapability(requestId) {
+    /**
+     * The client/registerCapability request is sent from the server to the
+     * client to register for a new capability on the client side. Not all
+     * clients need to support dynamic capability registration.
+     * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#client_registerCapability
+     */
+    return sendResponse(requestId, null);
+  }
+
+  static const String mUnRegisterCapability = 'client/unregisterCapability';
+
+  void unregisterCapability(requestId) {
+    /**
+     * The client/unregisterCapability request is sent from the server to the
+     * client to unregister a previously registered capability.
+     * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#client_unregisterCapability
+     */
+    return sendResponse(requestId, null);
   }
 
   Future<Map<String, dynamic>> cancelRequest(int id) {
@@ -293,6 +396,8 @@ abstract class LSPService {
 
     // Close the stream controller and kill the process.
     await _controller.close();
+    await _serverRequestController.close();
+    await _serverMessageController.close();
 
     // Kill the process and mark the server as not running
     _isServerRunning = !_process.kill();

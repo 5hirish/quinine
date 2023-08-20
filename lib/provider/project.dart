@@ -21,7 +21,8 @@ class ProjectDirectoryPath extends _$ProjectDirectoryPath {
     // Reading the dartLSPProvider.future will start the LSP service if it hasn't been started yet
     // Reading dartLSPProvider as its used inside functions triggered by user interactions (User select workspace)
     // Todo: If the LSP is tied to the application lifecycle, then this is redundant
-    ref.read(LSPProvider(language: language).future);
+    ref.read(LSPProvider(language: language).future).then((lspDart) =>
+        ref.read(LSPProvider(language: language).notifier).initializeLSP());
   }
 }
 

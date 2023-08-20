@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:quinine/provider/lsp/base.dart';
-import 'package:quinine/provider/lsp/document.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../provider/code.dart';
 import '../provider/file.dart';
+import '../provider/lsp/document.dart';
 import '../provider/tab.dart';
 import '../services/file.dart';
 import 'editor/code.dart';

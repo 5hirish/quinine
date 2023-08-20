@@ -8,10 +8,16 @@ import '../../models/log_level.dart';
 import '../../models/lsp/error.dart';
 import '../../models/lsp/params/capabilities.dart';
 import '../../models/lsp/params/clientInfo.dart';
+import '../../models/lsp/params/configuration.dart';
+import '../../models/lsp/params/configurationItem.dart';
 import '../../models/lsp/params/initializationOptions.dart';
 import '../../models/lsp/params/initialize.dart';
+import '../../models/lsp/params/message.dart';
 import '../../models/lsp/params/workspaceFolder.dart';
+import '../../models/lsp/result/workspace/dart/configuration.dart';
 import '../../services/lsp/base.dart';
+import '../../services/lsp/window.dart';
+import '../../services/lsp/workspace.dart';
 import '../../utils.dart';
 import '../../wrapper/process.dart';
 import '../notifications.dart';
@@ -49,8 +55,15 @@ class LSP extends _$LSP {
       return null;
     }
 
-    LSPService? lspDart = await startDartLSP();
-    await initializeLSP();
+    LSPService lspDart = await startDartLSP();
+
+    lspDart.serverRequests.listen((lspServerRequest) {
+      respondRequest(lspDart, lspServerRequest);
+    });
+
+    lspDart.serverMessages.listen((lspServerMsg) {
+      consumeMessage(lspDart, lspServerMsg);
+    });
 
     return lspDart;
   }
@@ -147,6 +160,86 @@ class LSP extends _$LSP {
         }
       }
       logger.e(err);
+    }
+  }
+
+  void respondRequest(
+      LSPService lspDart, Map<String, dynamic> lspServerRequest) {
+    int id = lspServerRequest['id'];
+    String method = lspServerRequest['method'];
+    Map<String, dynamic> params = lspServerRequest['params'];
+
+    switch (method) {
+      case WorkspaceFeatures.mWorkspaceConfiguration:
+        if (params.containsKey('items')) {
+          Configuration lspConfig = Configuration.fromJson(params);
+          if (lspConfig.items.isNotEmpty) {
+            List<Map<String, dynamic>> lspSectionConfigs = [];
+            for (ConfigurationItem item in lspConfig.items) {
+              if (workspaceConfiguration.containsKey(item.section)) {
+                lspSectionConfigs.add(workspaceConfiguration[item.section]!);
+              }
+            }
+
+            if (lspSectionConfigs.isNotEmpty) {
+              WorkspaceFeatures workspaceFeatures = WorkspaceFeatures(lspDart);
+              workspaceFeatures.workspaceConfiguration(id, lspSectionConfigs);
+              logger.d("LSP:configuration: >>>");
+            }
+          }
+        }
+        break;
+      case LSPService.mRegisterCapability:
+        if (params.containsKey('registrations')) {
+          //TODO: Client needs to implement the server registered capabilities
+          lspDart.registerCapability(id);
+          logger.d("LSP:registerCapability: >>>");
+        }
+        break;
+      case LSPService.mUnRegisterCapability:
+        if (params.containsKey('unregisterations')) {
+          //TODO: Client needs to un-implement the server registered capabilities
+          lspDart.unregisterCapability(id);
+          logger.d("LSP:unregisterCapability: >>>");
+        }
+        break;
+      default:
+        logger.w("LSP:$method: No response defined !!!");
+        break;
+    }
+  }
+
+  void consumeMessage(LSPService lspDart, Map<String, dynamic> lspServerMsg) {
+    String method = lspServerMsg['method'];
+    Map<String, dynamic> params = lspServerMsg['params'];
+
+    switch (method) {
+      case WindowFeatures.mWindowShowMessage:
+        if (params.containsKey('message')) {
+          logger.d("LSP:showMessage: <<< ${params['message']}");
+          Message lspMsg = Message.fromJson(params);
+          LogLevel logLevel = LogLevel.info;
+          if (lspMsg.type == 1) {
+            logLevel = LogLevel.error;
+          } else if (lspMsg.type == 2) {
+            logLevel = LogLevel.warning;
+          } else if (lspMsg.type == 3) {
+            logLevel = LogLevel.info;
+          } else if (lspMsg.type == 4) {
+            logLevel = LogLevel.debug;
+          }
+          ref.read(inAppNotificationStateProvider.notifier).fireInNotification(
+                lspMsg.message,
+                logLevel: logLevel,
+                title: "LSP Request:$method",
+              );
+        }
+        break;
+      case WindowFeatures.mWindowLogMessage:
+        logger.d("LSP:logMessage: <<< ${params['message']}");
+        break;
+      default:
+        break;
     }
   }
 
