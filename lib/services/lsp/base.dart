@@ -358,12 +358,27 @@ abstract class LSPService {
     return sendResponse(requestId, null);
   }
 
+  static const String m$CancelRequest = '\$/cancelRequest';
+
   Future<Map<String, dynamic>> cancelRequest(int id) {
     /**
      * To cancel a request, a notification message with the request id to cancel is sent
      * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#cancelRequest
      */
     return sendNotification('\$/cancelRequest', {'id': id});
+  }
+
+  static const String m$Progress = '\$/progress';
+
+  Future<Map<String, dynamic>> progress(
+      String token, Map<String, dynamic> value) {
+    /**
+     * To report any kind of progress including work done progress
+     * (usually used to report progress in the user interface using a progress bar)
+     * and partial result progress to support streaming of results.
+     * ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#progress
+     */
+    return sendNotification('\$/progress', {'token': token, 'value': value});
   }
 
   Future<Map<String, dynamic>> shutdown() {

@@ -9,4 +9,6 @@ class WindowFeatures {
 
   static const String mWindowShowMessage = 'window/showMessage';
   static const String mWindowLogMessage = 'window/logMessage';
+  static const String mWindowWorkDoneProgressCreate =
+      'window/workDoneProgress/create';
 }

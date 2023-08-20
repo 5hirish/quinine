@@ -13,6 +13,7 @@ import '../../models/lsp/params/configurationItem.dart';
 import '../../models/lsp/params/initializationOptions.dart';
 import '../../models/lsp/params/initialize.dart';
 import '../../models/lsp/params/message.dart';
+import '../../models/lsp/params/progress.dart';
 import '../../models/lsp/params/workspaceFolder.dart';
 import '../../models/lsp/result/workspace/dart/configuration.dart';
 import '../../services/lsp/base.dart';
@@ -203,6 +204,12 @@ class LSP extends _$LSP {
           logger.d("LSP:unregisterCapability: >>>");
         }
         break;
+      case WindowFeatures.mWindowWorkDoneProgressCreate:
+        if (params.containsKey('token')) {
+          lspDart.sendResponse(id);
+          logger.d("LSP:unregisterCapability: >>>");
+        }
+        break;
       default:
         logger.w("LSP:$method: No response defined !!!");
         break;
@@ -238,7 +245,22 @@ class LSP extends _$LSP {
       case WindowFeatures.mWindowLogMessage:
         logger.d("LSP:logMessage: <<< ${params['message']}");
         break;
+      case LSPService.m$Progress:
+        if (params.containsKey('token') && params.containsKey('value')) {
+          logger.d("LSP:\$progress: <<< ${params['value']}");
+          String token = params['token'];
+          Progress lspProgress = Progress.fromJson(params['value']);
+          LogLevel logLevel = LogLevel.info;
+          //TODO: Implement progress indicator
+          ref.read(inAppNotificationStateProvider.notifier).fireInNotification(
+                lspProgress.message ?? lspProgress.title,
+                logLevel: logLevel,
+                title: "LSP:${lspProgress.title}",
+              );
+        }
+        break;
       default:
+        logger.w("LSP:$method: No notification defined !!!");
         break;
     }
   }
