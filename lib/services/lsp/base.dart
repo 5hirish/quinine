@@ -49,7 +49,7 @@ abstract class LSPService {
   Stream<Map<String, dynamic>> get serverRequests =>
       _serverRequestController.stream;
   Stream<Map<String, dynamic>> get serverMessages =>
-      _serverRequestController.stream;
+      _serverMessageController.stream;
 
   bool get isServerRunning => _isServerRunning;
   int get requestId => _id;

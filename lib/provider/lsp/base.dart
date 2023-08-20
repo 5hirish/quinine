@@ -231,7 +231,7 @@ class LSP extends _$LSP {
           ref.read(inAppNotificationStateProvider.notifier).fireInNotification(
                 lspMsg.message,
                 logLevel: logLevel,
-                title: "LSP Request:$method",
+                title: "LSP:$method",
               );
         }
         break;

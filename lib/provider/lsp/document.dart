@@ -22,7 +22,7 @@ class LSPDocument extends _$LSPDocument {
   bool _isLangSupported = false;
 
   Future<void> initializeDocument(String filePath) async {
-    _uri = filePath;
+    _uri = Uri.file(filePath).toString();
     FileService fileService = FileService(filePath);
     _fileExtension = fileService.getFilePathExtension();
     LSPLanguage? lspLanguage = lspLangIdFromExt(_fileExtension);
