@@ -26,7 +26,7 @@ abstract class LSPService {
   final StreamController<Map<String, dynamic>?> _controller =
       StreamController<Map<String, dynamic>?>.broadcast();
 
-  final lspBuffer = LSPBuffer();
+  final LSPBuffer lspBuffer = LSPBuffer();
 
   // To store the IDs of pending client requests in a map when a client makes
   // a request and then remove them from the map when server responds.
@@ -95,7 +95,7 @@ abstract class LSPService {
 
     // Listen for responses and errors from the language server on the
     // standard output and standard error streams.
-    _process.stdout.transform(utf8.decoder).listen((data) {
+    _process.stdout.listen((data) {
       // logger.d("RES:: $data");
 
       // Feed the raw data into the LSPBuffer

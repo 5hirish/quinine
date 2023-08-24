@@ -26,6 +26,7 @@ dependencies:
   path: any
   nanoid: ^1.0.0
   clock: ^1.1.1
+  typed_data: ^1.3.2
   package_info_plus: ^4.1.0
 
   # For user interface

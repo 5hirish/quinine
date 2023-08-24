@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quinine/services/lsp/lang/dart.dart';
 import 'package:quinine/wrapper/process.dart';
 
-import '../data/lsp.dart';
+import '../../data/lsp.dart';
 @GenerateNiceMocks([MockSpec<ActualProcessWrapper>(), MockSpec<IOSink>()])
 import 'lsp_test.mocks.dart';
 
@@ -59,7 +59,7 @@ void main() {
 
         await Future.delayed(const Duration(seconds: 1));
 
-        expect(events.length, 6);
+        expect(events.length, 9);
       },
     );
   });

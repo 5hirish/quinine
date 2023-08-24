@@ -260,7 +260,7 @@ class LSP extends _$LSP {
         }
         break;
       default:
-        logger.w("LSP:$method: No notification defined !!!");
+        logger.w("LSP:$method: No notifier defined !!!");
         break;
     }
   }
