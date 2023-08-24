@@ -246,16 +246,19 @@ class LSP extends _$LSP {
         logger.d("LSP:logMessage: <<< ${params['message']}");
         break;
       case LSPService.m$Progress:
+        // ref: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workDoneProgress
         if (params.containsKey('token') && params.containsKey('value')) {
           logger.d("LSP:\$progress: <<< ${params['value']}");
           String token = params['token'];
           Progress lspProgress = Progress.fromJson(params['value']);
           LogLevel logLevel = LogLevel.info;
+
           //TODO: Implement progress indicator
+          String title = lspProgress.title ?? "Progress";
           ref.read(inAppNotificationStateProvider.notifier).fireInNotification(
-                lspProgress.message ?? lspProgress.title,
+                lspProgress.message ?? lspProgress.kind,
                 logLevel: logLevel,
-                title: "LSP:${lspProgress.title}",
+                title: "LSP: $title",
               );
         }
         break;

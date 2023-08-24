@@ -6,7 +6,7 @@ part of 'base.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lSPHash() => r'830f0287eee61750e3072fbc4245c8199cd6b4f5';
+String _$lSPHash() => r'aa4653c8e92d0031da9f30e19a9270550483b4f1';
 
 /// Copied from Dart SDK
 class _SystemHash {

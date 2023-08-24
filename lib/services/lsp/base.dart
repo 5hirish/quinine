@@ -109,13 +109,9 @@ abstract class LSPService {
           break;
         }
 
-        if (message is Map<String, dynamic>) {
-          logger.d("RES::MSG::$message");
-          _controller.add(message);
-          _handleMessage(message);
-        } else {
-          logger.e("ERR::FMT::$message");
-        }
+        logger.d("RES::MSG::$message");
+        _controller.add(message);
+        _handleMessage(message);
       }
     });
 

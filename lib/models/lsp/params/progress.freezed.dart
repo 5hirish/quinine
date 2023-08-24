@@ -21,8 +21,10 @@ Progress _$ProgressFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Progress {
   String get kind => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  bool? get boolean => throw _privateConstructorUsedError;
+
+  /// 'begin' | 'report' | 'end'
+  String? get title => throw _privateConstructorUsedError;
+  bool? get cancellable => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
   int? get percentage => throw _privateConstructorUsedError;
 
@@ -39,8 +41,8 @@ abstract class $ProgressCopyWith<$Res> {
   @useResult
   $Res call(
       {String kind,
-      String title,
-      bool? boolean,
+      String? title,
+      bool? cancellable,
       String? message,
       int? percentage});
 }
@@ -59,8 +61,8 @@ class _$ProgressCopyWithImpl<$Res, $Val extends Progress>
   @override
   $Res call({
     Object? kind = null,
-    Object? title = null,
-    Object? boolean = freezed,
+    Object? title = freezed,
+    Object? cancellable = freezed,
     Object? message = freezed,
     Object? percentage = freezed,
   }) {
@@ -69,13 +71,13 @@ class _$ProgressCopyWithImpl<$Res, $Val extends Progress>
           ? _value.kind
           : kind // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      boolean: freezed == boolean
-          ? _value.boolean
-          : boolean // ignore: cast_nullable_to_non_nullable
+              as String?,
+      cancellable: freezed == cancellable
+          ? _value.cancellable
+          : cancellable // ignore: cast_nullable_to_non_nullable
               as bool?,
       message: freezed == message
           ? _value.message
@@ -98,8 +100,8 @@ abstract class _$$_ProgressCopyWith<$Res> implements $ProgressCopyWith<$Res> {
   @useResult
   $Res call(
       {String kind,
-      String title,
-      bool? boolean,
+      String? title,
+      bool? cancellable,
       String? message,
       int? percentage});
 }
@@ -116,8 +118,8 @@ class __$$_ProgressCopyWithImpl<$Res>
   @override
   $Res call({
     Object? kind = null,
-    Object? title = null,
-    Object? boolean = freezed,
+    Object? title = freezed,
+    Object? cancellable = freezed,
     Object? message = freezed,
     Object? percentage = freezed,
   }) {
@@ -126,13 +128,13 @@ class __$$_ProgressCopyWithImpl<$Res>
           ? _value.kind
           : kind // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      boolean: freezed == boolean
-          ? _value.boolean
-          : boolean // ignore: cast_nullable_to_non_nullable
+              as String?,
+      cancellable: freezed == cancellable
+          ? _value.cancellable
+          : cancellable // ignore: cast_nullable_to_non_nullable
               as bool?,
       message: freezed == message
           ? _value.message
@@ -151,8 +153,8 @@ class __$$_ProgressCopyWithImpl<$Res>
 class _$_Progress implements _Progress {
   const _$_Progress(
       {required this.kind,
-      required this.title,
-      this.boolean,
+      this.title,
+      this.cancellable,
       this.message,
       this.percentage});
 
@@ -161,10 +163,12 @@ class _$_Progress implements _Progress {
 
   @override
   final String kind;
+
+  /// 'begin' | 'report' | 'end'
   @override
-  final String title;
+  final String? title;
   @override
-  final bool? boolean;
+  final bool? cancellable;
   @override
   final String? message;
   @override
@@ -172,7 +176,7 @@ class _$_Progress implements _Progress {
 
   @override
   String toString() {
-    return 'Progress(kind: $kind, title: $title, boolean: $boolean, message: $message, percentage: $percentage)';
+    return 'Progress(kind: $kind, title: $title, cancellable: $cancellable, message: $message, percentage: $percentage)';
   }
 
   @override
@@ -182,7 +186,8 @@ class _$_Progress implements _Progress {
             other is _$_Progress &&
             (identical(other.kind, kind) || other.kind == kind) &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.boolean, boolean) || other.boolean == boolean) &&
+            (identical(other.cancellable, cancellable) ||
+                other.cancellable == cancellable) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.percentage, percentage) ||
                 other.percentage == percentage));
@@ -191,7 +196,7 @@ class _$_Progress implements _Progress {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, kind, title, boolean, message, percentage);
+      Object.hash(runtimeType, kind, title, cancellable, message, percentage);
 
   @JsonKey(ignore: true)
   @override
@@ -210,8 +215,8 @@ class _$_Progress implements _Progress {
 abstract class _Progress implements Progress {
   const factory _Progress(
       {required final String kind,
-      required final String title,
-      final bool? boolean,
+      final String? title,
+      final bool? cancellable,
       final String? message,
       final int? percentage}) = _$_Progress;
 
@@ -220,9 +225,11 @@ abstract class _Progress implements Progress {
   @override
   String get kind;
   @override
-  String get title;
+
+  /// 'begin' | 'report' | 'end'
+  String? get title;
   @override
-  bool? get boolean;
+  bool? get cancellable;
   @override
   String? get message;
   @override

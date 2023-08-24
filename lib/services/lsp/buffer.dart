@@ -18,94 +18,98 @@ import 'dart:typed_data';
 
 class LSPBuffer {
   // The buffer that stores the incoming data
-  List<int> buffer = [];
+  final BytesBuilder buffer = BytesBuilder();
 
-  // The expected length of the message body as indicated by the Content-Length header
-  int? expectedLength;
+  // Each header field is terminated by ‘\r\n’ &
+  // The header and content part are separated by a ‘\r\n’
+  // Hence the '\r\n\r\n' precedes the content part of a message
+  final RegExp headerEndPattern = RegExp(r'\r\n\r\n');
+
+  final String expectedEncoding = 'utf-8';
+
+  // The expected length of the message body
+  // as indicated by the Content-Length header
+  int expectedContentLength = 0;
 
   // The index where the headers end and the message body begins
-  int? headersEnd;
+  int? headersEndIdx;
 
   bool hasExpectedEncoding = false;
 
   // Adds data to the buffer
-  void feed(List<int> data) {
-    buffer.addAll(data);
+  void feed(List<int> byteList) {
+    buffer.add(byteList);
   }
 
-  dynamic process() {
-    var bufferData = Uint8List.fromList(buffer);
-    var bufferString = utf8.decode(bufferData);
+  Map<String, dynamic>? process() {
+    List<int> byteList = buffer.toBytes();
+    String bufferString = utf8.decode(byteList, allowMalformed: true);
 
-    if (headersEnd == null || headersEnd == -1) {
-      // Try to find the end of the headers
-      headersEnd = bufferString.indexOf('\r\n\r\n');
-      if (headersEnd == -1) {
-        // If we haven't received all the headers yet, return null
-        return null;
-      }
-    }
+    // Try to find the end of the headers
+    RegExpMatch? headerEndMatch = headerEndPattern.firstMatch(bufferString);
+    if (headerEndMatch != null) {
+      headersEndIdx = headerEndMatch.start;
+      List<String> headers =
+          bufferString.substring(0, headersEndIdx).split('\r\n');
 
-    if (expectedLength == null) {
-      // Try to find the Content-Length header among the received headers
-      var headers = bufferString.substring(0, headersEnd!).split('\r\n');
-      for (var h in headers) {
-        if (h.toLowerCase().startsWith('content-length:')) {
-          // Parse the length of content.
-          // Length is in bytes for UTF-8 encoding.
-          expectedLength = int.tryParse(h.split(':')[1].trim());
-        } else if (h.toLowerCase().startsWith('content-type:')) {
-          // UTF-8 is a variable-length encoding for Unicode characters.
-          // This means that characters can take anywhere from one to four bytes
-          hasExpectedEncoding = h.toLowerCase().contains('utf-8');
-        }
-
-        if (expectedLength != null && hasExpectedEncoding) {
-          break;
-        }
-      }
-      if (expectedLength == null) {
-        // If the Content-Length header was not found, throw an error
-        throw const FormatException("Missing Content-Length header");
-      }
+      // UTF-8 is a variable-length encoding for Unicode characters.
+      // This means that characters can take anywhere from one to four bytes
+      hasExpectedEncoding = headers
+          .firstWhere(
+            (h) => h.toLowerCase().startsWith('content-type:'),
+            orElse: () => '',
+          )
+          .toLowerCase()
+          .trim()
+          .contains(expectedEncoding);
 
       if (!hasExpectedEncoding) {
         throw const FormatException("Missing UTF-8 encoding");
       }
+
+      // Try to find the Content-Length header among the received headers
+      String contentLengthStr = headers
+          .firstWhere(
+            (h) => h.toLowerCase().startsWith('content-length:'),
+            orElse: () => 'content-length: -1',
+          )
+          .split(':')
+          .last
+          .trim();
+
+      // Parse the length of content. Length is in bytes for UTF-8 encoding.
+      expectedContentLength = int.parse(contentLengthStr);
+
+      if (expectedContentLength < 0) {
+        // If the Content-Length header was not found, throw an error
+        throw const FormatException("Missing Content-Length header");
+      }
+
+      var messageStart = headerEndMatch.end;
+      var messageEnd = messageStart + expectedContentLength;
+
+      if (buffer.length < messageEnd) {
+        // If we haven't received all the data yet
+        // (as indicated by the Content-Length header), return null
+        return null;
+      }
+
+      // Extract the message body from the byte buffer
+      var messageBytes = byteList.sublist(messageStart, messageEnd);
+      // Decode the JSON message body
+      var messageString = utf8.decode(messageBytes);
+      var message = jsonDecode(messageString) as Map<String, dynamic>;
+
+      // Remove the processed message from the buffer and
+      // reset the variables for the next message
+      buffer.clear();
+      List<int> remainderByteList = byteList.sublist(messageEnd).toList();
+      buffer.add(remainderByteList);
+      expectedContentLength = -1;
+      headersEndIdx = null;
+
+      return message;
     }
-
-    int messageStartBytes = bufferData
-            .sublist(0, headersEnd!)
-            .indexOf(Uint8List.fromList([13, 10, 13, 10]) as int) +
-        4; // find '\r\n\r\n'
-    int messageEndBytes = messageStartBytes + expectedLength!;
-
-    if (buffer.length < messageEndBytes) {
-      // If we haven't received all the data yet (as indicated by the Content-Length header), return null
-      return null;
-    }
-
-    // int messageStart = headersEnd! + 4;
-    // int messageLength = messageStart + expectedLength!;
-    // if (bufferString.length < messageLength) {
-    //   // If we haven't received all the data yet (as indicated by the Content-Length header), return null
-    //   return null;
-    // }
-
-    // Extract the message body from the buffer
-    var messageBytes = bufferData.sublist(messageStartBytes, messageEndBytes);
-    // var rawMessage = bufferString.substring(messageStart, messageLength);
-
-    // Decode the JSON message body
-    var messageString = utf8.decode(messageBytes);
-    var message = json.decode(messageString);
-
-    // Remove the processed message from the buffer and reset the variables for the next message
-    buffer = bufferData.sublist(messageEndBytes).toList();
-    expectedLength = null;
-    headersEnd = null;
-
-    // Return the decoded message
-    return message;
+    return null;
   }
 }
