@@ -1,5 +1,6 @@
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
+import 'package:quinine/models/lsp/result/capabilities.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../logger.dart';
@@ -23,6 +24,7 @@ import '../../utils.dart';
 import '../../wrapper/process.dart';
 import '../notifications.dart';
 import '../project.dart';
+import 'capabilities.dart';
 
 part 'base.g.dart';
 
@@ -137,6 +139,9 @@ class LSP extends _$LSP {
 
       if (initialized['capabilities'] != null &&
           initialized['serverInfo'] != null) {
+        ref.read(capabilitiesProvider.notifier).setCapabilities(
+            ServerCapabilities.fromJson(initialized['capabilities']));
+
         lspDart.initialized();
         _isServerInitialized = true;
         logger.i("LSP:initialized: <<< ");

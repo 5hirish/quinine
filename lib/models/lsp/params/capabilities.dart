@@ -385,3 +385,349 @@ Map<String, dynamic> clientCapabilities = {
     }
   }
 };
+
+Map<String, dynamic> registerCapabilities = {
+  "registrations": [
+    {
+      "id": "0",
+      "method": "textDocument/didOpen",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"},
+          {"language": "yaml", "pattern": "**/pubspec.yaml", "scheme": "file"},
+          {
+            "language": "yaml",
+            "pattern": "**/analysis_options.yaml",
+            "scheme": "file"
+          },
+          {
+            "language": "yaml",
+            "pattern": "**/lib/{fix_data.yaml,fix_data/**.yaml}",
+            "scheme": "file"
+          }
+        ]
+      }
+    },
+    {
+      "id": "1",
+      "method": "textDocument/didClose",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"},
+          {"language": "yaml", "pattern": "**/pubspec.yaml", "scheme": "file"},
+          {
+            "language": "yaml",
+            "pattern": "**/analysis_options.yaml",
+            "scheme": "file"
+          },
+          {
+            "language": "yaml",
+            "pattern": "**/lib/{fix_data.yaml,fix_data/**.yaml}",
+            "scheme": "file"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "method": "textDocument/didChange",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"},
+          {"language": "yaml", "pattern": "**/pubspec.yaml", "scheme": "file"},
+          {
+            "language": "yaml",
+            "pattern": "**/analysis_options.yaml",
+            "scheme": "file"
+          },
+          {
+            "language": "yaml",
+            "pattern": "**/lib/{fix_data.yaml,fix_data/**.yaml}",
+            "scheme": "file"
+          }
+        ],
+        "syncKind": 2
+      }
+    },
+    {
+      "id": "3",
+      "method": "textDocument/completion",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ],
+        "resolveProvider": true,
+        "triggerCharacters": [".", "=", "(", "\$", "\"", "'", "{", "/", ":"]
+      }
+    },
+    {
+      "id": "4",
+      "method": "textDocument/completion",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "yaml", "pattern": "**/pubspec.yaml", "scheme": "file"},
+          {
+            "language": "yaml",
+            "pattern": "**/analysis_options.yaml",
+            "scheme": "file"
+          },
+          {
+            "language": "yaml",
+            "pattern": "**/lib/{fix_data.yaml,fix_data/**.yaml}",
+            "scheme": "file"
+          }
+        ],
+        "resolveProvider": true
+      }
+    },
+    {
+      "id": "5",
+      "method": "textDocument/hover",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "6",
+      "method": "textDocument/signatureHelp",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ],
+        "retriggerCharacters": [","],
+        "triggerCharacters": ["("]
+      }
+    },
+    {
+      "id": "7",
+      "method": "textDocument/references",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "8",
+      "method": "textDocument/documentHighlight",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "9",
+      "method": "textDocument/documentSymbol",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "10",
+      "method": "textDocument/documentColor",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "11",
+      "method": "textDocument/formatting",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "12",
+      "method": "textDocument/onTypeFormatting",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ],
+        "firstTriggerCharacter": "}",
+        "moreTriggerCharacter": [";"]
+      }
+    },
+    {
+      "id": "13",
+      "method": "textDocument/rangeFormatting",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "14",
+      "method": "textDocument/definition",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "15",
+      "method": "textDocument/typeDefinition",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "16",
+      "method": "textDocument/implementation",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "17",
+      "method": "textDocument/codeAction",
+      "registerOptions": {
+        "codeActionKinds": [
+          "source",
+          "source.organizeImports",
+          "source.fixAll",
+          "source.sortMembers",
+          "quickfix",
+          "refactor"
+        ],
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "18",
+      "method": "textDocument/rename",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ],
+        "prepareProvider": true
+      }
+    },
+    {
+      "id": "19",
+      "method": "textDocument/foldingRange",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "20",
+      "method": "workspace/willRenameFiles",
+      "registerOptions": {
+        "filters": [
+          {
+            "pattern": {"glob": "**/*.dart", "matches": "file"},
+            "scheme": "file"
+          },
+          {
+            "pattern": {"glob": "**/", "matches": "folder"},
+            "scheme": "file"
+          }
+        ]
+      }
+    },
+    {"id": "21", "method": "workspace/didChangeConfiguration"},
+    {
+      "id": "22",
+      "method": "textDocument/selectionRange",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "23",
+      "method": "textDocument/prepareCallHierarchy",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "24",
+      "method": "textDocument/semanticTokens",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ],
+        "full": {"delta": false},
+        "legend": {
+          "tokenModifiers": [
+            "documentation",
+            "constructor",
+            "declaration",
+            "importPrefix",
+            "instance",
+            "static",
+            "escape",
+            "annotation",
+            "control",
+            "label",
+            "interpolation",
+            "void"
+          ],
+          "tokenTypes": [
+            "annotation",
+            "keyword",
+            "class",
+            "comment",
+            "method",
+            "variable",
+            "parameter",
+            "enum",
+            "enumMember",
+            "type",
+            "source",
+            "property",
+            "namespace",
+            "boolean",
+            "number",
+            "string",
+            "function",
+            "typeParameter"
+          ]
+        },
+        "range": true
+      }
+    },
+    {
+      "id": "25",
+      "method": "textDocument/prepareTypeHierarchy",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ]
+      }
+    },
+    {
+      "id": "26",
+      "method": "textDocument/inlayHint",
+      "registerOptions": {
+        "documentSelector": [
+          {"language": "dart", "scheme": "file"}
+        ],
+        "resolveProvider": false
+      }
+    }
+  ]
+};
