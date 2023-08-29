@@ -1,6 +1,5 @@
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
-import 'package:quinine/models/lsp/result/capabilities.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../logger.dart';
@@ -16,6 +15,7 @@ import '../../models/lsp/params/initialize.dart';
 import '../../models/lsp/params/message.dart';
 import '../../models/lsp/params/progress.dart';
 import '../../models/lsp/params/workspaceFolder.dart';
+import '../../models/lsp/result/capabilities.dart';
 import '../../models/lsp/result/workspace/dart/configuration.dart';
 import '../../services/lsp/base.dart';
 import '../../services/lsp/window.dart';
@@ -124,7 +124,7 @@ class LSP extends _$LSP {
     Initialize initialize = Initialize(
       processId: lspParentProcessId,
       rootUri: directoryUri.toString(),
-      capabilities: clientCapabilities,
+      capabilities: clientCapabilitiesMap,
       initializationOptions: const InitializationOptions(),
       trace: "verbose",
       workspaceFolder: [workspaceFolder],
@@ -139,7 +139,7 @@ class LSP extends _$LSP {
 
       if (initialized['capabilities'] != null &&
           initialized['serverInfo'] != null) {
-        ref.read(capabilitiesProvider.notifier).setCapabilities(
+        ref.read(lSPServerCapabilitiesProvider.notifier).setCapabilities(
             ServerCapabilities.fromJson(initialized['capabilities']));
 
         lspDart.initialized();
@@ -198,6 +198,13 @@ class LSP extends _$LSP {
       case LSPService.mRegisterCapability:
         if (params.containsKey('registrations')) {
           //TODO: Client needs to implement the server registered capabilities
+
+          ClientCapabilities clientCapabilities =
+              ClientCapabilities.fromJson(params);
+          ref
+              .read(lSPClientCapabilitiesProvider.notifier)
+              .register(clientCapabilities.registrations!);
+
           lspDart.registerCapability(id);
           logger.d("LSP:registerCapability: >>>");
         }

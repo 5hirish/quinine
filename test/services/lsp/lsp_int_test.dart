@@ -52,7 +52,7 @@ void main() {
         Initialize initializeParams = Initialize(
           processId: lspPpId,
           rootUri: directoryUri.toString(),
-          capabilities: clientCapabilities,
+          capabilities: clientCapabilitiesMap,
           initializationOptions: const InitializationOptions(),
           trace: "verbose",
           workspaceFolder: [workspaceFolder],

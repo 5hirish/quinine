@@ -1,4 +1,29 @@
-Map<String, dynamic> clientCapabilities = {
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'dart:convert';
+
+import 'registrations.dart';
+
+part 'capabilities.freezed.dart';
+part 'capabilities.g.dart';
+
+ClientCapabilities clientCapabilitiesFromJson(String str) =>
+    ClientCapabilities.fromJson(json.decode(str));
+
+String clientCapabilitiesToJson(ClientCapabilities data) =>
+    json.encode(data.toJson());
+
+@freezed
+class ClientCapabilities with _$ClientCapabilities {
+  const factory ClientCapabilities({
+    required List<ClientRegistrations>? unregisterations,
+    required List<ClientRegistrations>? registrations,
+  }) = _ClientCapabilities;
+
+  factory ClientCapabilities.fromJson(Map<String, dynamic> json) =>
+      _$ClientCapabilitiesFromJson(json);
+}
+
+Map<String, dynamic> clientCapabilitiesMap = {
   "workspace": {
     "applyEdit": true,
     "workspaceEdit": {
@@ -386,7 +411,7 @@ Map<String, dynamic> clientCapabilities = {
   }
 };
 
-Map<String, dynamic> registerCapabilities = {
+Map<String, dynamic> registerCapabilitiesMap = {
   "registrations": [
     {
       "id": "0",
