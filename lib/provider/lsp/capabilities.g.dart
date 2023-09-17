@@ -24,7 +24,7 @@ final lSPServerCapabilitiesProvider =
 
 typedef _$LSPServerCapabilities = Notifier<ServerCapabilities?>;
 String _$lSPClientCapabilitiesHash() =>
-    r'4bc8adda19b3b5454ea49ffd915dcf74143477e8';
+    r'87413964c76ac54e60ec4f0ed377fba09c235829';
 
 /// See also [LSPClientCapabilities].
 @ProviderFor(LSPClientCapabilities)
@@ -41,4 +41,4 @@ final lSPClientCapabilitiesProvider = NotifierProvider<LSPClientCapabilities,
 
 typedef _$LSPClientCapabilities = Notifier<List<ClientRegistrations>?>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

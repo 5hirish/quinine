@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef FileServiceRef = ProviderRef<FileService>;
-
 /// See also [fileService].
 @ProviderFor(fileService)
 const fileServiceProvider = FileServiceFamily();
@@ -77,10 +75,10 @@ class FileServiceFamily extends Family<FileService> {
 class FileServiceProvider extends Provider<FileService> {
   /// See also [fileService].
   FileServiceProvider(
-    this.filePath,
-  ) : super.internal(
+    String filePath,
+  ) : this._internal(
           (ref) => fileService(
-            ref,
+            ref as FileServiceRef,
             filePath,
           ),
           from: fileServiceProvider,
@@ -92,9 +90,43 @@ class FileServiceProvider extends Provider<FileService> {
           dependencies: FileServiceFamily._dependencies,
           allTransitiveDependencies:
               FileServiceFamily._allTransitiveDependencies,
+          filePath: filePath,
         );
 
+  FileServiceProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.filePath,
+  }) : super.internal();
+
   final String filePath;
+
+  @override
+  Override overrideWith(
+    FileService Function(FileServiceRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FileServiceProvider._internal(
+        (ref) => create(ref as FileServiceRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        filePath: filePath,
+      ),
+    );
+  }
+
+  @override
+  ProviderElement<FileService> createElement() {
+    return _FileServiceProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -109,5 +141,18 @@ class FileServiceProvider extends Provider<FileService> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin FileServiceRef on ProviderRef<FileService> {
+  /// The parameter `filePath` of this provider.
+  String get filePath;
+}
+
+class _FileServiceProviderElement extends ProviderElement<FileService>
+    with FileServiceRef {
+  _FileServiceProviderElement(super.provider);
+
+  @override
+  String get filePath => (origin as FileServiceProvider).filePath;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

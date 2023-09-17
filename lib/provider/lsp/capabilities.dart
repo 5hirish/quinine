@@ -30,4 +30,11 @@ class LSPClientCapabilities extends _$LSPClientCapabilities {
   void register(List<ClientRegistrations> capabilities) {
     state = capabilities;
   }
+
+  ClientRegistrations? getMethodCapability(String method) {
+    if (state != null) {
+      return state?.firstWhere((element) => element.method == method);
+    }
+    return null;
+  }
 }

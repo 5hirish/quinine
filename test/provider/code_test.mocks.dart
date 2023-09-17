@@ -860,24 +860,6 @@ class MockFileService extends _i1.Mock implements _i7.FileService {
         returnValueForMissingStub: '',
       ) as String);
   @override
-  String getFilePathExtension() => (super.noSuchMethod(
-        Invocation.method(
-          #getFilePathExtension,
-          [],
-        ),
-        returnValue: '',
-        returnValueForMissingStub: '',
-      ) as String);
-  @override
-  String getFilePathName() => (super.noSuchMethod(
-        Invocation.method(
-          #getFilePathName,
-          [],
-        ),
-        returnValue: '',
-        returnValueForMissingStub: '',
-      ) as String);
-  @override
   _i5.Future<String> readFileContent() => (super.noSuchMethod(
         Invocation.method(
           #readFileContent,

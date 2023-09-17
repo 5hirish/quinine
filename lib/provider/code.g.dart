@@ -84,8 +84,8 @@ class SourceFileProvider
     extends AsyncNotifierProviderImpl<SourceFile, CodeText> {
   /// See also [SourceFile].
   SourceFileProvider({
-    required this.filePath,
-  }) : super.internal(
+    required String filePath,
+  }) : this._internal(
           () => SourceFile()..filePath = filePath,
           from: sourceFileProvider,
           name: r'sourceFileProvider',
@@ -96,9 +96,50 @@ class SourceFileProvider
           dependencies: SourceFileFamily._dependencies,
           allTransitiveDependencies:
               SourceFileFamily._allTransitiveDependencies,
+          filePath: filePath,
         );
 
+  SourceFileProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.filePath,
+  }) : super.internal();
+
   final String filePath;
+
+  @override
+  Future<CodeText> runNotifierBuild(
+    covariant SourceFile notifier,
+  ) {
+    return notifier.build(
+      filePath: filePath,
+    );
+  }
+
+  @override
+  Override overrideWith(SourceFile Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: SourceFileProvider._internal(
+        () => create()..filePath = filePath,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        filePath: filePath,
+      ),
+    );
+  }
+
+  @override
+  AsyncNotifierProviderElement<SourceFile, CodeText> createElement() {
+    return _SourceFileProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -112,15 +153,20 @@ class SourceFileProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin SourceFileRef on AsyncNotifierProviderRef<CodeText> {
+  /// The parameter `filePath` of this provider.
+  String get filePath;
+}
+
+class _SourceFileProviderElement
+    extends AsyncNotifierProviderElement<SourceFile, CodeText>
+    with SourceFileRef {
+  _SourceFileProviderElement(super.provider);
 
   @override
-  Future<CodeText> runNotifierBuild(
-    covariant SourceFile notifier,
-  ) {
-    return notifier.build(
-      filePath: filePath,
-    );
-  }
+  String get filePath => (origin as SourceFileProvider).filePath;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

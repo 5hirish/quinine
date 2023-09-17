@@ -26,6 +26,7 @@ class DocumentSynchronization {
         'textDocument/didOpen', {'textDocument': textDocItem});
   }
 
+  static const String mTextDocDidChange = 'textDocument/didChange';
   Future<Map<String, dynamic>> textDocDidChange(
       VersionedTextDocId versionedTextDocId,
       List<TextDocContentChange> contentChanges) {
@@ -41,7 +42,7 @@ class DocumentSynchronization {
      *    If only a text is provided it is considered to be the full
      *    content of the document.
      */
-    return lspService.sendNotification('textDocument/didChange',
+    return lspService.sendNotification(mTextDocDidChange,
         {'textDocument': versionedTextDocId, 'contentChanges': contentChanges});
   }
 

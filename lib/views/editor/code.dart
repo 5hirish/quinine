@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:code_text_field/code_text_field.dart' as lite;
 import 'package:flutter_code_editor/flutter_code_editor.dart';
-import 'package:highlight/languages/dart.dart';
 
 import '../../hooks/code.dart';
 import '../../intents/file.dart';
@@ -11,6 +10,7 @@ import '../../keys/activators.dart';
 import '../../logger.dart';
 import '../../models/theme.dart';
 import '../../provider/code.dart';
+import '../../provider/lsp/document.dart';
 import '../../provider/theme.dart';
 import '../../services/file.dart';
 import '../../utils/action_logger.dart';
@@ -41,8 +41,7 @@ class CodeEditor extends HookConsumerWidget {
     final codeController = useCodeController(
       initialSource: '',
       language: language,
-      analyzer:
-          language == dart ? DartPadAnalyzer() : const DefaultLocalAnalyzer(),
+      analyzer: const DefaultLocalAnalyzer(),
     );
     //Todo: Replace with the LSP server: open the LSP file
 
@@ -59,6 +58,26 @@ class CodeEditor extends HookConsumerWidget {
               );
         }
       });
+
+      codeController.addListener(() {
+        // fullText: returns and sets the entire text,
+        // including any folded blocks and hidden service comments
+        String fullModifiedCode = codeController.fullText;
+
+        int baseOffset = codeController.selection.baseOffset;
+        int extentOffset = codeController.selection.extentOffset;
+
+        ref
+            .read(sourceFileProvider(filePath: filePath).notifier)
+            .bufferModifiedCode(fullModifiedCode, baseOffset, extentOffset,
+                updateState: false);
+        logger.d("Modified Code");
+
+        ref
+            .read(lSPDocumentProvider(filePath).notifier)
+            .textDocDidChange(fullModifiedCode);
+      });
+
       return null;
     }, [focusNode, codeController]);
 
@@ -108,17 +127,9 @@ class CodeEditor extends HookConsumerWidget {
               textStyle: TextStyle(
                   fontSize: codeStyle.fontSize,
                   fontFamily: codeStyle.fontFamily),
-              onChanged: (String value) {
-                String modifiedCode = codeController.fullText;
-                int baseOffset = codeController.selection.baseOffset;
-                int extentOffset = codeController.selection.extentOffset;
-
-                ref
-                    .read(sourceFileProvider(filePath: filePath).notifier)
-                    .bufferModifiedCode(modifiedCode, baseOffset, extentOffset,
-                        updateState: false);
-                logger.d("Modified Code");
-              },
+              // onChanged: (String value) {
+              //
+              // },
             ),
           );
         }),

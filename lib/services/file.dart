@@ -9,14 +9,6 @@ class FileService {
   String get extension => _filePath.split('.').last;
   String get name => _filePath.split('/').last;
 
-  String getFilePathExtension() {
-    return _filePath.split('.').last;
-  }
-
-  String getFilePathName() {
-    return _filePath.split('/').last;
-  }
-
   Future<String> readFileContent() async {
     final file = File(_filePath);
 

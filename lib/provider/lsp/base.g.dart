@@ -6,7 +6,7 @@ part of 'base.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lSPHash() => r'e4cb1ab0644878e752fd8829bc5e358fec22e2b6';
+String _$lSPHash() => r'c40d2eb2b7b5e1dbdc181218f34c6950bbeb105b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -107,8 +107,8 @@ class LSPProvider extends AsyncNotifierProviderImpl<LSP, LSPService?> {
   ///
   /// Copied from [LSP].
   LSPProvider({
-    this.language = LSPLanguage.dart,
-  }) : super.internal(
+    LSPLanguage language = LSPLanguage.dart,
+  }) : this._internal(
           () => LSP()..language = language,
           from: lSPProvider,
           name: r'lSPProvider',
@@ -116,9 +116,50 @@ class LSPProvider extends AsyncNotifierProviderImpl<LSP, LSPService?> {
               const bool.fromEnvironment('dart.vm.product') ? null : _$lSPHash,
           dependencies: LSPFamily._dependencies,
           allTransitiveDependencies: LSPFamily._allTransitiveDependencies,
+          language: language,
         );
 
+  LSPProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.language,
+  }) : super.internal();
+
   final LSPLanguage language;
+
+  @override
+  Future<LSPService?> runNotifierBuild(
+    covariant LSP notifier,
+  ) {
+    return notifier.build(
+      language: language,
+    );
+  }
+
+  @override
+  Override overrideWith(LSP Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: LSPProvider._internal(
+        () => create()..language = language,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        language: language,
+      ),
+    );
+  }
+
+  @override
+  AsyncNotifierProviderElement<LSP, LSPService?> createElement() {
+    return _LSPProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -132,15 +173,19 @@ class LSPProvider extends AsyncNotifierProviderImpl<LSP, LSPService?> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin LSPRef on AsyncNotifierProviderRef<LSPService?> {
+  /// The parameter `language` of this provider.
+  LSPLanguage get language;
+}
+
+class _LSPProviderElement extends AsyncNotifierProviderElement<LSP, LSPService?>
+    with LSPRef {
+  _LSPProviderElement(super.provider);
 
   @override
-  Future<LSPService?> runNotifierBuild(
-    covariant LSP notifier,
-  ) {
-    return notifier.build(
-      language: language,
-    );
-  }
+  LSPLanguage get language => (origin as LSPProvider).language;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
