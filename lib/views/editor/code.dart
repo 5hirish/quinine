@@ -32,7 +32,7 @@ class CodeEditor extends HookConsumerWidget {
     final sourceFile = ref.watch(sourceFileProvider(filePath: filePath));
 
     FileService fileService = FileService(filePath);
-    String fileExtension = fileService.getFilePathExtension();
+    String fileExtension = fileService.name;
 
     final language = languageFromExtension(
         fileExtension); // https://github.com/dart-lang/dart-pad

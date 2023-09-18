@@ -107,7 +107,7 @@ class EditorView extends HookConsumerWidget {
   }
 
   TabData createTabDataForFile(String filePath) {
-    String fileName = FileService(filePath).getFilePathName();
+    String fileName = FileService(filePath).name;
 
     return TabData(
       text: fileName,
