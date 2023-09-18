@@ -195,3 +195,28 @@ Range? calculateTextChangeRange(String oldText, String newText) {
     return null; // No detected changes
   }
 }
+
+String getNewTextForRange(Range range, String newText) {
+  int startLine = range.start.line;
+  int startChar = range.start.character;
+  int endLine = range.end.line;
+  int endChar = range.end.character;
+
+  List<String> lines = newText.split('\n');
+
+  if (startLine == endLine) {
+    return lines[startLine].substring(startChar, endChar);
+  } else {
+    StringBuffer result = StringBuffer();
+    result.write(lines[startLine]
+        .substring(startChar)); // From startChar to the end of the line
+    result.write('\n');
+    for (int i = startLine + 1; i < endLine; i++) {
+      result.write(lines[i]);
+      result.write('\n');
+    }
+    result.write(lines[endLine]
+        .substring(0, endChar)); // From the start of the line to endChar
+    return result.toString();
+  }
+}
